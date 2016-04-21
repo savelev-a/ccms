@@ -11,13 +11,37 @@
         </div>
 
         <ul class="f-nav">
-            <c:forEach items="${currentPage.mainMenu}" var="item">
-                <li ${item.active ? "class=active" : ""}>
-                    <a href="<c:url value="${item.hyperlink}" />">
-                        ${item.name}
+
+                <li ${mainMenuActiveItem == "shops" ? "class=active" : ""}>
+                    <a href="<c:url value="/shops" />">
+                        Магазины
                     </a> 
                 </li>
-            </c:forEach>
+                
+                <li ${mainMenuActiveItem == "offices" ? "class=active" : ""}>
+                    <a href="<c:url value="/offices" />">
+                        Офисы
+                    </a> 
+                </li>
+                
+                <li ${mainMenuActiveItem == "employees" ? "class=active" : ""}>
+                    <a href="<c:url value="/employees" />">
+                        Сотрудники
+                    </a> 
+                </li>
+                
+                <li ${mainMenuActiveItem == "organisations" ? "class=active" : ""}>
+                    <a href="<c:url value="/organisations" />">
+                        Юр. лица
+                    </a> 
+                </li>
+                
+                <li ${mainMenuActiveItem == "admin" ? "class=active" : ""}>
+                    <a href="<c:url value="/admin" />">
+                        Администрирование
+                    </a> 
+                </li>
+
         </ul>
 
         <ul class="f-nav f-nav-right">

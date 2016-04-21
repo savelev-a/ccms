@@ -38,7 +38,6 @@ import ru.codemine.ccms.entity.Office;
 import ru.codemine.ccms.entity.Organisation;
 import ru.codemine.ccms.entity.Shop;
 import ru.codemine.ccms.service.EmployeeService;
-import ru.codemine.ccms.service.ContentService;
 import ru.codemine.ccms.service.OfficeService;
 import ru.codemine.ccms.service.OrganisationService;
 import ru.codemine.ccms.service.ShopService;
@@ -57,7 +56,7 @@ public class AdminRouter
     @Autowired private OrganisationService organisationService;
     @Autowired private ShopService shopService;
     @Autowired private OfficeService officeService;
-    @Autowired private ContentService contentService;
+
     
     //
     // Главная
@@ -79,7 +78,9 @@ public class AdminRouter
     @RequestMapping(value = "/admin/employees", method = RequestMethod.GET)
     public String getEmplyees(ModelMap model)
     {
-        model.addAttribute("currentPage", contentService.createAdminPage("Администрирование", 0));
+        model.addAttribute("title", "Администрирование - сотрудники - ИнфоПортал");
+        model.addAttribute("mainMenuActiveItem", "admin");
+        model.addAttribute("sideMenuActiveItem", "employees");
         model.addAttribute("currentUser", employeeService.getCurrentUser());
         
         model.addAttribute("allemps", employeeService.getAll());
@@ -91,7 +92,9 @@ public class AdminRouter
     @RequestMapping(value = "/admin/addemployee", method = RequestMethod.GET)
     public String addEmployeeFrm(ModelMap model)
     {
-        model.addAttribute("currentPage", contentService.createAdminPage("Администрирование", 0));
+        model.addAttribute("title", "Администрирование - новый сотрудник - ИнфоПортал");
+        model.addAttribute("mainMenuActiveItem", "admin");
+        model.addAttribute("sideMenuActiveItem", "employees");
         model.addAttribute("currentUser", employeeService.getCurrentUser());
         model.addAttribute("addEmployeeFrm", new Employee());
         
@@ -106,7 +109,9 @@ public class AdminRouter
     {
         if(result.hasErrors())
         {
-            model.addAttribute("currentPage", contentService.createAdminPage("Администрирование", 0));
+            model.addAttribute("title", "Администрирование - новый сотрудник - ИнфоПортал");
+            model.addAttribute("mainMenuActiveItem", "admin");
+            model.addAttribute("sideMenuActiveItem", "employees");
             model.addAttribute("currentUser", employeeService.getCurrentUser());
             model.addAttribute("rolesList", formRolesList());
             
@@ -122,7 +127,9 @@ public class AdminRouter
     @RequestMapping(value = "/admin/profile",  method = RequestMethod.GET)
     public String employeeProfile(@RequestParam("id") Integer id, ModelMap model)
     {
-        model.addAttribute("currentPage", contentService.createAdminPage("Администрирование", 0));
+        model.addAttribute("title", "Администрирование - сотрудники - ИнфоПортал");
+        model.addAttribute("mainMenuActiveItem", "admin");
+        model.addAttribute("sideMenuActiveItem", "employees");
         model.addAttribute("currentUser", employeeService.getCurrentUser());
         model.addAttribute("employee", employeeService.getById(id));
         model.addAttribute("rolesList", formRolesList());
@@ -136,7 +143,9 @@ public class AdminRouter
     {
         if(result.hasErrors())
         {
-            model.addAttribute("currentPage", contentService.createAdminPage("Администрирование", 0));
+            model.addAttribute("title", "Администрирование - сотрудники - ИнфоПортал");
+            model.addAttribute("mainMenuActiveItem", "admin");
+            model.addAttribute("sideMenuActiveItem", "employees");
             model.addAttribute("currentUser", employeeService.getCurrentUser());
             model.addAttribute("rolesList", formRolesList());
             
@@ -176,7 +185,9 @@ public class AdminRouter
     @RequestMapping(value = "/admin/organisations", method = RequestMethod.GET)
     public String getOrganisations(ModelMap model)
     {
-        model.addAttribute("currentPage", contentService.createAdminPage("Администрирование", 3));
+        model.addAttribute("title", "Администрирование - юр. лица - ИнфоПортал");
+        model.addAttribute("mainMenuActiveItem", "admin");
+        model.addAttribute("sideMenuActiveItem", "orgs");
         model.addAttribute("currentUser", employeeService.getCurrentUser());
         
         model.addAttribute("allorgs", organisationService.getAll());
@@ -188,7 +199,9 @@ public class AdminRouter
     @RequestMapping(value = "/admin/addorganisation", method = RequestMethod.GET)
     public String addOrganisationFrm(ModelMap model)
     {
-        model.addAttribute("currentPage", contentService.createAdminPage("Администрирование", 3));
+        model.addAttribute("title", "Администрирование - новое юр. лицо - ИнфоПортал");
+        model.addAttribute("mainMenuActiveItem", "admin");
+        model.addAttribute("sideMenuActiveItem", "orgs");
         model.addAttribute("currentUser", employeeService.getCurrentUser());
         model.addAttribute("addOrganisationFrm", new Organisation());
         model.addAttribute("emps", employeeService.getAll());
@@ -204,7 +217,9 @@ public class AdminRouter
         
         if(result.hasErrors())
         {
-            model.addAttribute("currentPage", contentService.createAdminPage("Администрирование", 3));
+            model.addAttribute("title", "Администрирование - новое юр. лицо - ИнфоПортал");
+            model.addAttribute("mainMenuActiveItem", "admin");
+            model.addAttribute("sideMenuActiveItem", "orgs");
             model.addAttribute("currentUser", employeeService.getCurrentUser());
             model.addAttribute("emps", employeeService.getAll());
             
@@ -220,7 +235,9 @@ public class AdminRouter
     @RequestMapping(value = "/admin/orgprofile",  method = RequestMethod.GET)
     public String organisationProfile(@RequestParam("id") Integer id, ModelMap model)
     {
-        model.addAttribute("currentPage", contentService.createAdminPage("Администрирование", 3));
+        model.addAttribute("title", "Администрирование - юр. лица - ИнфоПортал");
+        model.addAttribute("mainMenuActiveItem", "admin");
+        model.addAttribute("sideMenuActiveItem", "orgs");
         model.addAttribute("currentUser", employeeService.getCurrentUser());
         model.addAttribute("organisation", organisationService.getById(id));
         model.addAttribute("emps", employeeService.getAll());
@@ -234,7 +251,9 @@ public class AdminRouter
     {
         if(result.hasErrors())
         {
-            model.addAttribute("currentPage", contentService.createAdminPage("Администрирование", 3));
+            model.addAttribute("title", "Администрирование - юр. лица - ИнфоПортал");
+            model.addAttribute("mainMenuActiveItem", "admin");
+            model.addAttribute("sideMenuActiveItem", "orgs");
             model.addAttribute("currentUser", employeeService.getCurrentUser());
             model.addAttribute("emps", employeeService.getAll());
             
@@ -263,7 +282,9 @@ public class AdminRouter
     @RequestMapping(value = "/admin/shops", method = RequestMethod.GET)
     public String getShops(ModelMap model)
     {
-        model.addAttribute("currentPage", contentService.createAdminPage("Администрирование", 1));
+        model.addAttribute("title", "Администрирование - магазины - ИнфоПортал");
+        model.addAttribute("mainMenuActiveItem", "admin");
+        model.addAttribute("sideMenuActiveItem", "shops");
         model.addAttribute("currentUser", employeeService.getCurrentUser());
         
         model.addAttribute("allshops", shopService.getAll());
@@ -276,7 +297,9 @@ public class AdminRouter
     @RequestMapping(value = "/admin/addshop", method = RequestMethod.GET)
     public String addShopFrm(ModelMap model)
     {
-        model.addAttribute("currentPage", contentService.createAdminPage("Администрирование", 1));
+        model.addAttribute("title", "Администрирование - новый магазин - ИнфоПортал");
+        model.addAttribute("mainMenuActiveItem", "admin");
+        model.addAttribute("sideMenuActiveItem", "shops");
         model.addAttribute("currentUser", employeeService.getCurrentUser());
         model.addAttribute("addShopFrm", new Shop());
         model.addAttribute("emps", employeeService.getAll());
@@ -293,7 +316,9 @@ public class AdminRouter
         
         if(result.hasErrors())
         {
-            model.addAttribute("currentPage", contentService.createAdminPage("Администрирование", 1));
+            model.addAttribute("title", "Администрирование - новый магазин - ИнфоПортал");
+            model.addAttribute("mainMenuActiveItem", "admin");
+            model.addAttribute("sideMenuActiveItem", "shops");
             model.addAttribute("currentUser", employeeService.getCurrentUser());
             model.addAttribute("emps", employeeService.getAll());
             model.addAttribute("orgs", organisationService.getAll());
@@ -310,7 +335,9 @@ public class AdminRouter
     @RequestMapping(value = "/admin/shopprofile",  method = RequestMethod.GET)
     public String shopProfile(@RequestParam("id") Integer id, ModelMap model)
     {
-        model.addAttribute("currentPage", contentService.createAdminPage("Администрирование", 1));
+        model.addAttribute("title", "Администрирование - магазины - ИнфоПортал");
+        model.addAttribute("mainMenuActiveItem", "admin");
+        model.addAttribute("sideMenuActiveItem", "shops");
         model.addAttribute("currentUser", employeeService.getCurrentUser());
         model.addAttribute("shop", shopService.getById(id));
         model.addAttribute("emps", employeeService.getAll());
@@ -325,7 +352,9 @@ public class AdminRouter
     {
         if(result.hasErrors())
         {
-            model.addAttribute("currentPage", contentService.createAdminPage("Администрирование", 1));
+            model.addAttribute("title", "Администрирование - магазины - ИнфоПортал");
+            model.addAttribute("mainMenuActiveItem", "admin");
+            model.addAttribute("sideMenuActiveItem", "shops");
             model.addAttribute("currentUser", employeeService.getCurrentUser());
             model.addAttribute("emps", employeeService.getAll());
             model.addAttribute("orgs", organisationService.getAll());
@@ -355,7 +384,9 @@ public class AdminRouter
     @RequestMapping(value = "/admin/offices")
     public String getOffices(ModelMap model)
     {
-        model.addAttribute("currentPage", contentService.createAdminPage("Администрирование", 2));
+        model.addAttribute("title", "Администрирование - офисы - ИнфоПортал");
+        model.addAttribute("mainMenuActiveItem", "admin");
+        model.addAttribute("sideMenuActiveItem", "offices");
         model.addAttribute("currentUser", employeeService.getCurrentUser());
         
         model.addAttribute("alloffices", officeService.getAll());
@@ -368,7 +399,9 @@ public class AdminRouter
     @RequestMapping(value = "/admin/addoffice", method = RequestMethod.GET)
     public String addOfficeFrm(ModelMap model)
     {
-        model.addAttribute("currentPage", contentService.createAdminPage("Администрирование", 2));
+        model.addAttribute("title", "Администрирование - новый офис - ИнфоПортал");
+        model.addAttribute("mainMenuActiveItem", "admin");
+        model.addAttribute("sideMenuActiveItem", "offices");
         model.addAttribute("currentUser", employeeService.getCurrentUser());
         model.addAttribute("addOfficeFrm", new Office());
         model.addAttribute("emps", employeeService.getAll());
@@ -385,7 +418,9 @@ public class AdminRouter
         
         if(result.hasErrors())
         {
-            model.addAttribute("currentPage", contentService.createAdminPage("Администрирование", 2));
+            model.addAttribute("title", "Администрирование - новый офис - ИнфоПортал");
+            model.addAttribute("mainMenuActiveItem", "admin");
+            model.addAttribute("sideMenuActiveItem", "offices");
             model.addAttribute("currentUser", employeeService.getCurrentUser());
             model.addAttribute("emps", employeeService.getAll());
             model.addAttribute("orgs", organisationService.getAll());
@@ -402,7 +437,9 @@ public class AdminRouter
     @RequestMapping(value = "/admin/officeprofile",  method = RequestMethod.GET)
     public String officeProfile(@RequestParam("id") Integer id, ModelMap model)
     {
-        model.addAttribute("currentPage", contentService.createAdminPage("Администрирование", 2));
+        model.addAttribute("title", "Администрирование - офисы - ИнфоПортал");
+        model.addAttribute("mainMenuActiveItem", "admin");
+        model.addAttribute("sideMenuActiveItem", "offices");
         model.addAttribute("currentUser", employeeService.getCurrentUser());
         model.addAttribute("office", officeService.getById(id));
         model.addAttribute("emps", employeeService.getAll());
@@ -417,7 +454,9 @@ public class AdminRouter
     {
         if(result.hasErrors())
         {
-            model.addAttribute("currentPage", contentService.createAdminPage("Администрирование", 2));
+            model.addAttribute("title", "Администрирование - офисы - ИнфоПортал");
+            model.addAttribute("mainMenuActiveItem", "admin");
+            model.addAttribute("sideMenuActiveItem", "offices");
             model.addAttribute("currentUser", employeeService.getCurrentUser());
             model.addAttribute("emps", employeeService.getAll());
             model.addAttribute("orgs", organisationService.getAll());

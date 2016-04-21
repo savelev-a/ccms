@@ -30,7 +30,6 @@ import ru.codemine.ccms.entity.Office;
 import ru.codemine.ccms.entity.Organisation;
 import ru.codemine.ccms.entity.Shop;
 import ru.codemine.ccms.service.EmployeeService;
-import ru.codemine.ccms.service.ContentService;
 import ru.codemine.ccms.service.OfficeService;
 import ru.codemine.ccms.service.OrganisationService;
 import ru.codemine.ccms.service.ShopService;
@@ -49,12 +48,14 @@ public class DefaultRouter
     @Autowired private EmployeeService employeeService;
     @Autowired private OrganisationService organisationService;
     @Autowired private OfficeService officeService;
-    @Autowired private ContentService contentService;
+
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String getIndex(ModelMap model)
     {
-        model.addAttribute("currentPage", contentService.createIndexPage("Главная"));
+        model.addAttribute("title", "Главная - ИнфоПортал");
+        model.addAttribute("mainMenuActiveItem", "");
+        model.addAttribute("sideMenuActiveItem", "");
         model.addAttribute("currentUser", employeeService.getCurrentUser());
 
         return "index";
@@ -66,7 +67,9 @@ public class DefaultRouter
     @RequestMapping(value = "/shops", method = RequestMethod.GET)
     public String getShops(ModelMap model)
     {
-        model.addAttribute("currentPage", contentService.createShopsPage("Магазины", 0));
+        model.addAttribute("title", "Магазины - ИнфоПортал");
+        model.addAttribute("mainMenuActiveItem", "shops");
+        model.addAttribute("sideMenuActiveItem", "short");
         model.addAttribute("currentUser", employeeService.getCurrentUser());
         
         model.addAttribute("allshops", shopService.getAll());
@@ -79,7 +82,9 @@ public class DefaultRouter
     @RequestMapping(value = "/offices", method = RequestMethod.GET)
     public String getOffices(ModelMap model)
     {
-        model.addAttribute("currentPage", contentService.createOfficesPage("Офисы", 0));
+        model.addAttribute("title", "Офисы - ИнфоПортал");
+        model.addAttribute("mainMenuActiveItem", "offices");
+        model.addAttribute("sideMenuActiveItem", "all");
         model.addAttribute("currentUser", employeeService.getCurrentUser());
 
         model.addAttribute("alloffices", officeService.getAll());
@@ -91,7 +96,9 @@ public class DefaultRouter
     @RequestMapping(value = "/employees", method = RequestMethod.GET)
     public String getEmployees(ModelMap model)
     {
-        model.addAttribute("currentPage", contentService.createEmployeesPage("Сотрудники", 0));
+        model.addAttribute("title", "Сотрудники - ИнфоПортал");
+        model.addAttribute("mainMenuActiveItem", "employees");
+        model.addAttribute("sideMenuActiveItem", "all");
         model.addAttribute("currentUser", employeeService.getCurrentUser());
         model.addAttribute("allemps", employeeService.getAll());
 
@@ -102,7 +109,9 @@ public class DefaultRouter
     @RequestMapping(value = "/organisations", method = RequestMethod.GET)
     public String getOrganisations(ModelMap model)
     {
-        model.addAttribute("currentPage", contentService.createOrganisationsPage("Юр. лица", 0));
+        model.addAttribute("title", "Юр. лица - ИнфоПортал");
+        model.addAttribute("mainMenuActiveItem", "organisations");
+        model.addAttribute("sideMenuActiveItem", "all");
         model.addAttribute("currentUser", employeeService.getCurrentUser());
 
         model.addAttribute("allorgs", organisationService.getAll());
@@ -113,7 +122,9 @@ public class DefaultRouter
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String getLogin(ModelMap model, @RequestParam(required = false) boolean error)
     {
-        model.addAttribute("currentPage", contentService.createIndexPage("Авторизация"));
+        model.addAttribute("title", "Авторизация - ИнфоПортал");
+        model.addAttribute("mainMenuActiveItem", "");
+        model.addAttribute("sideMenuActiveItem", "");
         model.addAttribute("currentUser", employeeService.getCurrentUser());
         model.addAttribute("activeUsers", employeeService.getActive());
 
@@ -130,7 +141,9 @@ public class DefaultRouter
     {
         Shop shop = shopService.getById(id);
         
-        model.addAttribute("currentPage", contentService.createShopsPage("Магазин - " + shop.getName(), 255));
+        model.addAttribute("title", "Магазин - " + shop.getName() + " - ИнфоПортал");
+        model.addAttribute("mainMenuActiveItem", "shops");
+        model.addAttribute("sideMenuActiveItem", "");
         model.addAttribute("currentUser", employeeService.getCurrentUser());
         model.addAttribute("shop", shop);
         
@@ -147,7 +160,9 @@ public class DefaultRouter
     {
         Office office = officeService.getById(id);
 
-        model.addAttribute("currentPage", contentService.createOfficesPage("Офис - " + office.getName(), 255));
+        model.addAttribute("title", "Офис - " + office.getName() + " - ИнфоПортал");
+        model.addAttribute("mainMenuActiveItem", "offices");
+        model.addAttribute("sideMenuActiveItem", "");
         model.addAttribute("currentUser", employeeService.getCurrentUser());
         model.addAttribute("office", office);
 
@@ -165,7 +180,9 @@ public class DefaultRouter
     {
         Organisation org = organisationService.getById(id);
 
-        model.addAttribute("currentPage", contentService.createOrganisationsPage("Реквизиты - " + org.getName(), 255));
+        model.addAttribute("title", "Реквизиты - " + org.getName() + " - ИнфоПортал");
+        model.addAttribute("mainMenuActiveItem", "organisations");
+        model.addAttribute("sideMenuActiveItem", "");
         model.addAttribute("currentUser", employeeService.getCurrentUser());
         model.addAttribute("organisation", org);
 
@@ -182,7 +199,9 @@ public class DefaultRouter
     {
         Employee employee = employeeService.getById(id);
         
-        model.addAttribute("currentPage", contentService.createEmployeesPage("Профиль - " + employee.getFullName(), 255));
+        model.addAttribute("title", "Профиль - " + employee.getFullName() + " - ИнфоПортал");
+        model.addAttribute("mainMenuActiveItem", "employees");
+        model.addAttribute("sideMenuActiveItem", "");
         model.addAttribute("currentUser", employeeService.getCurrentUser());
         model.addAttribute("employee", employee);
 
@@ -197,7 +216,9 @@ public class DefaultRouter
     @RequestMapping(value = "/403")
     public String errorDenied(ModelMap model)
     {
-        model.addAttribute("currentPage", contentService.createIndexPage("Главная"));
+        model.addAttribute("title", "Доступ запрещен - ИнфоПортал");
+        model.addAttribute("mainMenuActiveItem", "");
+        model.addAttribute("sideMenuActiveItem", "");
         model.addAttribute("currentUser", employeeService.getCurrentUser());
         
         return "403";
@@ -206,7 +227,9 @@ public class DefaultRouter
     @RequestMapping(value = "/404")
     public String errorNotFound(ModelMap model)
     {
-        model.addAttribute("currentPage", contentService.createIndexPage("Главная"));
+        model.addAttribute("title", "Страница не найдена - ИнфоПортал");
+        model.addAttribute("mainMenuActiveItem", "");
+        model.addAttribute("sideMenuActiveItem", "");
         model.addAttribute("currentUser", employeeService.getCurrentUser());
         
         return "404";

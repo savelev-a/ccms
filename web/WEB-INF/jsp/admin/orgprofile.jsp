@@ -16,7 +16,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="<c:url value="/res/css/framework.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/styles.css" />" >
-        <title>${currentPage.title} - ИнфоПортал</title>
+        <title>${title} - ИнфоПортал</title>
     </head>
 
     <body>
@@ -28,7 +28,7 @@
 
                 <div class="g-row">
 
-                    <%@include file="../modules/sideMenu.jspf" %>
+                    <%@include file="../modules/sideMenu/sideMenu_admin.jspf" %>
 
                     <div class="g-10">
                         <form:form method="post" commandName="organisation">

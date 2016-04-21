@@ -1,0 +1,21 @@
+<%@ page pageEncoding="UTF-8" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<div class="g-2">
+    <br>
+    <ul class="f-nav-list right-line">
+        
+        <li ${sideMenuActiveItem == "all" ? "class=active" : ""}>
+            <a href="<c:url value="/employees" />">
+                Все
+            </a> 
+        </li>
+        
+        <li ${sideMenuActiveItem == "byShop" ? "class=active" : ""}>
+            <a href="<c:url value="/employees?byShop=true" />">
+                По магазинам
+            </a> 
+        </li>
+        
+    </ul>
+</div> 
