@@ -1,0 +1,22 @@
+<%@ page pageEncoding="UTF-8" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<div class="g-2">
+    <br>
+    <ul class="f-nav-list right-line">
+        <c:forEach items="${currentPage.sideMenu}" var="item">
+            <c:choose>
+                <c:when test="${item.name == '#hr'}">
+                    <hr>
+                </c:when>
+                <c:otherwise>
+                    <li ${item.active ? "class=active" : ""}>
+                        <a href="<c:url value="${item.hyperlink}" />">
+                            ${item.name}
+                        </a> 
+                    </li>
+                </c:otherwise>
+            </c:choose>
+        </c:forEach>
+    </ul>
+</div> 

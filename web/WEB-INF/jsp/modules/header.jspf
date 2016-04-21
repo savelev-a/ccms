@@ -1,0 +1,38 @@
+<%@ page pageEncoding="UTF-8" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
+
+<div class="f-nav-bar f-nav-bar-fixed">
+    <div class="f-nav-bar-body">
+
+        <div class="f-nav-bar-title">
+            <a href="<c:url value="/" />">ИнфоПортал</a>
+        </div>
+
+        <ul class="f-nav">
+            <c:forEach items="${currentPage.mainMenu}" var="item">
+                <li ${item.active ? "class=active" : ""}>
+                    <a href="<c:url value="${item.hyperlink}" />">
+                        ${item.name}
+                    </a> 
+                </li>
+            </c:forEach>
+        </ul>
+
+        <ul class="f-nav f-nav-right">
+            <sec:authorize access="isAuthenticated()" var="loggedIn" />
+            <c:choose>
+                <c:when test="${loggedIn}">
+                    <span class="glyphicon glyphicon-user"></span>
+                    ${currentUser.lastName}
+                    <a href="#" id="logout">(Выход)</a>
+                </c:when>
+                <c:otherwise>
+                    <li><a href="<c:url value="/login" />">Войти</a></li>
+                    </c:otherwise>
+                </c:choose>
+
+        </ul>
+    </div>
+</div>

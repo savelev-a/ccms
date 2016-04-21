@@ -1,0 +1,29 @@
+<%@ page pageEncoding="UTF-8" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+
+
+<div class="footer">
+    (C) Империя Сумок, 2016
+</div>
+
+
+<!-- Scripts -->
+<script src="<c:url value="/res/js/jquery-2.2.2.min.js" /> "></script>
+<script src="<c:url value="/res/js/messagebox.js" /> "></script>
+<script src="<c:url value="/res/js/jquery.dataTables.js" /> "></script>
+<script src="<c:url value="/res/js/jquery-ui.js" />"></script>
+
+<c:choose>
+    <c:when test="${loggedIn}">
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $("#logout").on("click", function () {
+                    $.post("<c:url value="/logout"/>", {${_csrf.parameterName}: "${_csrf.token}"}).done(function () {
+                        window.location.replace("<c:url value="/"/>");
+                    });
+                });
+            });
+        </script>
+    </c:when>
+</c:choose>

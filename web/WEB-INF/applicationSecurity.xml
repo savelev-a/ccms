@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+       xmlns:beans="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+
+       xsi:schemaLocation="
+http://www.springframework.org/schema/beans 
+http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+
+http://www.springframework.org/schema/security 
+http://www.springframework.org/schema/security/spring-security-4.0.xsd
+">
+
+    <http pattern="/res/**" security="none" /> 
+    
+    <http>
+        <form-login login-page="/login" login-processing-url="/login" authentication-failure-url="/login?error=true" />
+        <logout logout-url="/logout" logout-success-url="/" />
+        <access-denied-handler error-page="/403" />
+        
+        
+        <remember-me 
+            remember-me-parameter="remember-me"
+            data-source-ref="dataSource"
+            token-validity-seconds="5184000"
+        />
+    </http>
+    
+    <global-method-security secured-annotations="enabled" />
+    
+    <authentication-manager>
+        <authentication-provider>
+            <password-encoder ref="bcryptEncoder" />
+            <jdbc-user-service
+                data-source-ref="dataSource"
+                users-by-username-query="SELECT username, password, active FROM employees WHERE username = ?"
+                authorities-by-username-query="SELECT username, roles FROM roles WHERE username = ?"
+            />
+                
+        </authentication-provider>
+    </authentication-manager>
+    
+    <beans:bean id="bcryptEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder">
+        <beans:constructor-arg name="strength" value="11" />
+    </beans:bean>
+
+    
+</beans:beans>
