@@ -13,96 +13,102 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <link rel="stylesheet" href="<c:url value="/res/css/framework.css" />" >
+        <link rel="stylesheet" href="<c:url value="/res/css/bootstrap.css" />" >
+        <link rel="stylesheet" href="<c:url value="/res/css/bootstrap-theme.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/styles.css" />" >
-        <title>${title} - ИнфоПортал</title>
+        <title><c:out value="${title}" /></title>
     </head>
 
     <body>
         <div class="wrapper">
-            <div class="g content">
+            <div class="container-fluid content">
                 <%@include file="../../modules/header.jspf" %>
 
                 <br>
 
-                <div class="g-row">
+                <div class="row">
 
                     <%@include file="../../modules/sideMenu/sideMenu_dummy.jspf" %>
 
-                    <br>
+                    <br><br>
 
-                    <div class="g-10">
-                        <table>
-                            <caption>Офис - ${office.name}</caption>
-                            <tbody>
-                                <tr>
-                                    <th class="th-header-center" colspan="4">Общие данные</th>
-                                </tr>
-                                <tr>
-                                    <th>Наименование</th>
-                                    <td colspan="4">${office.name}</td>
-                                </tr>
-                                <tr>
-                                    <th>Юр. лицо</th>
-                                    <td>
-                                        <a href="<c:url value="/organisation?id=${office.organisation.id}" />">
-                                            ${office.organisation.name}
-                                        </a>
-                                    </td>
+                    <div class="col-md-10">
+                        <div class="panel panel-primary panel-primary-dark">
+                            <div class="panel-heading panel-heading-dark" align="center">Офис - <c:out value="${office.name}" /></div>
+                            <div class="panel-body">
+                                <table class="table table-hover table-condensed">
 
-                                    <th>E-mail</th>
-                                    <td>
-                                        <span class="glyphicon glyphicon-envelope"></span>
-                                        <a href="mailto:${office.email}">
-                                            ${office.email}
-                                        </a>
-                                    </td>
-                                </tr>
+                                    <tbody>
+                                        <tr>
+                                            <th class="th-header-center" colspan="4">Общие данные</th>
+                                        </tr>
+                                        <tr>
+                                            <th>Наименование</th>
+                                            <td colspan="4"><c:out value="${office.name}" /></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Юр. лицо</th>
+                                            <td>
+                                                <a href="<c:url value="/organisation?id=${office.organisation.id}" />">
+                                                    <c:out value="${office.organisation.name}" />
+                                                </a>
+                                            </td>
 
-                                <tr>
-                                    <th>Адрес</th>
-                                    <td>${office.address}</td>
+                                            <th>E-mail</th>
+                                            <td>
+                                                <span class="glyphicon glyphicon-envelope"></span>
+                                                <a href="mailto:<c:out value="${office.email}" />">
+                                                    <c:out value="${office.email}" />
+                                                </a>
+                                            </td>
+                                        </tr>
 
-                                    <th>Телефон</th>
-                                    <td>
-                                        <span class="glyphicon glyphicon-phone-alt"></span>
-                                        ${office.phone}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th class="th-header-center" colspan="4">Персонал</th>
-                                </tr>
-                                <tr>
-                                    <th>Администратор</th>
-                                    <td>
-                                        <a href="<c:url value="/employee?id=${office.director.id}" />">
-                                            ${office.director.fullName}
-                                        </a>
-                                    </td>
+                                        <tr>
+                                            <th>Адрес</th>
+                                            <td><c:out value="${office.address}" /></td>
 
-                                    <th>Сотрудники</th>
-                                    <td>
-                                        <c:forEach items="${office.officeEmployees}" var="employee">
-                                            <a href="<c:url value="/employee?id=${employee.id}" />">
-                                                ${employee.fullName}
-                                            </a>
-                                            &nbsp;
-                                            <c:if test="${employee.position != ''}"> (${employee.position}) </c:if>
-                                                <br>
-                                        </c:forEach>
-                                    </td>
-                                </tr>
+                                            <th>Телефон</th>
+                                            <td>
+                                                <span class="glyphicon glyphicon-phone-alt"></span>
+                                                <c:out value="${office.phone}" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th class="th-header-center" colspan="4">Персонал</th>
+                                        </tr>
+                                        <tr>
+                                            <th>Администратор</th>
+                                            <td>
+                                                <a href="<c:url value="/employee?id=${office.director.id}" />">
+                                                    <c:out value="${office.director.fullName}" />
+                                                </a>
+                                            </td>
+
+                                            <th>Сотрудники</th>
+                                            <td>
+                                                <c:forEach items="${office.officeEmployees}" var="employee">
+                                                    <a href="<c:url value="/employee?id=${employee.id}" />">
+                                                        <c:out value="${employee.fullName}" />
+                                                    </a>
+                                                    &nbsp;
+                                                    <c:if test="${employee.position != ''}"> (<c:out value="${employee.position}" />) </c:if>
+                                                        <br>
+                                                </c:forEach>
+                                            </td>
+                                        </tr>
 
 
-                            </tbody>
-                        </table>
-                        <br>
+                                    </tbody>
+                                </table>
+                                <br>
 
-                        <span class="glyphicon glyphicon-cog"></span>
-                        <a href="<c:url value="/admin/officeprofile?id=${employee.id}" />" > Редактировать офис </a>
-                        &nbsp;
-                        <span class="glyphicon glyphicon-print"></span>
-                        <a href="#">Распечатать</a>
+                                <span class="glyphicon glyphicon-cog"></span>
+                                <a href="<c:url value="/admin/officeprofile?id=${employee.id}" />" > Редактировать офис </a>
+                                &nbsp;
+                                <span class="glyphicon glyphicon-print"></span>
+                                <a href="#">Распечатать</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

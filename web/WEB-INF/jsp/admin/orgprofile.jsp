@@ -14,138 +14,145 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <link rel="stylesheet" href="<c:url value="/res/css/framework.css" />" >
+        <link rel="stylesheet" href="<c:url value="/res/css/bootstrap.css" />" >
+        <link rel="stylesheet" href="<c:url value="/res/css/bootstrap-theme.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/styles.css" />" >
-        <title>${title} - ИнфоПортал</title>
+        <title><c:out value="${title}" /></title>
     </head>
 
     <body>
         <div class="wrapper">
-            <div class="g content">
+            <div class="container-fluid content">
                 <%@include file="../modules/header.jspf" %>
 
                 <br>
 
-                <div class="g-row">
+                <div class="row">
 
                     <%@include file="../modules/sideMenu/sideMenu_admin.jspf" %>
 
-                    <div class="g-10">
-                        <form:form method="post" commandName="organisation">
-                            <table>
-                                <caption>Профиль организации "${organisation.name}"</caption>
-                                <tbody>
-                                    <tr>
-                                        <th>Наименование</th>
-                                        <td><form:input path="name" /></td>
-                                        <td><form:errors path="name" cssStyle="color: #ff0000;" /></td>
-                                        <td> </td>
-                                        <td> </td>
-                                    </tr>
-                                    <tr>
-                                        <th>ИНН</th>
-                                        <td><form:input path="inn" maxlength="12" /></td> 
+                    <br><br>
 
-                                        <th>КПП</th>
-                                        <td><form:input path="kpp" maxlength="12" /></td>
+                    <div class="col-md-10">
+                        <div class="panel panel-primary panel-primary-dark">
+                            <div class="panel-heading panel-heading-dark" align="center">Профиль организации <c:out value="${organisation.name}" /></div>
+                            <div class="panel-body">
+                                <form:form method="post" commandName="organisation">
+                                    <table class="table table-condensed">
+                                        <tbody>
+                                            <tr>
+                                                <td><b>Наименование</b></td>
+                                                <td><form:input path="name" class="form-control" /></td>
+                                                <td><form:errors path="name" cssStyle="color: #ff0000;" /></td>
+                                                <td> </td>
+                                                <td> </td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>ИНН</b></td>
+                                                <td><form:input path="inn" maxlength="12" class="form-control" /></td> 
 
-                                        <td>
-                                            <form:errors path="kpp" cssStyle="color: #ff0000;" />
-                                            <form:errors path="inn" cssStyle="color: #ff0000;" />
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>ОГРН</th>
-                                        <td><form:input path="ogrn" maxlength="15" /></td>
-                                        <td><form:errors path="ogrn" cssStyle="color: #ff0000;" /></td>
-                                        <td> </td>
-                                        <td> </td>
-                                    </tr>
-                                    <tr>
-                                        <th>Расчетный счет</th>
-                                        <td><form:input path="chAccount" maxlength="20" /></td>
+                                                <td><b>КПП</b></td>
+                                                <td><form:input path="kpp" maxlength="12" class="form-control" /></td>
 
-                                        <th>Корр. счет</th>
-                                        <td><form:input path="coAccount" maxlength="20" /></td>
-                                        <td>
-                                            <form:errors path="coAccount" cssStyle="color: #ff0000;" />
-                                            <form:errors path="chAccount" cssStyle="color: #ff0000;" />
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>Банк</th>
-                                        <td><form:input path="bank" /></td>
-                                        <td><form:errors path="bank" cssStyle="color: #ff0000;" /></td>
-                                        <td> </td>
-                                        <td> </td>
-                                    </tr>
-                                    <tr>
-                                        <th>БИК</th>
-                                        <td><form:input path="bik" maxlength="9" /></td>
-                                        <td><form:errors path="bik" cssStyle="color: #ff0000;" /></td>
-                                        <td> </td>
-                                        <td> </td>
-                                    </tr>
-                                    <tr>
-                                        <th>Юридический адрес</th>
-                                        <td><form:textarea path="urAddress" /></td>
+                                                <td>
+                                                    <form:errors path="kpp" cssStyle="color: #ff0000;" />
+                                                    <form:errors path="inn" cssStyle="color: #ff0000;" />
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>ОГРН</b></td>
+                                                <td><form:input path="ogrn" maxlength="15" class="form-control" /></td>
+                                                <td><form:errors path="ogrn" cssStyle="color: #ff0000;" /></td>
+                                                <td> </td>
+                                                <td> </td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>Расчетный счет</b></td>
+                                                <td><form:input path="chAccount" maxlength="20" class="form-control" /></td>
 
-                                        <th>Почтовый адрес</th>
-                                        <td><form:textarea path="mailAddress" /></td>
-                                        <td>
-                                            <form:errors path="mailAddress" cssStyle="color: #ff0000;" />
-                                            <form:errors path="urAddress" cssStyle="color: #ff0000;" />
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>Телефон</th>
-                                        <td><form:input path="phone" /></td>
-                                        <td><form:errors path="phone" cssStyle="color: #ff0000;" /></td>
-                                        <td> </td>
-                                        <td> </td>
-                                    </tr>
-                                    <tr>
-                                        <th>Директор</th>
-                                        <td colspan="3">
-                                            <div>
-                                                <table id="dirChooseTab">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>#</th>
-                                                            <th>ФИО</th>
-                                                            <th>Должность</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <c:forEach items="${emps}" var="emp" varStatus="idx">
-                                                            <tr>
-                                                                <td>
-                                                                    <c:choose>
-                                                                        <c:when test="${emp.id == organisation.director.id}">
-                                                                            <form:radiobutton path="director" value="${emp.id}" checked="true" />
-                                                                        </c:when>
-                                                                        <c:otherwise>
-                                                                            <form:radiobutton path="director" value="${emp.id}" />
-                                                                        </c:otherwise>
-                                                                    </c:choose>
-                                                                </td>
-                                                                <td>${emp.lastName} ${emp.firstName}</td>
-                                                                <td>${emp.position}</td>
-                                                            </tr>
-                                                        </c:forEach>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </td>
-                                        <td><form:errors path="director" cssStyle="color: #ff0000;" /></td>
+                                                <td><b>Корр. счет</b></td>
+                                                <td><form:input path="coAccount" maxlength="20" class="form-control" /></td>
+                                                <td>
+                                                    <form:errors path="coAccount" cssStyle="color: #ff0000;" />
+                                                    <form:errors path="chAccount" cssStyle="color: #ff0000;" />
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>Банк</b></td>
+                                                <td><form:input path="bank" class="form-control" /></td>
+                                                <td><form:errors path="bank" cssStyle="color: #ff0000;" /></td>
+                                                <td> </td>
+                                                <td> </td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>БИК</b></td>
+                                                <td><form:input path="bik" maxlength="9" class="form-control" /></td>
+                                                <td><form:errors path="bik" cssStyle="color: #ff0000;" /></td>
+                                                <td> </td>
+                                                <td> </td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>Юридический адрес</b></td>
+                                                <td><form:textarea path="urAddress" class="form-control" /></td>
 
-                                    </tr>
+                                                <td><b>Почтовый адрес</b></td>
+                                                <td><form:textarea path="mailAddress" class="form-control" /></td>
+                                                <td>
+                                                    <form:errors path="mailAddress" cssStyle="color: #ff0000;" />
+                                                    <form:errors path="urAddress" cssStyle="color: #ff0000;" />
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>Телефон</b></td>
+                                                <td><form:input path="phone" class="form-control" /></td>
+                                                <td><form:errors path="phone" cssStyle="color: #ff0000;" /></td>
+                                                <td> </td>
+                                                <td> </td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>Директор</b></td>
+                                                <td colspan="3">
+                                                    <div>
+                                                        <table id="dirChooseTab">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>#</th>
+                                                                    <th>ФИО</th>
+                                                                    <th>Должность</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <c:forEach items="${emps}" var="emp" varStatus="idx">
+                                                                    <tr>
+                                                                        <td>
+                                                                            <c:choose>
+                                                                                <c:when test="${emp.id == organisation.director.id}">
+                                                                                    <form:radiobutton path="director" value="${emp.id}" checked="true" />
+                                                                                </c:when>
+                                                                                <c:otherwise>
+                                                                                    <form:radiobutton path="director" value="${emp.id}" />
+                                                                                </c:otherwise>
+                                                                            </c:choose>
+                                                                        </td>
+                                                                        <td><c:out value="${emp.fullName}" /></td>
+                                                                        <td><c:out value="${emp.position}" /></td>
+                                                                    </tr>
+                                                                </c:forEach>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </td>
+                                                <td><form:errors path="director" cssStyle="color: #ff0000;" /></td>
 
-                                </tbody>
-                            </table>
-                            <input id="save" type="submit" value="Сохранить" class="f-bu f-bu-default">
-                            <input id="delete" type="button" name="delete" value="Удалить организацию" class="f-bu f-bu-warning">
-                        </form:form>
+                                            </tr>
+
+                                        </tbody>
+                                    </table>
+                                    <input id="save" type="submit" value="Сохранить" class="btn btn-primary">
+                                    <input id="delete" type="button" name="delete" value="Удалить организацию" class="btn btn-danger">
+                                </form:form>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -167,9 +174,9 @@
                 $.MessageBox({
                     buttonDone: "Удалить",
                     buttonFail: "Отмена",
-                    message: "Удалть организацию ${organisation.name}?"
+                    message: "Удалть организацию <c:out value='${organisation.name}' />?"
                 }).done(function () {
-                    $.post("<c:url value="/admin/delOrganisationById"/>", {id: "${organisation.id}", ${_csrf.parameterName} : "${_csrf.token}"}).done(function () {
+                    $.post("<c:url value="/admin/delOrganisationById"/>", {id: "${organisation.id}", ${_csrf.parameterName}: "${_csrf.token}"}).done(function () {
                         window.location.replace("<c:url value="/admin/organisations"/>");
                     });
 

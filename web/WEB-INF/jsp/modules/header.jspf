@@ -3,60 +3,83 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 
-<div class="f-nav-bar f-nav-bar-fixed">
-    <div class="f-nav-bar-body">
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
 
-        <div class="f-nav-bar-title">
-            <a href="<c:url value="/" />">ИнфоПортал</a>
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" 
+                    data-toggle="collapse" data-target="#mainMenuNavbarCollapse" aria-expanded="false">
+                <span class="sr-only">Навигация</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="<c:url value="/" />">ИнфоПортал</a>
         </div>
 
-        <ul class="f-nav">
+        <div class="collapse navbar-collapse" id="mainMenuNavbarCollapse">
+            <ul class="nav navbar-nav">
 
                 <li ${mainMenuActiveItem == "shops" ? "class=active" : ""}>
                     <a href="<c:url value="/shops" />">
                         Магазины
                     </a> 
                 </li>
-                
+
                 <li ${mainMenuActiveItem == "offices" ? "class=active" : ""}>
                     <a href="<c:url value="/offices" />">
                         Офисы
                     </a> 
                 </li>
-                
+
                 <li ${mainMenuActiveItem == "employees" ? "class=active" : ""}>
                     <a href="<c:url value="/employees" />">
                         Сотрудники
                     </a> 
                 </li>
-                
+
                 <li ${mainMenuActiveItem == "organisations" ? "class=active" : ""}>
                     <a href="<c:url value="/organisations" />">
                         Юр. лица
                     </a> 
                 </li>
-                
+
                 <li ${mainMenuActiveItem == "admin" ? "class=active" : ""}>
                     <a href="<c:url value="/admin" />">
                         Администрирование
                     </a> 
                 </li>
 
-        </ul>
+            </ul>
 
-        <ul class="f-nav f-nav-right">
-            <sec:authorize access="isAuthenticated()" var="loggedIn" />
-            <c:choose>
-                <c:when test="${loggedIn}">
-                    <span class="glyphicon glyphicon-user"></span>
-                    ${currentUser.lastName}
-                    <a href="#" id="logout">(Выход)</a>
-                </c:when>
-                <c:otherwise>
-                    <li><a href="<c:url value="/login" />">Войти</a></li>
-                    </c:otherwise>
-                </c:choose>
+            <ul class="nav navbar-nav navbar-right">
+                <sec:authorize access="isAuthenticated()" var="loggedIn" />
+                <c:choose>
+                    <c:when test="${loggedIn}">
 
-        </ul>
+                        <li class="dropdown">
+
+                            <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown">
+                                <span class="glyphicon glyphicon-user"></span>
+                                <c:out value="${currentUser.lastName}" />
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a href="<c:url value="/admin/profile?id=${currentUser.id}" />" >Мой профиль</a></li>
+                                <br>
+                                <li><a href="#" id="logout">Выход</a></li>
+                                
+                            </ul>
+                        </li>
+
+
+                    </c:when>
+                    <c:otherwise>
+                        <li><a href="<c:url value="/login" />">Войти</a></li>
+                        </c:otherwise>
+                    </c:choose>
+
+            </ul>
+        </div>
     </div>
-</div>
+</nav>

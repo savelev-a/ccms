@@ -13,62 +13,65 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <link rel="stylesheet" href="<c:url value="/res/css/framework.css" />" >
+        <link rel="stylesheet" href="<c:url value="/res/css/bootstrap.css" />" >
+        <link rel="stylesheet" href="<c:url value="/res/css/bootstrap-theme.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/styles.css" />" >
-        <title>${title} - ИнфоПортал</title>
+        <title><c:out value="${title}" /></title>
     </head>
 
     <body>
         <div class="wrapper">
-            <div class="g content">
+            <div class="container-fluid content">
                 <%@include file="../modules/header.jspf" %>
 
                 <br>
 
-                <div class="g-row">
+                <div class="row">
 
                     <%@include file="../modules/sideMenu/sideMenu_admin.jspf" %>
 
-                    <br>
+                    <br><br>
 
-                    <div class="g-10">
-                        <table id="officesTable">
-                            <caption>Офисы</caption>
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Название</th>
-                                    <th>Юр. лицо</th>
-                                    <th>E-mail</th>
-                                    <th>Телефон</th>
-                                    <th>Адрес</th>
-                                    <th>Администратор</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <c:forEach items="${alloffices}" var="office" varStatus="idx">
-                                    <tr>
-                                        <td>${office.id}</td>
-                                        <td>
-                                            <a href="<c:url value="/admin/officeprofile?id=${office.id}" />" >
-                                                ${office.name}
-                                            </a>
-                                        </td>
-                                        <td>${office.organisation.name}</td>
-                                        <td>${office.email}</td>
-                                        <td>${office.phone}</td>
-                                        <td>${office.address}</td>
-                                        <td>${office.director.lastName} ${office.director.firstName}</td>
+                    <div class="col-md-10">
+                        <div class="panel panel-primary panel-primary-dark">
+                            <div class="panel-heading panel-heading-dark" align="center">Офисы</div>
+                            <div class="panel-body">
+                                <table id="officesTable" class="table table-hover table-condensed">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Название</th>
+                                            <th>Юр. лицо</th>
+                                            <th>E-mail</th>
+                                            <th>Телефон</th>
+                                            <th>Адрес</th>
+                                            <th>Администратор</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <c:forEach items="${alloffices}" var="office" varStatus="idx">
+                                            <tr>
+                                                <td><c:out value="${office.id}" /></td>
+                                                <td>
+                                                    <a href="<c:url value="/admin/officeprofile?id=${office.id}" />" >
+                                                        <c:out value="${office.name}" />
+                                                    </a>
+                                                </td>
+                                                <td><c:out value="${office.organisation.name}" /></td>
+                                                <td><c:out value="${office.email}" /></td>
+                                                <td><c:out value="${office.phone}" /></td>
+                                                <td><c:out value="${office.address}" /></td>
+                                                <td><c:out value="${office.director.fullName}" /></td>
 
-                                    </tr>
-                                </c:forEach>
-                            </tbody>
-                            <tfoot>
-                            <th colspan="7">
+                                            </tr>
+                                        </c:forEach>
+                                    </tbody>
+                                </table>
+                                <br>
+                                <span class="glyphicon glyphicon-plus"></span>
                                 <a href="<c:url value="/admin/addoffice" />">Добавить офис...</a>
-                            </th>
-                            </tfoot>
-                        </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

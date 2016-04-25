@@ -13,17 +13,18 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <link rel="stylesheet" href="<c:url value="/res/css/framework.css" />" >
+        <link rel="stylesheet" href="<c:url value="/res/css/bootstrap.css" />" >
+        <link rel="stylesheet" href="<c:url value="/res/css/bootstrap-theme.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/styles.css" />" >
-        <title>${title} - ИнфоПортал</title>
+        <title><c:out value="${title}" /></title>
     </head>
 
     <body>
-        <div class="g">
+        <div class="container-fluid">
             <%@include file="modules/header.jspf" %>
 
             <br>
-            <div id="login-box">
+            <div id="login-box" class="panel panel-info">
                 <h3>К сожалению, у вас нет доступа к этой странице</h3>
                 <br>
                 <h4>Вы можете попробовать <a href="<c:url value="/login" />"> войти </a> под другим пользователем, либо написать администратору сайта</h4>

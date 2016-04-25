@@ -13,71 +13,77 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <link rel="stylesheet" href="<c:url value="/res/css/framework.css" />" >
+        <link rel="stylesheet" href="<c:url value="/res/css/bootstrap.css" />" >
+        <link rel="stylesheet" href="<c:url value="/res/css/bootstrap-theme.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/styles.css" />" >
-        <title>${title} - ИнфоПортал</title>
+        <title><c:out value="${title}" /></title>
     </head>
 
     <body>
         <div class="wrapper">
-            <div class="g content">
+            <div class="container-fluid content">
                 <%@include file="../../modules/header.jspf" %>
 
                 <br>
 
-                <div class="g-row">
+                <div class="row">
 
                     <%@include file="../../modules/sideMenu/sideMenu_shops.jspf" %>
 
-                    <br>
+                    <br><br>
 
-                    <div class="g-10">
-                        <table id="shopsTable">
-                            <caption>Магазины</caption>
-                            <thead>
-                                <tr>
-                                    <td><b>#</b></td>
-                                    <td><b>Наименование</b></td>
-                                    <td><b>Юр. лицо</b></td>
-                                    <td><b>Телефон</b></td>
-                                    <td><b>Время работы</b></td>
-                                    <td><b>E-mail</b></td>
-                                    <td><b>Адрес</b></td>
+                    <div class="col-md-10">
+                        <div class="panel panel-primary panel-primary-dark">
+                            <div class="panel-heading panel-heading-dark" align="center">Магазины</div>
+                            <div class="panel-body">
+                                <table id="shopsTable" class="table table-hover table-condensed">
+                                    <thead>
+                                        <tr>
+                                            <td><b>#</b></td>
+                                            <td><b>Наименование</b></td>
+                                            <td><b>Юр. лицо</b></td>
+                                            <td><b>Телефон</b></td>
+                                            <td><b>Время работы</b></td>
+                                            <td><b>E-mail</b></td>
+                                            <td><b>Адрес</b></td>
 
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <c:forEach items="${allshops}" var="shop">
-                                    <tr ${shop.closed ? "class='tr-closed-shop'" : ""}>
-                                        <td>${shop.closed ? "<span class='glyphicon glyphicon-lock'></span>" : "*"}</td>
-                                        <td>
-                                            <a href="<c:url value="/shop?id=${shop.id}" />">
-                                                ${shop.name}
-                                            </a>
-                                        </td>
-                                        <td>${shop.organisation.name}</td>
-                                        <td>
-                                            <span class="glyphicon glyphicon-phone-alt"></span>
-                                            ${shop.phone}
-                                        </td>
-                                        <td>${shop.workingTime}</td>
-                                        <td>
-                                            <span class="glyphicon glyphicon-envelope"></span>
-                                            ${shop.email}
-                                        </td>
-                                        <td>${shop.address}</td>
-                                    </tr>
-                                </c:forEach>
-                            </tbody>
-                        </table>
-                        <br>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <c:forEach items="${allshops}" var="shop">
+                                            <tr ${shop.closed ? "class='tr-closed-shop'" : ""}>
+                                                <td>${shop.closed ? "<span class='glyphicon glyphicon-lock'></span>" : "*"}</td>
+                                                <td>
+                                                    <a href="<c:url value="/shop?id=${shop.id}" />">
+                                                        <c:out value="${shop.name}" />
+                                                    </a>
+                                                </td>
+                                                <td><c:out value="${shop.organisation.name}" /></td>
+                                                <td>
+                                                    <span class="glyphicon glyphicon-phone-alt"></span>
+                                                    <c:out value="${shop.phone}" />
+                                                </td>
+                                                <td><c:out value="${shop.workingTime}" /></td>
+                                                <td>
+                                                    <span class="glyphicon glyphicon-envelope"></span>
+                                                    <a href="mailto:<c:out value="${shop.email}" />">
+                                                        <c:out value="${shop.email}" />
+                                                    </a>
+                                                </td>
+                                                <td><c:out value="${shop.address}" /></td>
+                                            </tr>
+                                        </c:forEach>
+                                    </tbody>
+                                </table>
+                                <br>
 
-                        <span class="glyphicon glyphicon-cog"></span>
-                        <a href="<c:url value="/admin/shops" />" > Управление магазинами </a>
-                        &nbsp;
-                        <span class="glyphicon glyphicon-print"></span>
-                        <a href="#">Распечатать</a>
-
+                                <span class="glyphicon glyphicon-cog"></span>
+                                <a href="<c:url value="/admin/shops" />" > Управление магазинами </a>
+                                &nbsp;
+                                <span class="glyphicon glyphicon-print"></span>
+                                <a href="#">Распечатать</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

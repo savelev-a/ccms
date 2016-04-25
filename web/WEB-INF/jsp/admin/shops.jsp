@@ -13,27 +13,31 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <link rel="stylesheet" href="<c:url value="/res/css/framework.css" />" >
+        <link rel="stylesheet" href="<c:url value="/res/css/bootstrap.css" />" >
+        <link rel="stylesheet" href="<c:url value="/res/css/bootstrap-theme.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/styles.css" />" >
-        <title>${title} - ИнфоПортал</title>
+        <title><c:out value="${title}" /></title>
     </head>
 
     <body>
         <div class="wrapper">
-            <div class="g content">
+            <div class="container-fluid content">
                 <%@include file="../modules/header.jspf" %>
 
                 <br>
 
-                <div class="g-row">
+                <div class="row">
 
                     <%@include file="../modules/sideMenu/sideMenu_admin.jspf" %>
 
-                    <br>
+                    <br><br>
 
-                    <div class="g-10">
-                        <table id="shopsTable">
-                            <caption>Магазины</caption>
+                    <div class="col-md-10">
+                        <div class="panel panel-primary panel-primary-dark">
+                            <div class="panel-heading panel-heading-dark" align="center">Магазины</div>
+                            <div class="panel-body">
+                                <table id="shopsTable" class="table table-hover table-condensed">
+
                             <thead>
                                 <tr>
                                     <th>ID</th>
@@ -49,27 +53,28 @@
                             <tbody>
                                 <c:forEach items="${allshops}" var="shop" varStatus="idx">
                                     <tr>
-                                        <td>${shop.id}</td>
+                                        <td><c:out value="${shop.id}" /></td>
                                         <td>
                                             <a href="<c:url value="/admin/shopprofile?id=${shop.id}" />" >
-                                                ${shop.name}
+                                                <c:out value="${shop.name}" />
                                             </a>
                                         </td>
-                                        <td>${shop.organisation.name}</td>
-                                        <td>${shop.email}</td>
-                                        <td>${shop.phone}</td>
-                                        <td>${shop.address}</td>
-                                        <td>${shop.icq}</td>
-                                        <td>${shop.shopAdmin.lastName} ${shop.shopAdmin.firstName}</td>
+                                        <td><c:out value="${shop.organisation.name}" /></td>
+                                        <td><c:out value="${shop.email}" /></td>
+                                        <td><c:out value="${shop.phone}" /></td>
+                                        <td><c:out value="${shop.address}" /></td>
+                                        <td><c:out value="${shop.icq}" /></td>
+                                        <td><c:out value="${shop.shopAdmin.fullName}" /></td>
                                     </tr>
                                 </c:forEach>
                             </tbody>
-                            <tfoot>
-                            <th colspan="8">
-                                <a href="<c:url value="/admin/addshop" />">Добавить магазин...</a>
-                            </th>
-                            </tfoot>
+                            
                         </table>
+                                <br>
+                                <span class="glyphicon glyphicon-plus"></span>
+                                <a href="<c:url value="/admin/addshop" />">Добавить магазин...</a>
+                    </div>
+                        </div>
                     </div>
                 </div>
             </div>

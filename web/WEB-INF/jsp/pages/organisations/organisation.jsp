@@ -13,117 +13,129 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <link rel="stylesheet" href="<c:url value="/res/css/framework.css" />" >
+        <link rel="stylesheet" href="<c:url value="/res/css/bootstrap.css" />" >
+        <link rel="stylesheet" href="<c:url value="/res/css/bootstrap-theme.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/styles.css" />" >
-        <title>${title} - ИнфоПортал</title>
+        <title><c:out value="${title}" /></title>
     </head>
 
     <body>
         <div class="wrapper">
-            <div class="g content">
+            <div class="container-fluid content">
                 <%@include file="../../modules/header.jspf" %>
 
                 <br>
 
-                <div class="g-row">
+                <div class="row">
 
                     <%@include file="../../modules/sideMenu/sideMenu_dummy.jspf" %>
 
-                    <br>
+                    <br><br>
 
-                    <div class="g-7">
-                        <table>
-                            <caption>Реквизиты организации "${organisation.name}"</caption>
-                            <tbody>
-                                <tr>
-                                    <td>Наименование: </td>
-                                    <td>${organisation.name}</td>
+                    <div class="col-md-5">
+                        <div class="panel panel-primary panel-primary-dark">
+                            <div class="panel-heading panel-heading-dark" align="center">Реквизиты организации <c:out value="${organisation.name}" /></div>
+                            <div class="panel-body">
+                                <table class="table table-hover table-condensed">
 
-                                </tr>
-                                <tr>
-                                    <td>ИНН</td><td>${organisation.inn}</td>
-                                </tr>
-                                <tr>
-                                    <td>КПП</td><td>${organisation.kpp}</td>
-                                </tr>
-                                <tr>
-                                    <td>ОГРН</td>
-                                    <td>${organisation.ogrn}</td>
+                                    <tbody>
+                                        <tr>
+                                            <td>Наименование: </td>
+                                            <td><c:out value="${organisation.name}" /></td>
 
-                                </tr>
-                                <tr>
-                                    <td>Расчетный счет</td><td>${organisation.chAccount}</td>
-                                </tr>
-                                <tr>
-                                    <td>Корр. счет</td><td>${organisation.coAccount}</td>
-                                </tr>
-                                <tr>
-                                    <td>Банк</td>
-                                    <td>${organisation.bank}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>ИНН</td><td><c:out value="${organisation.inn}" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td>КПП</td><td><c:out value="${organisation.kpp}" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td>ОГРН</td>
+                                            <td><c:out value="${organisation.ogrn}" /></td>
 
-                                </tr>
-                                <tr>
-                                    <td>БИК</td>
-                                    <td>${organisation.bik}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Расчетный счет</td><td><c:out value="${organisation.chAccount}" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Корр. счет</td><td><c:out value="${organisation.coAccount}" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Банк</td>
+                                            <td><c:out value="${organisation.bank}" /></td>
 
-                                </tr>
-                                <tr>
-                                    <td>Юридический адрес</td><td>${organisation.urAddress}</td>
-                                </tr>
-                                <tr>
-                                    <td>Почтовый адрес</td><td>${organisation.mailAddress}</td>
-                                </tr>
-                                <tr>
-                                    <td>Телефон</td>
-                                    <td>${organisation.phone}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>БИК</td>
+                                            <td><c:out value="${organisation.bik}" /></td>
 
-                                </tr>
-                                <tr>
-                                    <td>Директор</td>
-                                    <td>
-                                        <a href="<c:url value="/employee?id=${organisation.director.id}" />" >
-                                            ${organisation.director.lastName} 
-                                            ${organisation.director.firstName} 
-                                            ${organisation.director.middleName} 
-                                        </a>
-                                    </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Юридический адрес</td><td><c:out value="${organisation.urAddress}" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Почтовый адрес</td><td><c:out value="${organisation.mailAddress}" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Телефон</td>
+                                            <td><c:out value="${organisation.phone}" /></td>
 
-                                </tr>
-                            </tbody>
-                        </table>
-                        <br>
-                        <table>
-                            <caption>Магазины, связанные с этим юр. лицом</caption>
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Наименование</th>
-                                    <th>Адрес</th>
-                                    <th>Телефон</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <c:forEach items="${organisation.shops}" var="shop" varStatus="idx">
-                                    <tr>
-                                        <td>${idx.count}</td>
-                                        <td>
-                                            <a href="<c:url value="/shop?id=${shop.id}" />">${shop.name}</a>
-                                        </td>
-                                        <td>${shop.address}</td>
-                                        <td><span class="glyphicon glyphicon-phone-alt"></span> ${shop.phone}</td>
-                                    </tr>
-                                </c:forEach>
-                            </tbody>
-                        </table>
-                        <br>
+                                        </tr>
+                                        <tr>
+                                            <td>Директор</td>
+                                            <td>
+                                                <a href="<c:url value="/employee?id=${organisation.director.id}" />" >
+                                                    <c:out value="${organisation.director.lastName}" /> 
+                                                    <c:out value="${organisation.director.firstName}" /> 
+                                                    <c:out value="${organisation.director.middleName}" /> 
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <br>
 
-                        <span class="glyphicon glyphicon-cog"></span>
-                        <a href="<c:url value="/admin/orgprofile?id=${organisation.id}" />" > Редактировать организацию </a>
-                        &nbsp;
-                        <span class="glyphicon glyphicon-print"></span>
-                        <a href="#">Распечатать реквизиты</a>
+                                <span class="glyphicon glyphicon-cog"></span>
+                                <a href="<c:url value="/admin/orgprofile?id=${organisation.id}" />" > Редактировать организацию </a>
+                                &nbsp;
+                                <span class="glyphicon glyphicon-print"></span>
+                                <a href="#">Распечатать реквизиты</a>
+                            </div>
+                        </div>
+                    </div>
+                                
+                    <div class="col-md-5">
+                        <div class="panel panel-primary panel-primary-dark">
+                            <div class="panel-heading panel-heading-dark" align="center">Магазины, связанные с этим юр. лицом</div>
+                            <div class="panel-body">
+                                <table class="table table-hover table-condensed">
 
-
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Наименование</th>
+                                            <th>Адрес</th>
+                                            <th>Телефон</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <c:forEach items="${organisation.shops}" var="shop" varStatus="idx">
+                                            <tr>
+                                                <td>${idx.count}</td>
+                                                <td>
+                                                    <a href="<c:url value="/shop?id=${shop.id}" />">
+                                                        <c:out value="${shop.name}" />
+                                                    </a>
+                                                </td>
+                                                <td><c:out value="${shop.address}" /></td>
+                                                <td><span class="glyphicon glyphicon-phone-alt"></span> <c:out value="${shop.phone}" /></td>
+                                            </tr>
+                                        </c:forEach>
+                                    </tbody>
+                                </table>  
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

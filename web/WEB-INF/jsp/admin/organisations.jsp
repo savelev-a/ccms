@@ -13,14 +13,15 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <link rel="stylesheet" href="<c:url value="/res/css/framework.css" />" >
+        <link rel="stylesheet" href="<c:url value="/res/css/bootstrap.css" />" >
+        <link rel="stylesheet" href="<c:url value="/res/css/bootstrap-theme.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/styles.css" />" >
-        <title>${title} - ИнфоПортал</title>
+        <title><c:out value="${title}" /></title>
     </head>
 
     <body>
         <div class="wrapper">
-            <div class="g content">
+            <div class="container-fluid content">
                 <%@include file="../modules/header.jspf" %>
 
                 <br>
@@ -29,45 +30,48 @@
 
                     <%@include file="../modules/sideMenu/sideMenu_admin.jspf" %>
 
-                    <br>
+                    <br><br>
 
-                    <div class="g-10">
-                        <table id="orgsTable">
-                            <caption>Организации</caption>
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Наименование</th>
-                                    <th>ИНН</th>
-                                    <th>Юр. адрес</th>
-                                    <th>Телефон</th>
-                                    <th>Директор</th>
-                                    <th>Кол-во магазинов</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <c:forEach items="${allorgs}" var="organisation" varStatus="idx">
-                                    <tr>
-                                        <td>${organisation.id}</td>
-                                        <td>
-                                            <a href="<c:url value="/admin/orgprofile?id=${organisation.id}" />" >
-                                                ${organisation.name}
-                                            </a>
-                                        </td>
-                                        <td>${organisation.inn}</td>
-                                        <td>${organisation.urAddress}</td>
-                                        <td>${organisation.phone}</td>
-                                        <td>${organisation.director.fullName}</td>
-                                        <td>${organisation.shops.size()}</td>
-                                    </tr>
-                                </c:forEach>
-                            </tbody>
-                            <tfoot>
-                            <th colspan="7">
+                    <div class="col-md-10">
+                        <div class="panel panel-primary panel-primary-dark">
+                            <div class="panel-heading panel-heading-dark" align="center">Организации</div>
+                            <div class="panel-body">
+                                <table id="orgsTable" class="table table-hover table-condensed">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Наименование</th>
+                                            <th>ИНН</th>
+                                            <th>Юр. адрес</th>
+                                            <th>Телефон</th>
+                                            <th>Директор</th>
+                                            <th>Магазины</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <c:forEach items="${allorgs}" var="organisation" varStatus="idx">
+                                            <tr>
+                                                <td><c:out value="${organisation.id}" /></td>
+                                                <td>
+                                                    <a href="<c:url value="/admin/orgprofile?id=${organisation.id}" />" >
+                                                        <c:out value="${organisation.name}" />
+                                                    </a>
+                                                </td>
+                                                <td><c:out value="${organisation.inn}" /></td>
+                                                <td><c:out value="${organisation.urAddress}" /></td>
+                                                <td><c:out value="${organisation.phone}" /></td>
+                                                <td><c:out value="${organisation.director.fullName}" /></td>
+                                                <td><c:out value="${organisation.shops.size()}" /></td>
+                                            </tr>
+                                        </c:forEach>
+                                    </tbody>
+
+                                </table>
+                                <br>
+                                <span class="glyphicon glyphicon-plus"></span>
                                 <a href="<c:url value="/admin/addorganisation" />">Добавить организацию...</a>
-                            </th>
-                            </tfoot>
-                        </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

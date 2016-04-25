@@ -80,12 +80,12 @@ MessageBox - A jQuery Plugin to replace Javascript's window.alert(), window.conf
         $("<button>", {
             id      : "messagebox_button_done",
             text    : settings.buttonDone,
-            class   : "f-bu f-bu-default" 
+            class   : "btn btn-danger" 
         }).on("click", _Button_Click).appendTo(buttons);
         if (settings.buttonFail) $("<button>", {
             id      : "messagebox_button_fail",
             text    : settings.buttonFail,
-            class   : "f-bu"
+            class   : "btn btn-default"
         }).on("click", _Button_Click).prependTo(buttons);
         
         // Attach Window's Events Handlers

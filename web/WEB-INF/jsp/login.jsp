@@ -14,38 +14,42 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <link rel="stylesheet" href="<c:url value="/res/css/framework.css" />" >
+        <link rel="stylesheet" href="<c:url value="/res/css/bootstrap.css" />" >
+        <link rel="stylesheet" href="<c:url value="/res/css/bootstrap-theme.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/styles.css" />" >
-        <title>${title} - ИнфоПортал</title>
+        <title><c:out value="${title}" /></title>
     </head>
 
     <body>
-        <div class="g">
+        <div class="container-fluid">
             <%@include file="modules/header.jspf" %>
 
             <br>
 
-            <div id="login-box" class="f-input">
-                <form name="loginForm" action="<c:url value="/login" />" method="POST">
-                    <table>
+            <c:if test="${param.error}">
+                <div id="login-box" class="alert alert-danger" align="center">Неверный пароль!</div>
+            </c:if>
+
+            <form name="loginForm" class="form-horizontal" action="<c:url value="/login" />" method="POST">
+
+                <div id="login-box" class="panel panel-primary">
+                    <div class="panel-heading" align="center"><b>Авторизация</b></div>
+                    <table class="table-login">
                         <thead>
-                            <tr class="tr-no-hover">
-                                <th colspan="2"><h3  class="th-header-center">Авторизация</h3></th>
-                            </tr>
-                            <tr class="tr-no-hover">
+                            <tr>
                                 <td colspan="2">
-                                    <c:if test="${param.error}">
-                                        <div class="f-message f-message-error">Неверный пароль!</div>
-                                    </c:if>
+
                                 </td>
                             </tr>
                         </thead>
-                        <tr class="tr-no-hover">
+                        <tr>
                             <td>Имя пользователя: </td>
                             <td>
-                                <select name="username" >
+                                <select name="username" class="form-control" >
                                     <c:forEach items="${activeUsers}" var="user" >
-                                        <option value="${user.username}">${user.lastName} ${user.firstName}</option>
+                                        <option value="${user.username}">
+                                            <c:out value="${user.fullName}" />
+                                        </option>
                                     </c:forEach>
                                 </select>
                             </td>
@@ -53,25 +57,25 @@
 
                         <tr class="tr-no-hover">
                             <td>Пароль: </td>
-                            <td><input type="password" name="password" /></td>
+                            <td><input type="password" name="password" class="form-control" /></td>
                         </tr>
 
-                        <tr class="tr-no-hover">
+                        <tr>
                             <td> </td>
                             <td><input type="checkbox" name="remember-me">&nbsp; Запомнить меня</td>
                         </tr>
-                        <tr class="tr-no-hover">
+                        <tr>
                             <td colspan="2" class="th-header-center">
-                                <input name="submit" type="submit" value="Войти" class="f-bu f-bu-default" />
+                                <input name="submit" type="submit" value="Войти" class="btn btn-default" />
                             </td>
                         </tr>
                     </table>
 
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                </div>
+            </form>
 
-                </form>
+            <%@include file="modules/footer.jspf" %>
 
-                <%@include file="modules/footer.jspf" %>
-            </div>
     </body>
 </html>

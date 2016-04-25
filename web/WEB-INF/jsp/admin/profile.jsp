@@ -14,83 +14,90 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <link rel="stylesheet" href="<c:url value="/res/css/framework.css" />" >
+        <link rel="stylesheet" href="<c:url value="/res/css/bootstrap.css" />" >
+        <link rel="stylesheet" href="<c:url value="/res/css/bootstrap-theme.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/styles.css" />" >
-        <title>${title} - ИнфоПортал</title>
+        <title><c:out value="${title}" /></title>
     </head>
 
     <body>
         <div class="wrapper">
-            <div class="g content">
+            <div class="container-fluid content">
                 <%@include file="../modules/header.jspf" %>
 
                 <br>
 
-                <div class="g-row">
+                <div class="row">
 
                     <%@include file="../modules/sideMenu/sideMenu_admin.jspf" %>
 
-                    <div class="g-10">
-                        <form:form method="post" commandName="employee">
-                            <table>
-                                <caption>Профиль сотрудника ${employee.lastName} ${employee.firstName}</caption>
-                                <tbody>
-                                    <tr>
-                                        <th width="30%">Фамилия</th>
-                                        <td><form:input path="lastName" /></td>
-                                        <td><form:errors path="lastName" cssStyle="color: #ff0000;" /></td>
-                                        
-                                        <th>Логин</th>
-                                        <td><form:input path="username" readonly="true" /></td>
-                                        <td><form:errors path="username" cssStyle="color: #ff0000;" /></td>
-                                    </tr>
-                                    <tr>
-                                        <th>Имя</th>
-                                        <td><form:input path="firstName" /></td>
-                                        <td><form:errors path="firstName" cssStyle="color: #ff0000;" /></td>
-                                        
-                                        <th>Пароль</th>
-                                        <td><form:password path="password" showPassword="false" /></td>
-                                        <td><form:errors path="password" cssStyle="color: #ff0000;" /></td>
-                                    </tr>
-                                    <tr>
-                                        <th>Отчество</th>
-                                        <td><form:input path="middleName" /></td>
-                                        <td><form:errors path="middleName" cssStyle="color: #ff0000;" /></td>
-                                        
-                                        <th rowspan="3">Роли</th>
-                                        <td rowspan="3"><form:checkboxes items="${rolesList}" path="roles" delimiter="<br>" /></td>
-                                        <td rowspan="3"><form:errors path="roles" cssStyle="color: #ff0000;" /></td>
-                                        
-                                        
-                                    </tr>
-                                    <tr>
-                                        <th>E-mail</th>
-                                        <td><form:input path="email" /></td>
-                                        <td><form:errors path="email" cssStyle="color: #ff0000;" /></td>
-                                    </tr>
-                                    <tr>
-                                        <th>Телефон</th>
-                                        <td><form:input path="phone" /></td>
-                                        <td><form:errors path="phone" cssStyle="color: #ff0000;" /></td>
-                                    </tr>
-                                    <tr>
-                                        <th>Должность</th>
-                                        <td><form:input path="position" /></td>
-                                        <td><form:errors path="position" cssStyle="color: #ff0000;" /></td>
-                                        
-                                        <th>Вход разрешен</th>
-                                        <td><form:checkbox path="active" /><i>  (Установка флажка означает что сотрудник может заходить в веб-интерфейс)</i></td>
-                                        <td></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <input id="save" type="submit" name="save" value="Сохранить" class="f-bu f-bu-default">
-                            <input id="delete" type="button" name="delete" value="Удалить сотрудника" class="f-bu f-bu-warning">
-                            <br><br><hr>
-                            <b>Примечание:</b> Изменять логин разрешено только путем создания нового пользователя. <br>
-                            Оставьте поле "Пароль" пустым для сохранения старого пароля
-                        </form:form>
+                    <br><br>
+
+                    <div class="col-md-10">
+                        <div class="panel panel-primary panel-primary-dark">
+                            <div class="panel-heading panel-heading-dark" align="center">Профиль сотрудника <c:out value="${employee.fullName}" /></div>
+                            <div class="panel-body">
+                                <form:form method="post" commandName="employee">
+                                    <table class="table table-condensed">
+                                        <tbody>
+                                            <tr>
+                                                <td><b>Фамилия</b></td>
+                                                <td><form:input path="lastName" class="form-control" /></td>
+                                                <td><form:errors path="lastName" cssStyle="color: #ff0000;" /></td>
+
+                                                <td><b>Логин</b></td>
+                                                <td><form:input path="username" readonly="true" class="form-control" /></td>
+                                                <td><form:errors path="username" cssStyle="color: #ff0000;" /></td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>Имя</b></td>
+                                                <td><form:input path="firstName" class="form-control" /></td>
+                                                <td><form:errors path="firstName" cssStyle="color: #ff0000;" /></td>
+
+                                                <td><b>Пароль</b></td>
+                                                <td><form:password path="password" showPassword="false" class="form-control" /></td>
+                                                <td><form:errors path="password" cssStyle="color: #ff0000;" /></td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>Отчество</b></td>
+                                                <td><form:input path="middleName" class="form-control" /></td>
+                                                <td><form:errors path="middleName" cssStyle="color: #ff0000;" /></td>
+
+                                                <td rowspan="3"><b>Роли</b></td>
+                                                <td rowspan="3"><form:checkboxes items="${rolesList}" path="roles" delimiter="<br>" /></td>
+                                                <td rowspan="3"><form:errors path="roles" cssStyle="color: #ff0000;" /></td>
+
+
+                                            </tr>
+                                            <tr>
+                                                <td><b>E-mail</b></td>
+                                                <td><form:input path="email" class="form-control" /></td>
+                                                <td><form:errors path="email" cssStyle="color: #ff0000;" /></td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>Телефон</b></td>
+                                                <td><form:input path="phone" class="form-control" /></td>
+                                                <td><form:errors path="phone" cssStyle="color: #ff0000;" /></td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>Должность</b></td>
+                                                <td><form:input path="position" class="form-control" /></td>
+                                                <td><form:errors path="position" cssStyle="color: #ff0000;" /></td>
+
+                                                <td><b>Вход разрешен</b></td>
+                                                <td><form:checkbox path="active" /><i>  (Установка флажка означает что сотрудник может заходить в веб-интерфейс)</i></td>
+                                                <td></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <input id="save" type="submit" name="save" value="Сохранить" class="btn btn-primary">
+                                    <input id="delete" type="button" name="delete" value="Удалить сотрудника" class="btn btn-danger">
+                                    <br><br><hr>
+                                    <b>Примечание:</b> Изменять логин разрешено только путем создания нового пользователя. <br>
+                                    Оставьте поле "Пароль" пустым для сохранения старого пароля
+                                </form:form>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -108,9 +115,9 @@
                 $.MessageBox({
                     buttonDone: "Удалить",
                     buttonFail: "Отмена",
-                    message: "Удалть сотрудника ${employee.lastName} ${employee.firstName}?"
+                    message: "Удалть сотрудника <c:out value='${employee.fullName}' />?"
                 }).done(function () {
-                    $.post("<c:url value="/admin/delEmployeeById"/>", {id: "${employee.id}", ${_csrf.parameterName} : "${_csrf.token}"}).done(function () {
+                    $.post("<c:url value="/admin/delEmployeeById"/>", {id: "${employee.id}", ${_csrf.parameterName}: "${_csrf.token}"}).done(function () {
                         window.location.replace("<c:url value="/admin/employees"/>");
                     });
 

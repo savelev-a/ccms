@@ -14,133 +14,140 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <link rel="stylesheet" href="<c:url value="/res/css/framework.css" />" >
+        <link rel="stylesheet" href="<c:url value="/res/css/bootstrap.css" />" >
+        <link rel="stylesheet" href="<c:url value="/res/css/bootstrap-theme.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/styles.css" />" >
-        <title>${title} - ИнфоПортал</title>
+        <title><c:out value="${title}" /></title>
     </head>
 
     <body>
         <div class="wrapper">
-            <div class="g content">
+            <div class="container-fluid content">
                 <%@include file="../modules/header.jspf" %>
 
                 <br>
 
-                <div class="g-row">
+                <div class="row">
 
                     <%@include file="../modules/sideMenu/sideMenu_admin.jspf" %>
 
-                    <div class="g-10">
-                        <form:form method="post" commandName="addOfficeFrm">
-                            <table>
-                                <caption>Создание нового офиса</caption>
-                                <tbody>
-                                    <tr>
-                                        <th>Название</th>
-                                        <td><form:input path="name" /></td>
-                                        <td><form:errors path="name" cssStyle="color: #ff0000;" /></td>
+                    <br><br>
 
-                                        <th>E-mail</th>
-                                        <td><form:input path="email" /></td>
-                                        <td><form:errors path="email" cssStyle="color: #ff0000;" /></td>
-                                    </tr>
-                                    <tr>
-                                        <th>Юр. лицо</th>
-                                        <td>
-                                            <form:select path="organisation">
-                                                <form:options items="${orgs}" itemLabel="name" itemValue="id" />
-                                            </form:select>
-                                        </td>
-                                        <td><form:errors path="organisation" cssStyle="color: #ff0000;" /></td>
+                    <div class="col-md-10">
+                        <div class="panel panel-primary panel-primary-dark">
+                            <div class="panel-heading panel-heading-dark" align="center">Добавление нового офиса</div>
+                            <div class="panel-body">
+                                <form:form method="post" commandName="addOfficeFrm">
+                                    <table class="table table-condensed">
+                                        <tbody>
+                                            <tr>
+                                                <td><b>Название</b></td>
+                                                <td><form:input path="name" class="form-control" /></td>
+                                                <td><form:errors path="name" cssStyle="color: #ff0000;" /></td>
 
-                                        <th>Телефон</th>
-                                        <td><form:input path="phone" /></td>
-                                        <td><form:errors path="phone" cssStyle="color: #ff0000;" /></td>
-                                    </tr>
-                                    <tr>
-                                        <th>Адрес</th>
-                                        <td><form:textarea path="address" /></td>
-                                        <td><form:errors path="address" cssStyle="color: #ff0000;" /></td>
-                                    </tr>
+                                                <td><b>E-mail</b></td>
+                                                <td><form:input path="email" class="form-control" /></td>
+                                                <td><form:errors path="email" cssStyle="color: #ff0000;" /></td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>Юр. лицо</b></td>
+                                                <td>
+                                                    <form:select path="organisation" class="form-control">
+                                                        <form:options items="${orgs}" itemLabel="name" itemValue="id" />
+                                                    </form:select>
+                                                </td>
+                                                <td><form:errors path="organisation" cssStyle="color: #ff0000;" /></td>
 
-                                    <tr>
-                                        <th colspan="6" class="th-header-center">Персонал</th>
-                                    </tr>
-                                    <tr>
-                                        <th>Администратор / сотрудники</th>
-                                        <td colspan="4">
-                                            <div id="empTabs">
-                                                <ul>
-                                                    <li><a href="#tadmin">Администратор</a></li>
-                                                    <li><a href="#temps">Сотрудники</a></li>
+                                                <td><b>Телефон</b></td>
+                                                <td><form:input path="phone" class="form-control" /></td>
+                                                <td><form:errors path="phone" cssStyle="color: #ff0000;" /></td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>Адрес<b></td>
+                                                <td><form:textarea path="address" class="form-control" /></td>
+                                                <td><form:errors path="address" cssStyle="color: #ff0000;" /></td>
+                                            </tr>
 
-                                                    <br>
-                                                    <div id="tadmin">
-                                                        <table id="admChooseTab">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th>#</th>
-                                                                    <th>ФИО</th>
-                                                                    <th>Должность</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                <c:forEach items="${emps}" var="emp" varStatus="idx">
-                                                                    <tr>
-                                                                        <td>
-                                                                            <c:choose>
-                                                                                <c:when test="${idx.index == 0}">
-                                                                                    <form:radiobutton path="director" value="${emp.id}" checked="true" />
-                                                                                </c:when>
-                                                                                <c:otherwise>
-                                                                                    <form:radiobutton path="director" value="${emp.id}" />
-                                                                                </c:otherwise>
-                                                                            </c:choose>
-                                                                        </td>
-                                                                        <td>${emp.lastName} ${emp.firstName}</td>
-                                                                        <td>${emp.position}</td>
-                                                                    </tr>
-                                                                </c:forEach>
-                                                            </tbody>
-                                                        </table>
+                                            <tr>
+                                                <th colspan="6" class="th-header-center">Персонал</th>
+                                            </tr>
+                                            <tr>
+                                                <td><b>Администратор / сотрудники<b></td>
+                                                <td colspan="4">
+                                                    <div id="empTabs">
+                                                        <ul>
+                                                            <li><a href="#tadmin">Администратор</a></li>
+                                                            <li><a href="#temps">Сотрудники</a></li>
+
+                                                            <br>
+                                                            <div id="tadmin">
+                                                                <table id="admChooseTab">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th>#</th>
+                                                                            <th>ФИО</th>
+                                                                            <th>Должность</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <c:forEach items="${emps}" var="emp" varStatus="idx">
+                                                                            <tr>
+                                                                                <td>
+                                                                                    <c:choose>
+                                                                                        <c:when test="${idx.index == 0}">
+                                                                                            <form:radiobutton path="director" value="${emp.id}" checked="true" />
+                                                                                        </c:when>
+                                                                                        <c:otherwise>
+                                                                                            <form:radiobutton path="director" value="${emp.id}" />
+                                                                                        </c:otherwise>
+                                                                                    </c:choose>
+                                                                                </td>
+                                                                                <td><c:out value="${emp.fullName}" /></td>
+                                                                                <td><c:out value="${emp.position}" /></td>
+                                                                            </tr>
+                                                                        </c:forEach>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+
+                                                            <div id="temps">
+                                                                <table id="empsChooseTab">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th>#</th>
+                                                                            <th>ФИО</th>
+                                                                            <th>Должность</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <c:forEach items="${emps}" var="emp" varStatus="idx">
+                                                                            <tr>
+                                                                                <td>
+                                                                                    <form:checkbox path="officeEmployees" value="${emp.id}" />
+                                                                                </td>
+                                                                                <td><c:out value="${emp.fullName}" /></td>
+                                                                                <td><c:out value="${emp.position}" /></td>
+                                                                            </tr>
+                                                                        </c:forEach>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </ul>
                                                     </div>
-                                                    
-                                                    <div id="temps">
-                                                        <table id="empsChooseTab">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th>#</th>
-                                                                    <th>ФИО</th>
-                                                                    <th>Должность</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                <c:forEach items="${emps}" var="emp" varStatus="idx">
-                                                                    <tr>
-                                                                        <td>
-                                                                            <form:checkbox path="officeEmployees" value="${emp.id}" />
-                                                                        </td>
-                                                                        <td>${emp.lastName} ${emp.firstName}</td>
-                                                                        <td>${emp.position}</td>
-                                                                    </tr>
-                                                                </c:forEach>
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                </ul>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
+                                                </td>
+                                            </tr>
+                                            <tr>
 
-                                        <td><form:errors path="director" cssStyle="color: #ff0000;" /></td>
+                                                <td><form:errors path="director" cssStyle="color: #ff0000;" /></td>
 
-                                        <td><form:errors path="officeEmployees" cssStyle="color: #ff0000;" /></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <input id="save" type="submit" name="save" value="Сохранить" class="f-bu f-bu-default">
-                        </form:form>
+                                                <td><form:errors path="officeEmployees" cssStyle="color: #ff0000;" /></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <input id="save" type="submit" name="save" value="Сохранить" class="btn btn-primary">
+                                </form:form>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

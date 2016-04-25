@@ -2,7 +2,6 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 
-
 <div class="footer">
     (C) Империя Сумок, 2016
 </div>
@@ -13,6 +12,7 @@
 <script src="<c:url value="/res/js/messagebox.js" /> "></script>
 <script src="<c:url value="/res/js/jquery.dataTables.js" /> "></script>
 <script src="<c:url value="/res/js/jquery-ui.js" />"></script>
+<script src="<c:url value="/res/js/bootstrap.js" />"></script>
 
 <c:choose>
     <c:when test="${loggedIn}">
