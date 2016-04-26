@@ -15,23 +15,21 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package ru.codemine.ccms.dao;
 
-import ru.codemine.ccms.entity.DataFile;
+package ru.codemine.ccms.service;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 /**
  *
  * @author Alexander Savelev
  */
-public interface StorageDAO
+
+@Service
+public class SettingsService 
 {
-    public void create(DataFile dataFile);
-    
-    public void delete(DataFile dataFile);
-    public void deleteById(Integer id);
-    
-    public void update(DataFile dataFile);
-    
-    public DataFile getById(Integer id);
-    
+    @Value("${storage.rootpath}")
+    public static String storageRootPath;
+
 }
