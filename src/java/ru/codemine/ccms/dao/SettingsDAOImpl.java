@@ -16,13 +16,13 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package ru.codemine.ccms.service;
+package ru.codemine.ccms.dao;
 
+import org.apache.log4j.Logger;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import ru.codemine.ccms.dao.SettingsDAO;
+import org.springframework.stereotype.Repository;
 import ru.codemine.ccms.entity.Settings;
 
 /**
@@ -30,29 +30,28 @@ import ru.codemine.ccms.entity.Settings;
  * @author Alexander Savelev
  */
 
-@Service
-public class SettingsService 
+@Repository
+public class SettingsDAOImpl implements SettingsDAO
 {
+    private static final Logger log = Logger.getLogger("SettingsDAO");
+    
     @Autowired
-    private SettingsDAO settingsDAO;
-    
-    @Value("${storage.rootpath}")
-    public static String storageRootPath;
-    
-    @Transactional
-    public String getCompanyName()
+    private SessionFactory sessionFactory;
+
+    @Override
+    public void update(Settings settings)
     {
-        Settings settings = settingsDAO.getByKey("CK_CompanyName");
-        String name = (settings == null ? "" : settings.getValue());
-        
-        return name;
+        Session session = sessionFactory.getCurrentSession();
+        session.saveOrUpdate(settings);
     }
-    
-    @Transactional
-    public void setCompanyName(String name)
+
+    @Override
+    public Settings getByKey(String key)
     {
-        Settings settings = new Settings("CK_CompanyName", name);
-        settingsDAO.update(settings);
+        Session session = sessionFactory.getCurrentSession();
+        Settings settings = (Settings)session.get(Settings.class, key);
+        
+        return settings;
     }
 
 }

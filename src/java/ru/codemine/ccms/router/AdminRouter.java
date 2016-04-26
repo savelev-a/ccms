@@ -37,9 +37,11 @@ import ru.codemine.ccms.entity.Employee;
 import ru.codemine.ccms.entity.Office;
 import ru.codemine.ccms.entity.Organisation;
 import ru.codemine.ccms.entity.Shop;
+import ru.codemine.ccms.forms.SettingsForm;
 import ru.codemine.ccms.service.EmployeeService;
 import ru.codemine.ccms.service.OfficeService;
 import ru.codemine.ccms.service.OrganisationService;
+import ru.codemine.ccms.service.SettingsService;
 import ru.codemine.ccms.service.ShopService;
 
 /**
@@ -56,6 +58,7 @@ public class AdminRouter
     @Autowired private OrganisationService organisationService;
     @Autowired private ShopService shopService;
     @Autowired private OfficeService officeService;
+    @Autowired private SettingsService settingsService;
 
     
     //
@@ -476,6 +479,46 @@ public class AdminRouter
         officeService.deleteById(id);
         
         return "redirect:/admin/offices";
+    }
+    
+    //
+    // Настройки
+    //
+    
+    @Secured("ROLE_ADMIN")
+    @RequestMapping(value = "/admin/settings", method = RequestMethod.GET)
+    public String getSettingsPage(ModelMap model)
+    {
+        model.addAttribute("title", "Администрирование - Настройки - ИнфоПортал");
+        model.addAttribute("mainMenuActiveItem", "admin");
+        model.addAttribute("sideMenuActiveItem", "Settings");
+        model.addAttribute("currentUser", employeeService.getCurrentUser());
+        
+        SettingsForm settingsForm = new SettingsForm();
+        settingsForm.setCompanyName(settingsService.getCompanyName());
+        model.addAttribute("settingsForm", settingsForm);
+        
+        return "admin/settings";
+        
+    }
+    
+    @Secured("ROLE_ADMIN")
+    @RequestMapping(value = "/admin/settings", method = RequestMethod.POST)
+    public String updateSettings(@Valid @ModelAttribute("settingsForm") SettingsForm settingsForm, BindingResult result, ModelMap model)
+    {
+        if(result.hasErrors())
+        {
+            model.addAttribute("title", "Администрирование - Настройки - ИнфоПортал");
+            model.addAttribute("mainMenuActiveItem", "admin");
+            model.addAttribute("sideMenuActiveItem", "Settings");
+            model.addAttribute("currentUser", employeeService.getCurrentUser());
+            
+            return "admin/settings";
+        }
+        
+        settingsService.setCompanyName(settingsForm.getCompanyName());
+        
+        return "redirect:/admin/settings";
     }
     
     //
