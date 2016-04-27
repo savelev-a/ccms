@@ -90,6 +90,15 @@ public class ShopDAOImpl implements ShopDAO
         
         return shop;
     }
+    
+    @Override
+    public List<Shop> getWithCounters()
+    {
+        Session session = sessionFactory.getCurrentSession();
+        List<Shop> result = session.createQuery("FROM Shop S WHERE S.countersEnabled = true").list();
+        
+        return result;
+    }
 
     @Override
     public List<Shop> getAll()

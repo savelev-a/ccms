@@ -16,27 +16,17 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package ru.codemine.ccms.dao;
+package ru.codemine.ccms.counters;
 
 import java.util.List;
+import ru.codemine.ccms.entity.Counter;
 import ru.codemine.ccms.entity.Shop;
 
 /**
  *
  * @author Alexander Savelev
  */
-public interface ShopDAO 
+public interface CounterClient 
 {
-    public void create(Shop shop);
-    
-    public void delete(Shop shop);
-    public void deleteById(Integer id);
-    
-    public void update(Shop shop);
-    
-    public Shop getById(Integer id);
-    public Shop getByName(String name);
-    public List<Shop> getWithCounters();
-    public List<Shop> getAll();
-
+    public List<Counter> getCounters(Shop shop);
 }

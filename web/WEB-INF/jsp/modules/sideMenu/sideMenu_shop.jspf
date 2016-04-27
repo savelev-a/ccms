@@ -1,0 +1,33 @@
+<%@ page pageEncoding="UTF-8" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<div class="col-md-2 right-line">
+    <br>
+    <br>
+
+    <div class="panel panel-primary panel-primary-dark">
+        <div class="panel-heading panel-heading-dark" align="center">Опции</div>
+        <div class="panel-body">
+            <table class="table table-condensed">
+                <tr ${sideMenuActiveItem == "general" ? "class='info'" : ""}>
+                    <td>
+                        <a href="<c:url value="/shop?id=${shop.id}" />">
+                            Общая информация
+                        </a> 
+                    </td>
+                </tr>
+                <c:if test="${shop.countersEnabled}">
+                    <tr ${sideMenuActiveItem == "counters" ? "class='info'" : ""}>
+                        <td>
+                            <a href="<c:url value="/counters?shopid=${shop.id}" />">
+                                Счетчики посетителей
+                            </a> 
+                        </td>
+                    </tr>
+                </c:if>
+            </table>
+
+        </div> 
+
+    </div> 
+</div>

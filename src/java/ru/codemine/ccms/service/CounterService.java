@@ -23,7 +23,9 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.codemine.ccms.dao.ShopDAO;
+import ru.codemine.ccms.counters.kondor.KondorClient;
+import ru.codemine.ccms.dao.CounterDAO;
+import ru.codemine.ccms.entity.Counter;
 import ru.codemine.ccms.entity.Shop;
 
 /**
@@ -32,59 +34,26 @@ import ru.codemine.ccms.entity.Shop;
  */
 
 @Service
-public class ShopService 
+public class CounterService 
 {
-    private static final Logger log = Logger.getLogger("ShopService");
+    
+    private static final Logger log = Logger.getLogger("CounterService");
     
     @Autowired
-    private ShopDAO shopDAO;
+    private CounterDAO counterDAO;
     
     @Transactional
-    public void create(Shop shop)
+    public void saveCounter(Counter counter)
     {
-        shopDAO.create(shop);
+        counterDAO.update(counter);
     }
     
     @Transactional
-    public void delete(Shop shop)
+    public List<Counter> getByShop(Shop shop)
     {
-        shopDAO.delete(shop);
+        return counterDAO.getByShop(shop);
     }
     
-    @Transactional
-    public void deleteById(Integer id)
-    {
-        shopDAO.deleteById(id);
-    }
     
-    @Transactional
-    public void update(Shop shop)
-    {
-        shopDAO.update(shop);
-    }
-    
-    @Transactional
-    public Shop getById(Integer id)
-    {
-        return shopDAO.getById(id);
-    }
-    
-    @Transactional
-    public Shop getByName(String name)
-    {
-        return shopDAO.getByName(name);
-    }
-    
-    @Transactional
-    public List<Shop> getWithCounters()
-    {
-        return shopDAO.getWithCounters();
-    }
-    
-    @Transactional
-    public List<Shop> getAll()
-    {
-        return shopDAO.getAll();
-    }
 
 }

@@ -37,7 +37,14 @@ public class SettingsService
     private SettingsDAO settingsDAO;
     
     @Value("${storage.rootpath}")
-    public static String storageRootPath;
+    private String storageRootPath;
+
+    public String getStorageRootPath()
+    {
+        return storageRootPath;
+    }
+    
+    
     
     @Transactional
     public String getCompanyName()
@@ -52,6 +59,38 @@ public class SettingsService
     public void setCompanyName(String name)
     {
         Settings settings = new Settings("CK_CompanyName", name);
+        settingsDAO.update(settings);
+    }
+    
+    @Transactional
+    public String getCountersKondorFtpLogin()
+    {
+        Settings settings = settingsDAO.getByKey("CK_KondorFtpLogin");
+        String login = (settings == null ? "" : settings.getValue());
+        
+        return login;
+    }
+    
+    @Transactional
+    public void setCountersKondorFtpLogin(String login)
+    {
+        Settings settings = new Settings("CK_KondorFtpLogin", login);
+        settingsDAO.update(settings);
+    }
+    
+    @Transactional
+    public String getCountersKondorFtpPassword()
+    {
+        Settings settings = settingsDAO.getByKey("CK_KondorFtpPassword");
+        String password = (settings == null ? "" : settings.getValue());
+        
+        return password;
+    }
+    
+    @Transactional
+    public void setCountersKondorFtpPassword(String password)
+    {
+        Settings settings = new Settings("CK_KondorFtpPassword", password);
         settingsDAO.update(settings);
     }
 

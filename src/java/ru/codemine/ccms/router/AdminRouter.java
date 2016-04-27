@@ -496,6 +496,8 @@ public class AdminRouter
         
         SettingsForm settingsForm = new SettingsForm();
         settingsForm.setCompanyName(settingsService.getCompanyName());
+        settingsForm.setCountersKondorFtpLogin(settingsService.getCountersKondorFtpLogin());
+        settingsForm.setCountersKondorFtpPassword(settingsService.getCountersKondorFtpPassword());
         model.addAttribute("settingsForm", settingsForm);
         
         return "admin/settings";
@@ -517,6 +519,8 @@ public class AdminRouter
         }
         
         settingsService.setCompanyName(settingsForm.getCompanyName());
+        settingsService.setCountersKondorFtpLogin(settingsForm.getCountersKondorFtpLogin());
+        settingsService.setCountersKondorFtpPassword(settingsForm.getCountersKondorFtpPassword());
         
         return "redirect:/admin/settings";
     }

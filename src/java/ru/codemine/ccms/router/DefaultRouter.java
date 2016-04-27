@@ -143,7 +143,7 @@ public class DefaultRouter
         
         model.addAttribute("title", "Магазин - " + shop.getName() + " - ИнфоПортал");
         model.addAttribute("mainMenuActiveItem", "shops");
-        model.addAttribute("sideMenuActiveItem", "");
+        model.addAttribute("sideMenuActiveItem", "general");
         model.addAttribute("currentUser", employeeService.getCurrentUser());
         model.addAttribute("shop", shop);
         

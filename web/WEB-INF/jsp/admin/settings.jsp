@@ -49,6 +49,21 @@
                                                 <td><form:input path="companyName" class="form-control" /> </td>
                                                 <td><form:errors path="companyName" cssStyle="color: #ff0000;" /></td>
                                             </tr>
+                                            <tr><td colspan="3"> </td></tr>
+                                            <tr>
+                                                <th colspan="3" class="th-header-center">Счетчики посетителей Кондор-7</th>
+                                            </tr>
+
+                                            <tr>
+                                                <td><b>FTP - логин</b></td>
+                                                <td><form:input path="countersKondorFtpLogin" class="form-control" /> </td>
+                                                <td><form:errors path="countersKondorFtpLogin" cssStyle="color: #ff0000;" /></td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>FTP - пароль</b></td>
+                                                <td><form:input path="countersKondorFtpPassword" class="form-control" /> </td>
+                                                <td><form:errors path="countersKondorFtpPassword" cssStyle="color: #ff0000;" /></td>
+                                            </tr>
                                         </tbody>
                                     </table>
                                     <input id="save" type="submit" value="Сохранить" class="btn btn-primary">

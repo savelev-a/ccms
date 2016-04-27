@@ -28,7 +28,7 @@
 
                 <div class="row">
 
-                    <%@include file="../../modules/sideMenu/sideMenu_dummy.jspf" %>
+                    <%@include file="../../modules/sideMenu/sideMenu_shop.jspf" %>
 
                     <br><br>
 
@@ -155,6 +155,20 @@
 
                                             <th>ИБП</th>
                                             <td><c:out value="${shop.hardware.ups}" /></td>
+                                        </tr>
+                                        
+                                        <tr>
+                                            <th>Счетчик посетителей</th>
+                                            <td>
+                                                <c:choose>
+                                                    <c:when test="${shop.countersEnabled}">
+                                                        <font color="green">Подключен</font>, Кондор-7
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                    Не подключен
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </td>
                                         </tr>
 
                                         <tr>

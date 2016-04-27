@@ -125,6 +125,9 @@ public class Shop implements Serializable
     @Column(name = "techComment", nullable = false, columnDefinition = "TEXT")
     private String techComment;
     
+    @Column(name = "countersEnabled", nullable = false)
+    private boolean countersEnabled;
+    
     
     public Integer getId()
     {
@@ -307,6 +310,17 @@ public class Shop implements Serializable
         this.workingTime = workingTime;
     }
 
+    public boolean isCountersEnabled()
+    {
+        return countersEnabled;
+    }
+
+    public void setCountersEnabled(boolean countersEnabled)
+    {
+        this.countersEnabled = countersEnabled;
+    }
+
+    
  
 
     @Override

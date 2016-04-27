@@ -224,6 +224,11 @@
                                                 <td><form:errors path="hardware.ups" cssStyle="color: #ff0000;" /></td>
                                             </tr>
 
+                                            <tr>
+                                                <td><b>Включить счетчик посетителей</b></td>
+                                                <td><form:checkbox path="countersEnabled" class="form-control" /></td>
+                                                <td><form:errors path="countersEnabled" cssStyle="color: #ff0000;" /></td>
+                                            </tr>
 
 
 

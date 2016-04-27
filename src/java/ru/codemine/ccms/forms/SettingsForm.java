@@ -28,6 +28,12 @@ public class SettingsForm
 {
     @Length(max = 255)
     private String companyName;
+    
+    @Length(max = 64)
+    private String countersKondorFtpLogin;
+    
+    @Length(max = 64)
+    private String countersKondorFtpPassword;
 
     public String getCompanyName()
     {
@@ -37,6 +43,26 @@ public class SettingsForm
     public void setCompanyName(String companyName)
     {
         this.companyName = companyName;
+    }
+
+    public String getCountersKondorFtpLogin()
+    {
+        return countersKondorFtpLogin;
+    }
+
+    public void setCountersKondorFtpLogin(String countersKondorFtpLogin)
+    {
+        this.countersKondorFtpLogin = countersKondorFtpLogin;
+    }
+
+    public String getCountersKondorFtpPassword()
+    {
+        return countersKondorFtpPassword;
+    }
+
+    public void setCountersKondorFtpPassword(String countersKondorFtpPassword)
+    {
+        this.countersKondorFtpPassword = countersKondorFtpPassword;
     }
     
     

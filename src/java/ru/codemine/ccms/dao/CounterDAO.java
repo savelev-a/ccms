@@ -19,24 +19,22 @@
 package ru.codemine.ccms.dao;
 
 import java.util.List;
+import ru.codemine.ccms.entity.Counter;
 import ru.codemine.ccms.entity.Shop;
 
 /**
  *
  * @author Alexander Savelev
  */
-public interface ShopDAO 
+public interface CounterDAO 
 {
-    public void create(Shop shop);
+    //public void create(Counter counter);
     
-    public void delete(Shop shop);
-    public void deleteById(Integer id);
+    //public void delete(Counter counter);
+    //public void deleteById(Long id);
     
-    public void update(Shop shop);
+    public void update(Counter counter);
     
-    public Shop getById(Integer id);
-    public Shop getByName(String name);
-    public List<Shop> getWithCounters();
-    public List<Shop> getAll();
+    public List<Counter> getByShop(Shop shop);
 
 }
