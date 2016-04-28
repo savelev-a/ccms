@@ -67,7 +67,7 @@ public class KondorClient implements CounterClient
         String tmpFileName = settingsService.getStorageRootPath() + DateTime.now().toString("YYYYMMdd-s" + shop.getId());
         try
         {
-            log.info("Starting ftp session...");
+            log.debug("Starting ftp session...");
             
             Socket manageSocket = new Socket();
             manageSocket.connect(new InetSocketAddress(ip, 21), 3000);
@@ -75,15 +75,15 @@ public class KondorClient implements CounterClient
             PrintWriter out = new PrintWriter(manageSocket.getOutputStream(), true);
             
             out.println("USER " + login);
-            log.info("FTP: " + in.readLine());
+            log.debug("FTP: " + in.readLine());
             
             out.println("PASS " + pass);
             String afterAuth = in.readLine();
-            log.info("FTP: " + afterAuth);
+            log.debug("FTP: " + afterAuth);
             
             out.println("PASV");
             String pasvResponce = in.readLine();
-            log.info("FTP: PASV command responce: " + pasvResponce);
+            log.debug("FTP: PASV command responce: " + pasvResponce);
             
             if(pasvResponce.startsWith("227 ("))
             {
@@ -93,7 +93,7 @@ public class KondorClient implements CounterClient
                 String p5 = parsedPasv.get(5).replace(")", "");
                 int port = Integer.parseInt(p4) * 256 + Integer.parseInt(p5);
                 
-                log.info("FTP: Recieved port: " + port);
+                log.debug("FTP: Recieved port: " + port);
                 
                 Socket dataSocket = new Socket();
                 dataSocket.connect(new InetSocketAddress(ip, port), 3000);
@@ -101,12 +101,12 @@ public class KondorClient implements CounterClient
                 FileOutputStream dataOut = new FileOutputStream(tmpFileName);
                 
                 out.println("RETR total.dbf");
-                log.info("FTP: " + in.readLine());
+                log.debug("FTP: " + in.readLine());
                 
                 IOUtils.copy(dataIn, dataOut);
                 
                 out.println("QUIT");
-                log.info("FTP: " + in.readLine());
+                log.debug("FTP: " + in.readLine());
                 
                 dataOut.flush();
                 dataOut.close();

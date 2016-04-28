@@ -45,7 +45,7 @@ public class CounterDAOImpl implements CounterDAO
     @Override
     public void update(Counter counter)
     {
-        log.info("New counter values: " + counter.toString());
+        log.debug("New counter values: " + counter.toString());
         
         Session session = sessionFactory.getCurrentSession();
         
@@ -56,7 +56,7 @@ public class CounterDAOImpl implements CounterDAO
         }
         else
         {
-            log.info("...and this is current day update.");
+            log.debug("...and this is current day update.");
             c.setIn(counter.getIn());
             c.setOut(counter.getOut());
             session.update(c);

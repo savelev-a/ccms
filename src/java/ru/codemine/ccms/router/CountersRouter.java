@@ -64,17 +64,19 @@ public class CountersRouter
         List<String> graphDataInList = new ArrayList<>();
         List<String> graphDataOutList = new ArrayList<>();
 
-        List<Counter> counters = counterService.getByShop(shop);
-        for (Counter counter : counters)
+        List<Counter> countersAll = counterService.getByShop(shop);
+        List<Counter> counters = new ArrayList<>();
+        for (Counter counter : countersAll)
         {
             if (counter.getDate().plusMonths(1).isBeforeNow())
             {
-                counters.remove(counter);
+                //counters.remove(counter);
             } 
             else
             {
                 graphDataInList.add(counter.getGraphDataIn());
                 graphDataOutList.add(counter.getGraphDataOut());
+                counters.add(counter);
             }
 
         }
@@ -109,7 +111,7 @@ public class CountersRouter
                 } 
                 else
                 {
-                    log.info("discarding old counter value: " + counter.getDate());
+                    log.debug("discarding old counter value: " + counter.getDate());
                 }
             }
             

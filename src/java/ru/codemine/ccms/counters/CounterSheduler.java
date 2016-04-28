@@ -66,7 +66,7 @@ public class CounterSheduler
                     } 
                     else
                     {
-                        log.info("discarding old counter value: " + counter.getDate());
+                        log.debug("discarding old counter value: " + counter.getDate());
                     }
                 }
             }
