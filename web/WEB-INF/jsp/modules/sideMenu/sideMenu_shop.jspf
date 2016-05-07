@@ -25,6 +25,13 @@
                         </td>
                     </tr>
                 </c:if>
+                    <tr ${sideMenuActiveItem == "sales" ? "class='info'" : ""}>
+                    <td>
+                        <a href="<c:url value="/sales?shopid=${shop.id}" />">
+                            Таблица проходимости
+                        </a> 
+                    </td>
+                </tr>
             </table>
 
         </div> 

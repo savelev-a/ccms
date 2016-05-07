@@ -20,6 +20,7 @@ package ru.codemine.ccms.service;
 
 import java.util.List;
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,6 +55,22 @@ public class CounterService
         return counterDAO.getByShop(shop);
     }
     
+    @Transactional
+    public Counter getByShopAndDate(Shop shop, DateTime date)
+    {
+        return counterDAO.getByShopAndDate(shop, date);
+    }
     
+    @Transactional
+    public Integer getSumIn(DateTime date)
+    {
+        return counterDAO.getSumIn(date);
+    }
+    
+    @Transactional
+    public Integer getSumOut(DateTime date)
+    {
+        return counterDAO.getSumOut(date);
+    }
 
 }

@@ -75,7 +75,8 @@ public class CounterDAOImpl implements CounterDAO
         
     }
     
-    private Counter getByShopAndDate(Shop shop, DateTime date)
+    @Override
+    public Counter getByShopAndDate(Shop shop, DateTime date)
     {
         Session session = sessionFactory.getCurrentSession();
         Query q = session.createQuery(
@@ -88,6 +89,44 @@ public class CounterDAOImpl implements CounterDAO
         Counter counter = (Counter)q.uniqueResult();
         
         return counter;
+    }
+    
+    @Override
+    public Integer getSumIn(DateTime date)
+    {
+        Session session = sessionFactory.getCurrentSession();
+        Integer result = 0;
+        Query q = session.createQuery(
+                "FROM Counter C WHERE C.date = :date");
+        
+        q.setDate("date", date.toDate());
+        
+        List<Counter> counterList = q.list();
+        for(Counter c : counterList)
+        {
+            result += c.getIn();
+        }
+        
+        return result;
+    }
+    
+    @Override
+    public Integer getSumOut(DateTime date)
+    {
+        Session session = sessionFactory.getCurrentSession();
+        Integer result = 0;
+        Query q = session.createQuery(
+                "FROM Counter C WHERE C.date = :date");
+        
+        q.setDate("date", date.toDate());
+        
+        List<Counter> counterList = q.list();
+        for(Counter c : counterList)
+        {
+            result += c.getOut();
+        }
+        
+        return result;
     }
 
 }

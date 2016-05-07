@@ -15,15 +15,17 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 package ru.codemine.ccms.dao;
 
 import java.util.List;
 import org.apache.log4j.Logger;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import ru.codemine.ccms.entity.SalesMeta;
 import ru.codemine.ccms.entity.Shop;
 
 /**
@@ -32,90 +34,89 @@ import ru.codemine.ccms.entity.Shop;
  */
 
 @Repository
-public class ShopDAOImpl implements ShopDAO
+public class SalesDAOImpl implements SalesDAO
 {
-    private static final Logger log = Logger.getLogger("ShopDAO");
+    private static final Logger log = Logger.getLogger("SalesDAO");
     
     @Autowired
-    private SessionFactory sessionFactory;
-
+    SessionFactory sessionFactory;
+    
     @Override
-    public void create(Shop shop)
+    public void create(SalesMeta sm)
     {
-        log.info("Creating new shop: " + shop.getName());
         Session session = sessionFactory.getCurrentSession();
-        session.save(shop);
+        
+        session.save(sm);
     }
 
     @Override
-    public void delete(Shop shop)
+    public void delete(SalesMeta sm)
     {
-        log.info("Removing shop: " + shop.getName());
         Session session = sessionFactory.getCurrentSession();
-        session.delete(shop);
+        
+        session.delete(sm);
     }
 
     @Override
     public void deleteById(Integer id)
     {
-        log.info("Removing shop by id: " + id.toString());
         Session session = sessionFactory.getCurrentSession();
-        Shop shop = getById(id);
         
-        if(shop != null) session.delete(shop);
+        SalesMeta sm = getById(id);
+        if(sm != null) session.delete(sm);
     }
 
     @Override
-    public void update(Shop shop)
-    {
-        log.info("Updating shop: " + shop.getName());
-        Session session = sessionFactory.getCurrentSession();
-        session.update(shop);
-    }
-
-    @Override
-    public Shop getById(Integer id)
+    public void update(SalesMeta sm)
     {
         Session session = sessionFactory.getCurrentSession();
-        Shop shop = (Shop)session.get(Shop.class, id);
         
-        return shop;
-    }
-
-    @Override
-    public Shop getByName(String name)
-    {
-        Session session = sessionFactory.getCurrentSession();
-        Shop shop = (Shop)session.createQuery("FROM Shop S WHERE S.name = '" + name + "'").uniqueResult();
-        
-        return shop;
+        session.saveOrUpdate(sm);
     }
     
     @Override
-    public List<Shop> getWithCounters()
+    public boolean updatePlanAll(Double plan, LocalDate startDate, LocalDate endDate)
+    {
+        if(plan == null || startDate == null || endDate == null || startDate.isAfter(endDate)) return false;
+        
+        Session session = sessionFactory.getCurrentSession();
+        Query updateQuery = session.createQuery("UPDATE SalesMeta Sm SET Sm.plan = :plan WHERE Sm.startDate = :startdate AND Sm.endDate = :enddate");
+        updateQuery.setDate("startdate", startDate.toDate());
+        updateQuery.setDate("enddate", endDate.toDate());
+        updateQuery.setDouble("plan", plan);
+        
+        return (updateQuery.executeUpdate() > 0);
+    }
+    
+    @Override
+    public SalesMeta getById(Integer id)
     {
         Session session = sessionFactory.getCurrentSession();
-        List<Shop> result = session.createQuery("FROM Shop S WHERE S.countersEnabled = true ORDER BY S.name ASC").list();
+        
+        //SalesMeta sm = (SalesMeta)session.get(SalesMeta.class, id);
+        SalesMeta sm = (SalesMeta)session.createQuery("FROM SalesMeta Sm WHERE Sm.id = " + id).uniqueResult();
+        
+        return sm;
+    }
+
+    @Override
+    public List<SalesMeta> getByShop(Shop shop)
+    {
+        Session session = sessionFactory.getCurrentSession();
+        
+        List<SalesMeta> result = session.createQuery("FROM SalesMeta Sm WHERE Sm.shop.id = " + shop.getId()).list();
         
         return result;
     }
     
-    @Override
-    public List<Shop> getAllOpen()
-    {
-        Session session = sessionFactory.getCurrentSession();
-        List<Shop> result = session.createQuery("FROM Shop S WHERE S.closed = false ORDER BY S.name ASC").list();
-        
-        return result;
-    }
+    
 
-    @Override
-    public List<Shop> getAll()
-    {
-        Session session = sessionFactory.getCurrentSession();
-        List<Shop> result = session.createQuery("FROM Shop S ORDER BY S.name ASC").list();
-        
-        return result;
-    }
 
+
+    //@Override
+    //public SalesMeta getByShopAndDates(Shop shop, DateTime startDate, DateTime endDate)
+    //{
+    //    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    //}
+    
 }

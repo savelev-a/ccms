@@ -37,6 +37,7 @@ public interface ShopDAO
     public Shop getById(Integer id);
     public Shop getByName(String name);
     public List<Shop> getWithCounters();
+    public List<Shop> getAllOpen();
     public List<Shop> getAll();
 
 }

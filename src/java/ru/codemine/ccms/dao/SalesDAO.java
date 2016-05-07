@@ -15,29 +15,31 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 package ru.codemine.ccms.dao;
 
 import java.util.List;
-import org.joda.time.DateTime;
-import ru.codemine.ccms.entity.Counter;
+import org.joda.time.LocalDate;
+import ru.codemine.ccms.entity.SalesMeta;
 import ru.codemine.ccms.entity.Shop;
 
 /**
  *
  * @author Alexander Savelev
  */
-public interface CounterDAO 
+
+public interface SalesDAO
 {
-    //public void create(Counter counter);
+    public void create(SalesMeta sm);
     
-    //public void delete(Counter counter);
-    //public void deleteById(Long id);
+    public void delete(SalesMeta sm);
+    public void deleteById(Integer id);
     
-    public void update(Counter counter);
+    public void update(SalesMeta sm);
+    public boolean updatePlanAll(Double plan, LocalDate startDate, LocalDate endDate);
     
-    public List<Counter> getByShop(Shop shop);
-    public Counter getByShopAndDate(Shop shop, DateTime date);
-    public Integer getSumIn(DateTime date);
-    public Integer getSumOut(DateTime date);
+    public SalesMeta getById(Integer id);
+    public List<SalesMeta> getByShop(Shop shop);
+
+    //public SalesMeta getByShopAndDates(Shop shop, DateTime startDate, DateTime endDate);
+    
 }

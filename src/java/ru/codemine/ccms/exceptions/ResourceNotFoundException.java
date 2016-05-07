@@ -15,29 +15,17 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
+package ru.codemine.ccms.exceptions;
 
-package ru.codemine.ccms.dao;
-
-import java.util.List;
-import org.joda.time.DateTime;
-import ru.codemine.ccms.entity.Counter;
-import ru.codemine.ccms.entity.Shop;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
  *
  * @author Alexander Savelev
  */
-public interface CounterDAO 
-{
-    //public void create(Counter counter);
-    
-    //public void delete(Counter counter);
-    //public void deleteById(Long id);
-    
-    public void update(Counter counter);
-    
-    public List<Counter> getByShop(Shop shop);
-    public Counter getByShopAndDate(Shop shop, DateTime date);
-    public Integer getSumIn(DateTime date);
-    public Integer getSumOut(DateTime date);
+
+@ResponseStatus(value = HttpStatus.NOT_FOUND)
+public final class ResourceNotFoundException extends RuntimeException {
+   //  
 }

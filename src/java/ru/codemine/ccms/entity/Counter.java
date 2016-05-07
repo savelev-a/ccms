@@ -110,11 +110,19 @@ public class Counter implements Serializable
         this.out = out;
     }
     
+    /**
+     * Используетсф для формирования данных для графиков jquery flot
+     * @return
+     */
     public String getGraphDataIn()
     {
         return "[\"" + date.toString("dd.MM.yyyy") + "\", " + in + "]";
     }
     
+    /**
+     * Используетсф для формирования данных для графиков jquery flot
+     * @return
+     */
     public String getGraphDataOut()
     {
         return "[\"" + date.toString("dd.MM.yyyy") + "\", " + out + "]";

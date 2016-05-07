@@ -44,6 +44,18 @@
                     </a> 
                 </li>
 
+                <li class="dropdown ${mainMenuActiveItem == "reports" ? "active" : ""}">
+                    <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown">
+                        Отчеты
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="<c:url value="/reports/sales-pass" />" >Отчет по проходимости и выручке</a></li>
+
+
+                    </ul>
+                </li>
+
                 <li ${mainMenuActiveItem == "admin" ? "class=active" : ""}>
                     <a href="<c:url value="/admin" />">
                         Администрирование
@@ -68,7 +80,7 @@
                                 <li><a href="<c:url value="/admin/profile?id=${currentUser.id}" />" >Мой профиль</a></li>
                                 <br>
                                 <li><a href="#" id="logout">Выход</a></li>
-                                
+
                             </ul>
                         </li>
 

@@ -15,15 +15,16 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 package ru.codemine.ccms.service;
 
 import java.util.List;
 import org.apache.log4j.Logger;
+import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.codemine.ccms.dao.ShopDAO;
+import ru.codemine.ccms.dao.SalesDAO;
+import ru.codemine.ccms.entity.SalesMeta;
 import ru.codemine.ccms.entity.Shop;
 
 /**
@@ -32,65 +33,76 @@ import ru.codemine.ccms.entity.Shop;
  */
 
 @Service
-public class ShopService 
+public class SalesService
 {
-    private static final Logger log = Logger.getLogger("ShopService");
+    private static final Logger log = Logger.getLogger("SalesService");
     
     @Autowired
-    private ShopDAO shopDAO;
+    private SalesDAO salesDAO;
     
     @Transactional
-    public void create(Shop shop)
+    public void create(SalesMeta sm)
     {
-        shopDAO.create(shop);
+        salesDAO.create(sm);
     }
     
     @Transactional
-    public void delete(Shop shop)
+    public void delete(SalesMeta sm)
     {
-        shopDAO.delete(shop);
+        salesDAO.delete(sm);
     }
     
     @Transactional
     public void deleteById(Integer id)
     {
-        shopDAO.deleteById(id);
+        salesDAO.deleteById(id);
     }
     
     @Transactional
-    public void update(Shop shop)
+    public void update(SalesMeta sm)
     {
-        shopDAO.update(shop);
+        salesDAO.update(sm);
     }
     
     @Transactional
-    public Shop getById(Integer id)
+    public boolean updatePlanAll(Double plan, LocalDate startDate, LocalDate endDate)
     {
-        return shopDAO.getById(id);
+        return salesDAO.updatePlanAll(plan, startDate, endDate);
+    }
+    
+    
+    @Transactional
+    public SalesMeta getById(Integer id)
+    {
+        return salesDAO.getById(id);
     }
     
     @Transactional
-    public Shop getByName(String name)
+    public List<SalesMeta> getByShop(Shop shop)
     {
-        return shopDAO.getByName(name);
+        return salesDAO.getByShop(shop);
     }
     
-    @Transactional
-    public List<Shop> getWithCounters()
-    {
-        return shopDAO.getWithCounters();
-    }
     
     @Transactional
-    public List<Shop> getAllOpen()
+    public SalesMeta getByShopAndDate(Shop shop, LocalDate startDate, LocalDate endDate)
     {
-        return shopDAO.getAllOpen();
-    }
-    
-    @Transactional
-    public List<Shop> getAll()
-    {
-        return shopDAO.getAll();
-    }
+        List<SalesMeta> smlist = salesDAO.getByShop(shop);
 
+        for(SalesMeta sm : smlist)
+        {
+            if(sm.getStartDate().equals(startDate) && sm.getEndDate().equals(endDate))
+                return sm;
+        }
+        SalesMeta newSalesMeta = new SalesMeta(shop, startDate, endDate);
+        newSalesMeta.setDescription("Таблица выручек: " 
+                    + shop.getName() 
+                    + " (" 
+                    + startDate.toString("MMMM YYYY")
+                    + ")"
+            );
+        
+        return newSalesMeta;
+    }
+    
 }
