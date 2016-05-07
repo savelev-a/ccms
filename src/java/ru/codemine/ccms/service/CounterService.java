@@ -24,7 +24,6 @@ import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.codemine.ccms.counters.kondor.KondorClient;
 import ru.codemine.ccms.dao.CounterDAO;
 import ru.codemine.ccms.entity.Counter;
 import ru.codemine.ccms.entity.Shop;

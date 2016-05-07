@@ -31,8 +31,8 @@ import ru.codemine.ccms.counters.kondor.KondorClient;
 import ru.codemine.ccms.entity.Counter;
 import ru.codemine.ccms.entity.Shop;
 import ru.codemine.ccms.service.CounterService;
-import ru.codemine.ccms.service.EmployeeService;
 import ru.codemine.ccms.service.ShopService;
+import ru.codemine.ccms.utils.Utils;
 
 /**
  *
@@ -45,9 +45,9 @@ public class CountersRouter
     private static final Logger log = Logger.getLogger("CountersRouter");
 
     @Autowired private ShopService shopService;
-    @Autowired private EmployeeService employeeService;
     @Autowired private CounterService counterService;
     @Autowired private KondorClient kondorClient;
+    @Autowired private Utils utils;
 
     @Secured("ROLE_USER")
     @RequestMapping(value = "/counters", method = RequestMethod.GET)
@@ -55,10 +55,7 @@ public class CountersRouter
     {
         Shop shop = shopService.getById(shopid);
 
-        model.addAttribute("title", "Показания счетчиков - " + shop.getName() + " - ИнфоПортал");
-        model.addAttribute("mainMenuActiveItem", "shops");
-        model.addAttribute("sideMenuActiveItem", "counters");
-        model.addAttribute("currentUser", employeeService.getCurrentUser());
+        model.addAllAttributes(utils.prepareModel("Показания счетчиков - " + shop.getName() + " - ИнфоПортал", "shops", "counters"));
         model.addAttribute("shop", shop);
 
         List<String> graphDataInList = new ArrayList<>();
@@ -68,17 +65,12 @@ public class CountersRouter
         List<Counter> counters = new ArrayList<>();
         for (Counter counter : countersAll)
         {
-            if (counter.getDate().plusMonths(1).isBeforeNow())
-            {
-                //counters.remove(counter);
-            } 
-            else
+            if (!counter.getDate().plusMonths(1).isBeforeNow())
             {
                 graphDataInList.add(counter.getGraphDataIn());
                 graphDataOutList.add(counter.getGraphDataOut());
                 counters.add(counter);
-            }
-
+            } 
         }
 
         model.addAttribute("counters", counters);
@@ -91,9 +83,7 @@ public class CountersRouter
     @RequestMapping(value = "/counters", method = RequestMethod.POST)
     public String shopCountersRefresh(@RequestParam Integer shopid, ModelMap model)
     {
-        Shop shop = shopService.getById(shopid);
-
-        updateDataFromShop(shop);
+        updateDataFromShop(shopService.getById(shopid));
         
         return "redirect:/counters?shopid=" + shopid;
     }

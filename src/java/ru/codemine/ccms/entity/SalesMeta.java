@@ -18,7 +18,6 @@
 package ru.codemine.ccms.entity;
 
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 import javax.persistence.CascadeType;

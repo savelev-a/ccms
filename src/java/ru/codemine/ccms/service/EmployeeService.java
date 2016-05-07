@@ -18,7 +18,9 @@
 package ru.codemine.ccms.service;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -121,5 +123,16 @@ public class EmployeeService
         }
         
         return false;
+    }
+    
+    public Map<String, String> getAllRoles()
+    {
+        Map<String, String> rolesList = new HashMap<>();
+        rolesList.put("ROLE_ADMIN", "Администратор сайта");
+        rolesList.put("ROLE_USER", "Пользователь сайта");
+        rolesList.put("ROLE_SHOP", "Сотрудник магазина");
+        rolesList.put("ROLE_OFFICE", "Сотрудник офиса");
+        
+        return rolesList;
     }
 }

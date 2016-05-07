@@ -33,6 +33,7 @@ import ru.codemine.ccms.service.EmployeeService;
 import ru.codemine.ccms.service.OfficeService;
 import ru.codemine.ccms.service.OrganisationService;
 import ru.codemine.ccms.service.ShopService;
+import ru.codemine.ccms.utils.Utils;
 
 /**
  *
@@ -48,16 +49,14 @@ public class DefaultRouter
     @Autowired private EmployeeService employeeService;
     @Autowired private OrganisationService organisationService;
     @Autowired private OfficeService officeService;
+    @Autowired private Utils utils;
 
-
+    
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String getIndex(ModelMap model)
     {
-        model.addAttribute("title", "Главная - ИнфоПортал");
-        model.addAttribute("mainMenuActiveItem", "");
-        model.addAttribute("sideMenuActiveItem", "");
-        model.addAttribute("currentUser", employeeService.getCurrentUser());
-
+        model.addAllAttributes(utils.prepareModel("Главная - ИнфоПортал", "", ""));
+        
         return "index";
     }
 
@@ -67,11 +66,7 @@ public class DefaultRouter
     @RequestMapping(value = "/shops", method = RequestMethod.GET)
     public String getShops(ModelMap model)
     {
-        model.addAttribute("title", "Магазины - ИнфоПортал");
-        model.addAttribute("mainMenuActiveItem", "shops");
-        model.addAttribute("sideMenuActiveItem", "short");
-        model.addAttribute("currentUser", employeeService.getCurrentUser());
-        
+        model.addAllAttributes(utils.prepareModel("Магазины - ИнфоПортал", "shops", "short"));
         model.addAttribute("allshops", shopService.getAll());
         model.addAttribute("allorgs", organisationService.getAll());
 
@@ -82,11 +77,7 @@ public class DefaultRouter
     @RequestMapping(value = "/offices", method = RequestMethod.GET)
     public String getOffices(ModelMap model)
     {
-        model.addAttribute("title", "Офисы - ИнфоПортал");
-        model.addAttribute("mainMenuActiveItem", "offices");
-        model.addAttribute("sideMenuActiveItem", "all");
-        model.addAttribute("currentUser", employeeService.getCurrentUser());
-
+        model.addAllAttributes(utils.prepareModel("Офисы - ИнфоПортал", "offices", "all"));
         model.addAttribute("alloffices", officeService.getAll());
 
         return "pages/offices/officesAll";
@@ -96,10 +87,7 @@ public class DefaultRouter
     @RequestMapping(value = "/employees", method = RequestMethod.GET)
     public String getEmployees(ModelMap model)
     {
-        model.addAttribute("title", "Сотрудники - ИнфоПортал");
-        model.addAttribute("mainMenuActiveItem", "employees");
-        model.addAttribute("sideMenuActiveItem", "all");
-        model.addAttribute("currentUser", employeeService.getCurrentUser());
+        model.addAllAttributes(utils.prepareModel("Сотрудники - ИнфоПортал", "employees", "all"));
         model.addAttribute("allemps", employeeService.getAll());
 
         return "pages/employees/employeesAll";
@@ -109,11 +97,7 @@ public class DefaultRouter
     @RequestMapping(value = "/organisations", method = RequestMethod.GET)
     public String getOrganisations(ModelMap model)
     {
-        model.addAttribute("title", "Юр. лица - ИнфоПортал");
-        model.addAttribute("mainMenuActiveItem", "organisations");
-        model.addAttribute("sideMenuActiveItem", "all");
-        model.addAttribute("currentUser", employeeService.getCurrentUser());
-
+        model.addAllAttributes(utils.prepareModel("Юр. лица - ИнфоПортал", "organisations", "all"));
         model.addAttribute("allorgs", organisationService.getAll());
 
         return "pages/organisations/organisationsAll";
@@ -122,10 +106,7 @@ public class DefaultRouter
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String getLogin(ModelMap model, @RequestParam(required = false) boolean error)
     {
-        model.addAttribute("title", "Авторизация - ИнфоПортал");
-        model.addAttribute("mainMenuActiveItem", "");
-        model.addAttribute("sideMenuActiveItem", "");
-        model.addAttribute("currentUser", employeeService.getCurrentUser());
+        model.addAllAttributes(utils.prepareModel("Авторизация - ИнфоПортал", "", ""));
         model.addAttribute("activeUsers", employeeService.getActive());
 
         return "login";
@@ -140,11 +121,7 @@ public class DefaultRouter
     public String getShop(ModelMap model, @RequestParam Integer id)
     {
         Shop shop = shopService.getById(id);
-        
-        model.addAttribute("title", "Магазин - " + shop.getName() + " - ИнфоПортал");
-        model.addAttribute("mainMenuActiveItem", "shops");
-        model.addAttribute("sideMenuActiveItem", "general");
-        model.addAttribute("currentUser", employeeService.getCurrentUser());
+        model.addAllAttributes(utils.prepareModel("Магазин - " + shop.getName() + " - ИнфоПортал", "shops", "general"));
         model.addAttribute("shop", shop);
         
         return "pages/shops/shop";
@@ -159,11 +136,7 @@ public class DefaultRouter
     public String getOffice(ModelMap model, @RequestParam Integer id)
     {
         Office office = officeService.getById(id);
-
-        model.addAttribute("title", "Офис - " + office.getName() + " - ИнфоПортал");
-        model.addAttribute("mainMenuActiveItem", "offices");
-        model.addAttribute("sideMenuActiveItem", "");
-        model.addAttribute("currentUser", employeeService.getCurrentUser());
+        model.addAllAttributes(utils.prepareModel("Офис - " + office.getName() + " - ИнфоПортал", "offices", ""));
         model.addAttribute("office", office);
 
         return "pages/offices/office";
@@ -179,11 +152,7 @@ public class DefaultRouter
     public String getOrganisation(ModelMap model, @RequestParam Integer id)
     {
         Organisation org = organisationService.getById(id);
-
-        model.addAttribute("title", "Реквизиты - " + org.getName() + " - ИнфоПортал");
-        model.addAttribute("mainMenuActiveItem", "organisations");
-        model.addAttribute("sideMenuActiveItem", "");
-        model.addAttribute("currentUser", employeeService.getCurrentUser());
+        model.addAllAttributes(utils.prepareModel("Реквизиты - " + org.getName() + " - ИнфоПортал", "organisations", ""));
         model.addAttribute("organisation", org);
 
         return "pages/organisations/organisation";
@@ -198,11 +167,7 @@ public class DefaultRouter
     public String getEmployee(ModelMap model, @RequestParam Integer id)
     {
         Employee employee = employeeService.getById(id);
-        
-        model.addAttribute("title", "Профиль - " + employee.getFullName() + " - ИнфоПортал");
-        model.addAttribute("mainMenuActiveItem", "employees");
-        model.addAttribute("sideMenuActiveItem", "");
-        model.addAttribute("currentUser", employeeService.getCurrentUser());
+        model.addAllAttributes(utils.prepareModel("Профиль - " + employee.getFullName() + " - ИнфоПортал", "employees", ""));
         model.addAttribute("employee", employee);
 
         return "pages/employees/employee";
@@ -216,10 +181,7 @@ public class DefaultRouter
     @RequestMapping(value = "/403")
     public String errorDenied(ModelMap model)
     {
-        model.addAttribute("title", "Доступ запрещен - ИнфоПортал");
-        model.addAttribute("mainMenuActiveItem", "");
-        model.addAttribute("sideMenuActiveItem", "");
-        model.addAttribute("currentUser", employeeService.getCurrentUser());
+        model.addAllAttributes(utils.prepareModel("Доступ запрещен - ИнфоПортал", "", ""));
         
         return "403";
     }
@@ -227,10 +189,7 @@ public class DefaultRouter
     @RequestMapping(value = "/404")
     public String errorNotFound(ModelMap model)
     {
-        model.addAttribute("title", "Страница не найдена - ИнфоПортал");
-        model.addAttribute("mainMenuActiveItem", "");
-        model.addAttribute("sideMenuActiveItem", "");
-        model.addAttribute("currentUser", employeeService.getCurrentUser());
+        model.addAllAttributes(utils.prepareModel("Страница не найдена - ИнфоПортал", "", ""));
         
         return "404";
     }

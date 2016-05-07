@@ -17,7 +17,6 @@
  */
 package ru.codemine.ccms.router;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -42,9 +41,9 @@ import ru.codemine.ccms.entity.Shop;
 import ru.codemine.ccms.exceptions.ResourceNotFoundException;
 import ru.codemine.ccms.forms.SalesForm;
 import ru.codemine.ccms.service.CounterService;
-import ru.codemine.ccms.service.EmployeeService;
 import ru.codemine.ccms.service.SalesService;
 import ru.codemine.ccms.service.ShopService;
+import ru.codemine.ccms.utils.Utils;
 
 /**
  *
@@ -58,8 +57,8 @@ public class SalesRouter
     
     @Autowired private SalesService salesService;
     @Autowired private ShopService shopService;
-    @Autowired private EmployeeService employeeService;
     @Autowired private CounterService counterService;
+    @Autowired private Utils utils;
     
     @Secured("ROLE_USER")
     @RequestMapping(value = "/sales", method = RequestMethod.GET)
@@ -71,18 +70,10 @@ public class SalesRouter
     {
         Shop shop = shopService.getById(shopid);
         
-        model.addAttribute("title", "Выручка магазина - " + shop.getName() + " - ИнфоПортал");
-        model.addAttribute("mainMenuActiveItem", "shops");
-        model.addAttribute("sideMenuActiveItem", "sales");
-        model.addAttribute("currentUser", employeeService.getCurrentUser());
-        model.addAttribute("shop", shop);
-        
-        model.addAttribute("monthList", formMonthValues());
-        model.addAttribute("yearList", formYearValues());
-        
-        model.addAttribute("selectedMonth", dateMonth == null ? LocalDate.now().toString("MMMM") : dateMonth);
-        model.addAttribute("selectedYear", dateYear == null? LocalDate.now().toString("YYYY") : dateYear);
-        
+        model.addAllAttributes(utils.prepareModel("Выручка магазина - " + shop.getName() + " - ИнфоПортал", 
+                "shops", "sales", 
+                dateMonth, dateYear));
+
         LocalDate selectedStartDate;
         LocalDate selectedEndDate;
         DateTimeFormatter formatter = DateTimeFormat.forPattern("dd MMMM YYYY");
@@ -99,22 +90,6 @@ public class SalesRouter
         
         SalesMeta salesMeta = salesService.getByShopAndDate(shop, selectedStartDate, selectedEndDate);
         
-        //SalesMeta salesMeta;
-        //if(tmpSalesMeta == null)
-        //{
-        //    salesMeta = new SalesMeta(shop, selectedStartDate, selectedEndDate);
-        //    salesMeta.setDescription("Таблица выручек: " 
-        //            + shop.getName() 
-        //            + " (" 
-        //            + selectedStartDate.toString("MMMM YYYY")
-        //            + ")"
-        //    );
-        //}
-        //else
-        //{
-        //    salesMeta = tmpSalesMeta;
-        //}
-        
         if(shop.isCountersEnabled())
         {
             for(Sales s : salesMeta.getSales())
@@ -126,6 +101,7 @@ public class SalesRouter
         
         
         model.addAttribute("salesMeta", salesMeta);
+        model.addAttribute("shop", shop);
         
         return "pages/shops/sales";
     }
@@ -138,25 +114,19 @@ public class SalesRouter
             @RequestBody List<SalesForm> salesForms, 
             ModelMap model)
     {
-        //log.info("Recieved sales: smid: " + smid + ", shopid: " + shopid + ", data: " + salesFormList);
         
-        if(smid == null && shopid == null)
-            throw new ResourceNotFoundException();
+        if(smid == null && shopid == null) throw new ResourceNotFoundException();
         
         String resultStr;
-        
-        
-        
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd.MM.YYYY");
+
         if(smid != null) // Обновление существующего периода
         {
             SalesMeta salesMeta = salesService.getById(smid);
-            DateTimeFormatter formatter = DateTimeFormat.forPattern("dd.MM.YYYY");
             
             for(SalesForm sf : salesForms)
             {
-                //log.info(formatter.parseLocalDate(sf.getDate()));
                 Sales sales = salesMeta.getByDate(formatter.parseLocalDate(sf.getDate()));
-                //sales.setPassability(sf.getPassability());
                 if(salesMeta.getShop().isCountersEnabled())
                 {
                     sales.setPassability(0);
@@ -178,14 +148,14 @@ public class SalesRouter
         {
             Shop shop = shopService.getById(shopid);
             Set<Sales> newSalesSet = new TreeSet<>();
-            DateTimeFormatter formatter = DateTimeFormat.forPattern("dd.MM.YYYY");
+            
             LocalDate startDate = formatter.parseLocalDate(salesForms.get(0).getDate());
             LocalDate endDate = formatter.parseLocalDate(salesForms.get(salesForms.size() - 1).getDate());
             
             for(SalesForm sf : salesForms)
             {
                 Sales sales = new Sales(shop, formatter.parseLocalDate(sf.getDate()));
-                //sales.setPassability(sf.getPassability());
+
                 if(shop.isCountersEnabled())
                 {
                     sales.setPassability(0);
@@ -219,37 +189,4 @@ public class SalesRouter
         
         return resultStr;
     }
-    
-    private List<String> formMonthValues()
-    {
-        List<String> result = new ArrayList<>();
-        result.add("Январь");
-        result.add("Февраль");
-        result.add("Март");
-        result.add("Апрель");
-        result.add("Май");
-        result.add("Июнь");
-        result.add("Июль");
-        result.add("Август");
-        result.add("Сентябрь");
-        result.add("Октябрь");
-        result.add("Ноябрь");
-        result.add("Декабрь");
-        
-        return result;
-    }
-    
-    private List<String> formYearValues()
-    {
-        List<String> result = new ArrayList<>();
-        result.add("2015");
-        result.add("2016");
-        result.add("2017");
-        result.add("2018");
-        result.add("2019");
-        result.add("2020");
-        
-        return result;
-    }
 }
-

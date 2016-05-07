@@ -18,10 +18,7 @@
 package ru.codemine.ccms.router;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import org.apache.log4j.Logger;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
@@ -38,11 +35,10 @@ import ru.codemine.ccms.entity.Counter;
 import ru.codemine.ccms.entity.Sales;
 import ru.codemine.ccms.entity.SalesMeta;
 import ru.codemine.ccms.entity.Shop;
-import ru.codemine.ccms.forms.SalesForm;
 import ru.codemine.ccms.service.CounterService;
-import ru.codemine.ccms.service.EmployeeService;
 import ru.codemine.ccms.service.SalesService;
 import ru.codemine.ccms.service.ShopService;
+import ru.codemine.ccms.utils.Utils;
 
 /**
  *
@@ -54,14 +50,10 @@ public class ReportsRouter //TODO this class needs refactoring
 
     private static final Logger log = Logger.getLogger("ReportsRouter");
 
-    @Autowired
-    private ShopService shopService;
-    @Autowired
-    private EmployeeService employeeService;
-    @Autowired
-    private CounterService counterService;
-    @Autowired
-    private SalesService salesService;
+    @Autowired private ShopService shopService;
+    @Autowired private CounterService counterService;
+    @Autowired private SalesService salesService;
+    @Autowired private Utils utils;
 
     @Secured("ROLE_USER")
     @RequestMapping(value = "/reports/sales-pass", method = RequestMethod.GET)
@@ -73,21 +65,14 @@ public class ReportsRouter //TODO this class needs refactoring
             ModelMap model)
     {
         
-        model.addAttribute("mainMenuActiveItem", "reports");
-
-        model.addAttribute("currentUser", employeeService.getCurrentUser());
-
-        model.addAttribute("monthList", formMonthValues());
-        model.addAttribute("yearList", formYearValues());
-
-        model.addAttribute("selectedMonth", dateMonth == null ? LocalDate.now().toString("MMMM") : dateMonth);
-        model.addAttribute("selectedYear", dateYear == null ? LocalDate.now().toString("YYYY") : dateYear);
+        model.addAllAttributes(utils.prepareModel("", "reports", "", dateMonth, dateYear));
 
         if (!graph) //Таблица
         {
             model.addAttribute("title", "Отчет по проходимости и продажам - ИнфоПортал");
             model.addAttribute("sideMenuActiveItem", "general");
-            model.addAttribute("salesMap", formShopSalesMap(dateMonth, dateYear));
+            model.addAttribute("salesMap", utils.getShopSalesMap(dateMonth, dateYear));
+            
             return "reports/sales-pass";
         } else //графики
         {
@@ -150,106 +135,10 @@ public class ReportsRouter //TODO this class needs refactoring
             model.addAttribute("graphDataDayTotalStack", graphDataDayTotalStack);
             model.addAttribute("graphDataPlan", graphDataPlan);
             
-            
             return "reports/sales-pass-graph";
         }
 
     }
 
-    private Map<Shop, SalesMeta> formShopSalesMap(String dateMonth, String dateYear)
-    {
-        LocalDate selectedStartDate;
-        LocalDate selectedEndDate;
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd MMMM YYYY");
-        if (dateMonth != null && dateYear != null) //Период задан пользователем
-        {
-            selectedStartDate = formatter.parseLocalDate("01 " + dateMonth + " " + dateYear);
-            selectedEndDate = selectedStartDate.dayOfMonth().withMaximumValue();
-        } else //Период - текущий месяц, по умолчанию
-        {
-            selectedStartDate = LocalDate.now().withDayOfMonth(1);
-            selectedEndDate = selectedStartDate.dayOfMonth().withMaximumValue();
-        }
-
-        List<Shop> shopList = shopService.getAllOpen();
-        Map<Shop, SalesMeta> salesMap = new LinkedHashMap();
-        for (Shop shop : shopList)
-        {
-            SalesMeta sm = salesService.getByShopAndDate(shop, selectedStartDate, selectedEndDate);
-
-            if (shop.isCountersEnabled())
-            {
-                for (Sales sales : sm.getSales())
-                {
-                    Counter counter = counterService.getByShopAndDate(shop, sales.getDate().toDateTime(LocalTime.MIDNIGHT));
-                    sales.setPassability(counter == null ? 0 : counter.getIn());
-                }
-            }
-            salesMap.put(shop, sm);
-        }
-
-        return salesMap;
-    }
-
-    //private List<SalesForm> formGraphSalesList(String dateMonth, String dateYear)
-    //{
-    //    List<SalesForm> result = new ArrayList<>();
-    //    LocalDate selectedStartDate;
-    //    LocalDate selectedEndDate;
-    //    DateTimeFormatter formatter = DateTimeFormat.forPattern("dd MMMM YYYY");
-    //    if(dateMonth != null && dateYear != null) //Период задан пользователем
-    //    {
-    //        selectedStartDate = formatter.parseLocalDate("01 " + dateMonth + " " + dateYear);
-    //        selectedEndDate = selectedStartDate.dayOfMonth().withMaximumValue();
-    //    }
-    //    else //Период - текущий месяц, по умолчанию
-    //    {
-    //        selectedStartDate = LocalDate.now().withDayOfMonth(1);
-    //        selectedEndDate = selectedStartDate.dayOfMonth().withMaximumValue();
-    //    }
-    //    
-    //    for(LocalDate date = selectedStartDate; date.isBefore(selectedEndDate); date = date.plusDays(1))
-    //    {
-    //        Integer counterPassability = counterService.getSumIn(date.toDateTime(LocalTime.MIDNIGHT));
-    //        Integer manualPassability = 0;
-    //        
-    //        
-    //        SalesForm sf = new SalesForm();
-    //        sf.setDate(date.toString("dd.MM.YYYY"));
-    //        sf.setPassability(counterPassability + manualPassability);
-    //   }
-    //    
-    //    return null;
-    //}
-    private List<String> formMonthValues()
-    {
-        List<String> result = new ArrayList<>();
-        result.add("Январь");
-        result.add("Февраль");
-        result.add("Март");
-        result.add("Апрель");
-        result.add("Май");
-        result.add("Июнь");
-        result.add("Июль");
-        result.add("Август");
-        result.add("Сентябрь");
-        result.add("Октябрь");
-        result.add("Ноябрь");
-        result.add("Декабрь");
-
-        return result;
-    }
-
-    private List<String> formYearValues()
-    {
-        List<String> result = new ArrayList<>();
-        result.add("2015");
-        result.add("2016");
-        result.add("2017");
-        result.add("2018");
-        result.add("2019");
-        result.add("2020");
-
-        return result;
-    }
+    
 }

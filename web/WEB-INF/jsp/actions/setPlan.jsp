@@ -235,11 +235,11 @@
                 shrinkToFit: false,
                 caption: "",
                 sortname: "shopname",
-                colNames: ['Магазин', 'Проходимость', 'Кол-во покупок', 'Выручка', 'План', 'Выполнение'],
+                colNames: ['Магазин', 'Проходимость', 'Покупок', 'Выручка', 'План', 'Выполнение'],
                 colModel: [
                     {name: 'shopname', index: 'shopname', width: 100, sorttype: "text", classes: "jqcol-bold"},
                     {name: 'passability', index: 'passability', width: 100, sorttype: "int", align: "right", classes: "jqcol-bold"},
-                    {name: 'cheque', index: 'cheque', width: 100, sorttype: "int", align: "right", classes: "jqcol-bold"},
+                    {name: 'cheque', index: 'cheque', width: 80, sorttype: "int", align: "right", classes: "jqcol-bold"},
                     {name: 'periodtotal', index: 'periodtotal', width: 100, sorttype: "float", align: "right", formatter: 'number', classes: "jqcol-bold",
                         formatoptions: {
                             decimalSeparator: ".", thousandsSeparator: " ", decimalPlaces: 2, defaultValue: '0.00'
@@ -250,7 +250,7 @@
                         },
                         editrules: {number: true, minValue: 0
                         }},
-                    {name: 'plancoverage', index: 'plancoverage', width: 100, sorttype: "float", align: "right", formatter: 'number', classes: "jqcol-bold",
+                    {name: 'plancoverage', index: 'plancoverage', width: 90, sorttype: "float", align: "right", formatter: 'number', classes: "jqcol-bold",
                         formatoptions: {
                             decimalSeparator: ".", thousandsSeparator: " ", decimalPlaces: 2, defaultValue: '0.00', suffix: '%'
                         }}
