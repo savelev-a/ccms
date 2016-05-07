@@ -233,7 +233,7 @@
 
 
                                 <span class="glyphicon glyphicon-cog"></span>
-                                <a href="<c:url value="/admin/shopprofile?id=${shop.id}" />" > Редактировать магазин </a>
+                                <a href="<c:url value="/admin/shopprofile?id=${shop.id}&userpage=true" />" > Редактировать магазин </a>
                                 &nbsp;
                                 <span class="glyphicon glyphicon-print"></span>
                                 <a href="#">Распечатать информацию</a>

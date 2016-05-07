@@ -75,7 +75,7 @@
                                 <br>
 
                                 <span class="glyphicon glyphicon-cog"></span>
-                                <a href="<c:url value="/admin/profile?id=${employee.id}" />" > Редактировать сотрудника </a>
+                                <a href="<c:url value="/admin/profile?id=${employee.id}&userpage=true" />" > Редактировать сотрудника </a>
                                 &nbsp;
                                 <span class="glyphicon glyphicon-print"></span>
                                 <a href="#">Распечатать</a>

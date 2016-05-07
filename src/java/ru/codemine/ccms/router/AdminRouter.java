@@ -126,7 +126,9 @@ public class AdminRouter
     
     @Secured("ROLE_ADMIN")
     @RequestMapping(value = "/admin/profile", method = RequestMethod.POST)
-    public String saveEmployee(@Valid @ModelAttribute("employee") Employee employee, BindingResult result, ModelMap model)
+    public String saveEmployee(@Valid @ModelAttribute("employee") Employee employee, 
+            @RequestParam(required = false) boolean userpage,
+            BindingResult result, ModelMap model)
     {
         if(result.hasErrors())
         {
@@ -149,7 +151,7 @@ public class AdminRouter
         
         employeeService.update(employee);
         
-        return "redirect:/admin/employees";
+        return userpage ? "redirect:/employee?id=" + employee.getId() : "redirect:/admin/employees";
     }
     
     @Secured("ROLE_ADMIN")
@@ -218,7 +220,10 @@ public class AdminRouter
     
     @Secured("ROLE_ADMIN")
     @RequestMapping(value = "/admin/orgprofile", method = RequestMethod.POST)
-    public String saveOrganisation(@Valid @ModelAttribute("organisation") Organisation organisation, BindingResult result, ModelMap model)
+    public String saveOrganisation(@Valid @ModelAttribute("organisation") Organisation organisation, 
+            @RequestParam(required = false) boolean userpage,
+            BindingResult result, 
+            ModelMap model)
     {
         if(result.hasErrors())
         {
@@ -230,7 +235,7 @@ public class AdminRouter
         
         organisationService.update(organisation);
         
-        return "redirect:/admin/organisations";
+        return userpage ? "redirect:/organisation?id=" + organisation.getId() : "redirect:/admin/organisations" ;
     }
     
     @Secured("ROLE_ADMIN")
@@ -302,7 +307,10 @@ public class AdminRouter
     
     @Secured("ROLE_ADMIN")
     @RequestMapping(value = "/admin/shopprofile", method = RequestMethod.POST)
-    public String saveShop(@Valid @ModelAttribute("shop") Shop shop, BindingResult result, ModelMap model)
+    public String saveShop(@Valid @ModelAttribute("shop") Shop shop, 
+            @RequestParam(required = false) boolean userpage,
+            BindingResult result, 
+            ModelMap model)
     {
         if(result.hasErrors())
         {
@@ -315,7 +323,7 @@ public class AdminRouter
         
         shopService.update(shop);
         
-        return "redirect:/admin/shops";
+        return userpage ? "redirect:/shop?id=" + shop.getId() : "redirect:/admin/shops";
     }
     
     @Secured("ROLE_ADMIN")
@@ -385,7 +393,10 @@ public class AdminRouter
     
     @Secured("ROLE_ADMIN")
     @RequestMapping(value = "/admin/officeprofile", method = RequestMethod.POST)
-    public String saveOffice(@Valid @ModelAttribute("office") Office office, BindingResult result, ModelMap model)
+    public String saveOffice(@Valid @ModelAttribute("office") Office office, 
+            @RequestParam(required = false) boolean userpage,
+            BindingResult result, 
+            ModelMap model)
     {
         if(result.hasErrors())
         {
@@ -398,7 +409,7 @@ public class AdminRouter
         
         officeService.update(office);
         
-        return "redirect:/admin/offices";
+        return userpage ? "redirect:/office?id=" + office.getId() : "redirect:/admin/offices";
     }
     
     @Secured("ROLE_ADMIN")

@@ -103,7 +103,7 @@
                                 <br>
 
                                 <span class="glyphicon glyphicon-cog"></span>
-                                <a href="<c:url value="/admin/officeprofile?id=${employee.id}" />" > Редактировать офис </a>
+                                <a href="<c:url value="/admin/officeprofile?id=${office.id}&userpage=true" />" > Редактировать офис </a>
                                 &nbsp;
                                 <span class="glyphicon glyphicon-print"></span>
                                 <a href="#">Распечатать</a>

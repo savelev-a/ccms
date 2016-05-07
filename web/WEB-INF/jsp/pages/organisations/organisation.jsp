@@ -97,7 +97,7 @@
                                 <br>
 
                                 <span class="glyphicon glyphicon-cog"></span>
-                                <a href="<c:url value="/admin/orgprofile?id=${organisation.id}" />" > Редактировать организацию </a>
+                                <a href="<c:url value="/admin/orgprofile?id=${organisation.id}&userpage=true" />" > Редактировать организацию </a>
                                 &nbsp;
                                 <span class="glyphicon glyphicon-print"></span>
                                 <a href="#">Распечатать реквизиты</a>
