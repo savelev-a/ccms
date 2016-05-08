@@ -170,7 +170,7 @@ public class ActionRouter
     
     @Secured("ROLE_OFFICE")
     @RequestMapping(value = "/actions/setPlanCustom", method = RequestMethod.POST)
-    public @ResponseBody String setPlanByOrg(
+    public @ResponseBody String setPlanCustom(
             @RequestParam String dateMonth,
             @RequestParam String dateYear,
             @RequestBody List<SalesPlanForm> salesPlanForms)

@@ -113,10 +113,18 @@ public class SalesDAOImpl implements SalesDAO
 
 
 
-    //@Override
-    //public SalesMeta getByShopAndDates(Shop shop, DateTime startDate, DateTime endDate)
-    //{
-    //    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    //}
+    @Override
+    public SalesMeta getByShopAndDate(Shop shop, LocalDate startDate, LocalDate endDate)
+    {
+        Session session = sessionFactory.getCurrentSession();
+        Query q = session.createQuery("FROM SalesMeta Sm WHERE Sm.shop.id = :shopid AND Sm.startDate = :startdate AND Sm.endDate = :enddate");
+        q.setInteger("shopid", shop.getId());
+        q.setDate("startdate", startDate.toDate());
+        q.setDate("enddate", endDate.toDate());
+        
+        SalesMeta sm = (SalesMeta)q.uniqueResult();
+        
+        return sm;
+    }
     
 }

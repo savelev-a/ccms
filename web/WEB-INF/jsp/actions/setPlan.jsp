@@ -223,7 +223,7 @@
                     shopname: "<c:out value='${entry.key.name}' />",
                     passability: <c:out value='${entry.value.passabilityTotals}' default="0" />,
                     cheque: <c:out value='${entry.value.chequeTotals}' default="0" />,
-                    periodtotal: <c:out value='${entry.value.periodTotals}' default="0.0" />,
+                    periodtotal: <c:out value='${entry.value.valueTotals}' default="0.0" />,
                     plan: <c:out value='${entry.value.plan}' default="0.0" />,
                     plancoverage: <c:out value='${entry.value.plan == 0 ? 0 : entry.value.planCoverage}' default="0.0" />
                 }, </c:forEach>];

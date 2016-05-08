@@ -87,22 +87,18 @@ public class SalesService
     @Transactional
     public SalesMeta getByShopAndDate(Shop shop, LocalDate startDate, LocalDate endDate)
     {
-        List<SalesMeta> smlist = salesDAO.getByShop(shop);
-
-        for(SalesMeta sm : smlist)
+        SalesMeta sm = salesDAO.getByShopAndDate(shop, startDate, endDate);
+        if(sm == null)
         {
-            if(sm.getStartDate().equals(startDate) && sm.getEndDate().equals(endDate))
-                return sm;
-        }
-        SalesMeta newSalesMeta = new SalesMeta(shop, startDate, endDate);
-        newSalesMeta.setDescription("Таблица выручек: " 
+            sm = new SalesMeta(shop, startDate, endDate);
+            sm.setDescription("Таблица выручек: " 
                     + shop.getName() 
                     + " (" 
                     + startDate.toString("MMMM YYYY")
-                    + ")"
-            );
+                    + ")");
+        }
         
-        return newSalesMeta;
+        return sm;
     }
     
 }

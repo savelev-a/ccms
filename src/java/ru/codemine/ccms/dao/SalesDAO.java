@@ -40,6 +40,6 @@ public interface SalesDAO
     public SalesMeta getById(Integer id);
     public List<SalesMeta> getByShop(Shop shop);
 
-    //public SalesMeta getByShopAndDates(Shop shop, DateTime startDate, DateTime endDate);
+    public SalesMeta getByShopAndDate(Shop shop, LocalDate startDate, LocalDate endDate);
     
 }
