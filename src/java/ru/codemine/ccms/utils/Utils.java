@@ -29,6 +29,7 @@ import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.codemine.ccms.entity.Counter;
+import ru.codemine.ccms.entity.Employee;
 import ru.codemine.ccms.entity.Sales;
 import ru.codemine.ccms.entity.SalesMeta;
 import ru.codemine.ccms.entity.Shop;
@@ -66,7 +67,12 @@ public class Utils
         modelMap.put("title", title);
         modelMap.put("mainMenuActiveItem", mainMenuActiveItem);
         modelMap.put("sideMenuActiveItem", sideMenuActiveItem);
-        modelMap.put("currentUser", employeeService.getCurrentUser());
+        Employee currentUser = employeeService.getCurrentUser();
+        modelMap.put("currentUser", currentUser);
+        if(currentUser != null && currentUser.getRoles() != null && currentUser.getRoles().contains("ROLE_SHOP"))
+        {
+            modelMap.put("currentShops", shopService.getCurrentUserShops());
+        }
         
         return modelMap;
     }

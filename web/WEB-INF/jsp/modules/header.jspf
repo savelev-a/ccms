@@ -44,6 +44,29 @@
                     </a> 
                 </li>
 
+                <sec:authorize access="hasRole('ROLE_SHOP')">
+                    <li class="dropdown ${mainMenuActiveItem == "myshop" ? "active" : ""}">
+                        <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown">
+                            Мои магазины
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <c:forEach items="${currentShops}" var="currentShop">
+                                <li>
+
+                                    <div class="dropdown-menu-item-center">-<b><c:out value="${currentShop.name}" />-</b></div>
+                                    <a href="<c:url value="/shop?id=${currentShop.id}" />">Информация</a>
+                                    <c:if test="${currentShop.countersEnabled}">
+                                        <a href="<c:url value="/counters?shopid=${currentShop.id}" />">Счетчики посетителей</a>
+                                    </c:if>
+                                    <a href="<c:url value="/sales?shopid=${currentShop.id}" />">Таблица проходимости</a>
+                                    <br>
+                                </li>
+                            </c:forEach>
+                        </ul>
+                    </li>
+                </sec:authorize>
+
                 <li class="dropdown ${mainMenuActiveItem == "reports" ? "active" : ""}">
                     <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown">
                         Отчеты
@@ -56,12 +79,13 @@
                     </ul>
                 </li>
 
-                <li ${mainMenuActiveItem == "admin" ? "class=active" : ""}>
-                    <a href="<c:url value="/admin" />">
-                        Администрирование
-                    </a> 
-                </li>
-
+                <sec:authorize access="hasRole('ROLE_ADMIN')">
+                    <li ${mainMenuActiveItem == "admin" ? "class=active" : ""}>
+                        <a href="<c:url value="/admin" />">
+                            Администрирование
+                        </a> 
+                    </li>
+                </sec:authorize>
             </ul>
 
             <ul class="nav navbar-nav navbar-right">

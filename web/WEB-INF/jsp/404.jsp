@@ -24,11 +24,13 @@
             <%@include file="modules/header.jspf" %>
 
             <br>
-            <div id="login-box" class="panel panel-info">
-                <h3>К сожалению, запрошенной страницы нет на сервере</h3>
+            <div id="error-box" class="panel panel-primary panel-primary-dark">
+                <div class="panel-heading panel-heading-dark" align="center">
+                    Страница не найдена
+                </div>
+                <h3 align="center">Запрошенной страницы нет на сервере</h3>
                 <br>
-                <h4>Если вы считаете что этого не может быть, просьба написать администратору сайта, предоставив ему следущую инфу:</h4>
-                <h4>404 at ${requestScope['javax.servlet.forward.request_uri']}</h4>
+                <h4>Если ранее страница была доступна - просьба сообщить об этом администратору сайта.</h4>
 
             </div>
 

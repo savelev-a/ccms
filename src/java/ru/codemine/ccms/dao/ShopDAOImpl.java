@@ -24,6 +24,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import ru.codemine.ccms.entity.Employee;
 import ru.codemine.ccms.entity.Shop;
 
 /**
@@ -89,6 +90,15 @@ public class ShopDAOImpl implements ShopDAO
         Shop shop = (Shop)session.createQuery("FROM Shop S WHERE S.name = '" + name + "'").uniqueResult();
         
         return shop;
+    }
+    
+    @Override
+    public List<Shop> getByAdmin(Employee admin)
+    {
+        Session session = sessionFactory.getCurrentSession();
+        List<Shop> result = session.createQuery("FROM Shop S WHERE S.shopAdmin.id = " + admin.getId()).list();
+        
+        return result;
     }
     
     @Override

@@ -86,6 +86,13 @@ body {
 
 }
 
+#error-box {
+    width: 600px;
+    padding: 20px;
+    margin: 50px auto;
+
+}
+
 .table-login tr td {
     padding: 5px;
 }
@@ -140,6 +147,10 @@ body {
 .dropdown-menu li a {
     color: white;
     font-size: inherit;
+}
+
+.dropdown-menu-item-center {
+    text-align: center;
 }
 
 .form-control {

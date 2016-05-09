@@ -24,8 +24,11 @@
             <%@include file="modules/header.jspf" %>
 
             <br>
-            <div id="login-box" class="panel panel-info">
-                <h3>К сожалению, у вас нет доступа к этой странице</h3>
+            <div id="error-box" class="panel panel-primary panel-primary-dark">
+                <div class="panel-heading panel-heading-dark" align="center">
+                    Доступ запрещен
+                </div>
+                <h3 align="center">У вас нет доступа к данной странице</h3>
                 <br>
                 <h4>Вы можете попробовать <a href="<c:url value="/login" />"> войти </a> под другим пользователем, либо написать администратору сайта</h4>
 

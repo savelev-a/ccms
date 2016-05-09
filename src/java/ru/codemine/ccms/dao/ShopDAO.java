@@ -19,6 +19,7 @@
 package ru.codemine.ccms.dao;
 
 import java.util.List;
+import ru.codemine.ccms.entity.Employee;
 import ru.codemine.ccms.entity.Shop;
 
 /**
@@ -36,6 +37,7 @@ public interface ShopDAO
     
     public Shop getById(Integer id);
     public Shop getByName(String name);
+    public List<Shop> getByAdmin(Employee admin);
     public List<Shop> getWithCounters();
     public List<Shop> getAllOpen();
     public List<Shop> getAll();

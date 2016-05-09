@@ -156,16 +156,16 @@
                                             <th>ИБП</th>
                                             <td><c:out value="${shop.hardware.ups}" /></td>
                                         </tr>
-                                        
+
                                         <tr>
                                             <th>Счетчик посетителей</th>
                                             <td>
                                                 <c:choose>
                                                     <c:when test="${shop.countersEnabled}">
                                                         <font color="green">Подключен</font>, Кондор-7
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                    Не подключен
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                        Не подключен
                                                     </c:otherwise>
                                                 </c:choose>
                                             </td>
@@ -210,23 +210,23 @@
                                             <th>Комментарии (сеть)</th>
                                             <td style="white-space: pre"><c:out value="${shop.provider.techData}" /></td>
                                         </tr>
-
-                                        <tr>
-                                            <th class="th-header-center" colspan="4"><u>Пароли / доступ</u></th>
-                                        </tr>
-                                        <tr>
-                                            <th>Ключи / лицензии</th>
-                                            <td colspan="3" style="white-space: pre"><c:out value="${shop.keys}" /></td>
-                                        </tr>
-                                        <tr>
-                                            <th>Пароли</th>
-                                            <td colspan="3" style="white-space: pre"><c:out value="${shop.passwords}" /></td>
-                                        </tr>
-                                        <tr>
-                                            <th>Тех. комментарии</th>
-                                            <td colspan="3" style="white-space: pre"><c:out value="${shop.techComment}" /></td>
-                                        </tr>
-
+                                        <sec:authorize access="hasAnyRole('ROLE_ADMIN', 'ROLE_OFFICE')">
+                                            <tr>
+                                                <th class="th-header-center" colspan="4"><u>Пароли / доступ</u></th>
+                                            </tr>
+                                            <tr>
+                                                <th>Ключи / лицензии</th>
+                                                <td colspan="3" style="white-space: pre"><c:out value="${shop.keys}" /></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Пароли</th>
+                                                <td colspan="3" style="white-space: pre"><c:out value="${shop.passwords}" /></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Тех. комментарии</th>
+                                                <td colspan="3" style="white-space: pre"><c:out value="${shop.techComment}" /></td>
+                                            </tr>
+                                        </sec:authorize>
                                     </tbody>
                                 </table>
                                 <br>
