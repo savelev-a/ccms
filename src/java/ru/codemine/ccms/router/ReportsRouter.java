@@ -35,6 +35,7 @@ import ru.codemine.ccms.entity.Counter;
 import ru.codemine.ccms.entity.Sales;
 import ru.codemine.ccms.entity.SalesMeta;
 import ru.codemine.ccms.entity.Shop;
+import ru.codemine.ccms.sales.SalesLoader;
 import ru.codemine.ccms.service.CounterService;
 import ru.codemine.ccms.service.SalesService;
 import ru.codemine.ccms.service.ShopService;
@@ -53,6 +54,7 @@ public class ReportsRouter //TODO this class needs refactoring
     @Autowired private ShopService shopService;
     @Autowired private CounterService counterService;
     @Autowired private SalesService salesService;
+    @Autowired private SalesLoader salesLoader;
     @Autowired private Utils utils;
 
     @Secured("ROLE_USER")
@@ -138,6 +140,15 @@ public class ReportsRouter //TODO this class needs refactoring
             return "reports/sales-pass-graph";
         }
 
+    }
+    
+        
+    @Secured("ROLE_ADMIN")
+    @RequestMapping(value = "/forceSalesAutoload", method = RequestMethod.POST)
+    public String forceSalesAutoload(ModelMap model)
+    {
+        salesLoader.processSales(shopService.getAllOpen());
+        return "redirect:/reports/sales-pass";
     }
 
     

@@ -169,7 +169,12 @@
                                                     </c:otherwise>
                                                 </c:choose>
                                             </td>
+                                            
+                                            <th>Имя Домино</th>
+                                            <td><c:out value="${shop.dominoName}" /></td>
                                         </tr>
+                                        
+                                        <tr><th> </th><td colspan="4">&nbsp;</td></tr>
 
                                         <tr>
                                             <th class="th-header-center" colspan="4"><u>Данные интернет-провайдера</u></th>

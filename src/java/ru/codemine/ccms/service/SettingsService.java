@@ -18,6 +18,10 @@
 
 package ru.codemine.ccms.service;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -34,15 +38,23 @@ import ru.codemine.ccms.forms.SettingsForm;
 @Service
 public class SettingsService 
 {
+    private static final Logger log = Logger.getLogger("SettingsService");
+    
     @Autowired
     private SettingsDAO settingsDAO;
     
     @Value("${storage.rootpath}")
     private String storageRootPath;
     
+    @Value("${storage.emailpath}")
+    private String storageEmailPath;
+    
     private static final String CK_COMPANY_NAME = "CK_CompanyName";
     private static final String CK_KONDOR_FTP_LOGIN = "CK_KondorFtpLogin";
     private static final String CK_KONDOR_FTP_PASSWORD = "CK_KondorFtpPassword";
+    private static final String CK_SALES_LOADER_URL = "CK_SalesLoaderUrl";
+    private static final String CK_SALES_LOADER_EMAIL = "CK_SalesLoaderEmail";
+    private static final String CK_SALES_LOADER_EMAIL_PASS = "CK_SalesLoaderEmailPass";
 
     /**
      * Возвращает путь для сохранения файлов
@@ -50,7 +62,39 @@ public class SettingsService
      */
     public String getStorageRootPath()
     {
+        File test = new File(storageRootPath);
+        if(!test.isDirectory()) {
+            try
+            {
+                Files.createDirectory(test.toPath());
+            } 
+            catch (IOException ex)
+            {
+                log.error("Cannot create directory for storage root! Path: " + storageRootPath + ", error is: " + ex.getMessage());
+            }
+        }
         return storageRootPath;
+    }
+    
+    /**
+     * Возвращает путь для сохранения вложений из email
+     * @return
+     */
+    public String getStorageEmailPath()
+    {
+        File test = new File(storageEmailPath);
+        if(!test.isDirectory()) {
+            try
+            {
+                Files.createDirectory(test.toPath());
+            } 
+            catch (IOException ex)
+            {
+                log.error("Cannot create directory for emails! Path: " + storageEmailPath + ", error is: " + ex.getMessage());
+            }
+        }
+        
+        return storageEmailPath;
     }
     
     /**
@@ -128,6 +172,55 @@ public class SettingsService
         settingsDAO.update(settings);
     }
     
+    @Transactional
+    public String getSalesLoaderEmail()
+    {
+        Settings settings = settingsDAO.getByKey(CK_SALES_LOADER_EMAIL);
+        String email = (settings == null ? "" : settings.getValue());
+        
+        return email;
+    }
+    
+    @Transactional
+    public void setSalesLoaderEmail(String email)
+    {
+        Settings settings = new Settings(CK_SALES_LOADER_EMAIL, email);
+        settingsDAO.update(settings);
+    }
+    
+    @Transactional
+    public String getSalesLoaderUrl()
+    {
+        Settings settings = settingsDAO.getByKey(CK_SALES_LOADER_URL);
+        String url = (settings == null ? "" : settings.getValue());
+        
+        return url;
+    }
+    
+    @Transactional
+    public void setSalesLoaderUrl(String url)
+    {
+        Settings settings = new Settings(CK_SALES_LOADER_URL, url);
+        settingsDAO.update(settings);
+    }
+    
+    @Transactional
+    public String getSalesLoaderEmailPass()
+    {
+        Settings settings = settingsDAO.getByKey(CK_SALES_LOADER_EMAIL_PASS);
+        String pass = (settings == null ? "" : settings.getValue());
+        
+        return pass;
+    }
+    
+    @Transactional
+    public void setSalesLoaderEmailPass(String pass)
+    {
+        Settings settings = new Settings(CK_SALES_LOADER_EMAIL_PASS, pass);
+        settingsDAO.update(settings);
+    }
+    
+    
     /**
      * Создает форму настроек и загружает ее данными из БД
      * @return
@@ -140,10 +233,16 @@ public class SettingsService
         Settings companyName = settingsDAO.getByKey(CK_COMPANY_NAME);
         Settings kondorFtpLogin = settingsDAO.getByKey(CK_KONDOR_FTP_LOGIN);
         Settings kondorFtpPassword = settingsDAO.getByKey(CK_KONDOR_FTP_PASSWORD);
+        Settings salesLoaderEmail = settingsDAO.getByKey(CK_SALES_LOADER_EMAIL);
+        Settings salesLoaderEmailPass = settingsDAO.getByKey(CK_SALES_LOADER_EMAIL_PASS);
+        Settings salesLoaderUrl = settingsDAO.getByKey(CK_SALES_LOADER_URL);
         
         settingsForm.setCompanyName(companyName == null ? "" : companyName.getValue());
         settingsForm.setCountersKondorFtpLogin(kondorFtpLogin == null ? "" : kondorFtpLogin.getValue());
         settingsForm.setCountersKondorFtpPassword(kondorFtpPassword == null ? "" : kondorFtpPassword.getValue());
+        settingsForm.setSalesLoaderEmail(salesLoaderEmail == null ? "user@example.com" : salesLoaderEmail.getValue());
+        settingsForm.setSalesLoaderEmailPass(salesLoaderEmailPass == null ? "" : salesLoaderEmailPass.getValue());
+        settingsForm.setSalesLoaderUrl(salesLoaderUrl == null ? "" : salesLoaderUrl.getValue());
         
         return settingsForm;
     }
@@ -161,12 +260,18 @@ public class SettingsService
         if(form == null 
                 || form.getCompanyName() == null 
                 || form.getCountersKondorFtpLogin() == null 
-                || form.getCountersKondorFtpPassword() == null)
+                || form.getCountersKondorFtpPassword() == null
+                || form.getSalesLoaderEmail() == null
+                || form.getSalesLoaderEmailPass() == null
+                || form.getSalesLoaderUrl() == null)
             return;
         
         settingsDAO.update(new Settings(CK_COMPANY_NAME, form.getCompanyName()));
         settingsDAO.update(new Settings(CK_KONDOR_FTP_LOGIN, form.getCountersKondorFtpLogin()));
         settingsDAO.update(new Settings(CK_KONDOR_FTP_PASSWORD, form.getCountersKondorFtpPassword()));
+        settingsDAO.update(new Settings(CK_SALES_LOADER_EMAIL, form.getSalesLoaderEmail()));
+        settingsDAO.update(new Settings(CK_SALES_LOADER_EMAIL_PASS, form.getSalesLoaderEmailPass()));
+        settingsDAO.update(new Settings(CK_SALES_LOADER_URL, form.getSalesLoaderUrl()));
     }
 
 }

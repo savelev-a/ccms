@@ -64,6 +64,25 @@
                                                 <td><form:input path="countersKondorFtpPassword" class="form-control" /> </td>
                                                 <td><form:errors path="countersKondorFtpPassword" cssStyle="color: #ff0000;" /></td>
                                             </tr>
+                                            <tr>
+                                                <th colspan="3" class="th-header-center">Автоматическая загрузка выручки (Email)</th>
+                                            </tr>
+
+                                            <tr>
+                                                <td><b>Почтовый сервер</b></td>
+                                                <td><form:input path="salesLoaderUrl" class="form-control" /> </td>
+                                                <td><form:errors path="salesLoaderUrl" cssStyle="color: #ff0000;" /></td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>Имя пользователя</b></td>
+                                                <td><form:input path="salesLoaderEmail" class="form-control" /> </td>
+                                                <td><form:errors path="salesLoaderEmail" cssStyle="color: #ff0000;" /></td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>Пароль</b></td>
+                                                <td><form:input path="salesLoaderEmailPass" class="form-control" /> </td>
+                                                <td><form:errors path="salesLoaderEmailPass" cssStyle="color: #ff0000;" /></td>
+                                            </tr>
                                         </tbody>
                                     </table>
                                     <input id="save" type="submit" value="Сохранить" class="btn btn-primary">

@@ -18,6 +18,7 @@
 
 package ru.codemine.ccms.forms;
 
+import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
 
 /**
@@ -34,6 +35,16 @@ public class SettingsForm
     
     @Length(max = 64)
     private String countersKondorFtpPassword;
+    
+    @Length(max = 128)
+    @Email
+    private String salesLoaderEmail;
+    
+    @Length(max = 128)
+    private String salesLoaderEmailPass;
+    
+    @Length(max = 128)
+    private String salesLoaderUrl;
 
     public String getCompanyName()
     {
@@ -64,8 +75,37 @@ public class SettingsForm
     {
         this.countersKondorFtpPassword = countersKondorFtpPassword;
     }
-    
-    
-    
 
+    public String getSalesLoaderEmail()
+    {
+        return salesLoaderEmail;
+    }
+
+    public void setSalesLoaderEmail(String salesLoaderEmail)
+    {
+        this.salesLoaderEmail = salesLoaderEmail;
+    }
+
+    public String getSalesLoaderEmailPass()
+    {
+        return salesLoaderEmailPass;
+    }
+
+    public void setSalesLoaderEmailPass(String salesLoaderEmailPass)
+    {
+        this.salesLoaderEmailPass = salesLoaderEmailPass;
+    }
+
+    public String getSalesLoaderUrl()
+    {
+        return salesLoaderUrl;
+    }
+
+    public void setSalesLoaderUrl(String salesLoaderUrl)
+    {
+        this.salesLoaderUrl = salesLoaderUrl;
+    }
+    
+    
+    
 }

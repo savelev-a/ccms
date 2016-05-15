@@ -72,7 +72,13 @@
                                 </div>
                                 <br><br>
                                 <b>Примечание:</b> Чтобы увидеть подробный отчет по конкретному магазину - кликните на его названии 
-
+                                <sec:authorize access="hasRole('ROLE_ADMIN')">
+                                    <br><br>
+                                    <form action="<c:url value='/forceSalesAutoload' />" method="POST">
+                                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                                        <input type="submit" value="Запустить цикл автообновления вручную" class="btn btn-primary">
+                                    </form>
+                                </sec:authorize>
                             </div>
                         </div>
                     </div>

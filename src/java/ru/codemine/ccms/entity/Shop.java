@@ -128,6 +128,9 @@ public class Shop implements Serializable
     @Column(name = "countersEnabled", nullable = false)
     private boolean countersEnabled;
     
+    @Length(max = 128)
+    @Column(name = "dominoName", length = 128, nullable = false)
+    private String dominoName;
     
     public Integer getId()
     {
@@ -320,9 +323,17 @@ public class Shop implements Serializable
         this.countersEnabled = countersEnabled;
     }
 
-    
- 
+    public String getDominoName()
+    {
+        return dominoName;
+    }
 
+    public void setDominoName(String dominoName)
+    {
+        this.dominoName = dominoName;
+    }
+
+    
     @Override
     public String toString()
     {

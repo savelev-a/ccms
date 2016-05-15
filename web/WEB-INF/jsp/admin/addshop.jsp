@@ -228,6 +228,10 @@
                                                 <td><b>Включить счетчик посетителей</b></td>
                                                 <td><form:checkbox path="countersEnabled" class="form-control" /></td>
                                                 <td><form:errors path="countersEnabled" cssStyle="color: #ff0000;" /></td>
+                                                
+                                                <td><b>Имя в Домино</b></td>
+                                                <td><form:input path="dominoName" class="form-control" /></td>
+                                                <td><form:errors path="dominoName" cssStyle="color: #ff0000;" /></td>
                                             </tr>
 
 
