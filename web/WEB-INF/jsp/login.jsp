@@ -45,9 +45,9 @@
                             <td>Имя пользователя: </td>
                             <td>
                                 <select name="username" class="form-control" >
-                                    <c:forEach items="${activeUsers}" var="user" >
-                                        <option value="${user.username}">
-                                            <c:out value="${user.fullName}" />
+                                    <c:forEach items="${loginMap}" var="entry" >
+                                        <option value="${entry.key}">
+                                            <c:out value="${entry.value}" />
                                         </option>
                                     </c:forEach>
                                 </select>

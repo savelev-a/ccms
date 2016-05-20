@@ -17,6 +17,9 @@
  */
 package ru.codemine.ccms.router;
 
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -107,7 +110,37 @@ public class DefaultRouter
     public String getLogin(ModelMap model, @RequestParam(required = false) boolean error)
     {
         model.addAllAttributes(utils.prepareModel("Авторизация - ИнфоПортал", "", ""));
-        model.addAttribute("activeUsers", employeeService.getActive());
+
+        List<Employee> activeEmpsList = employeeService.getActive();
+        Map<String, String> upperMap = new LinkedHashMap();
+        Map<String, String> lowerMap = new LinkedHashMap();
+        Map<String, String> loginMap = new LinkedHashMap();
+        for(Employee employee : activeEmpsList)
+        {
+            List<Shop> empShopsList = shopService.getShopsRuledBy(employee);
+            if(empShopsList != null && !empShopsList.isEmpty())
+            {
+                String shopsString = "";
+                for(Shop s : empShopsList)
+                {
+                    shopsString = shopsString + ", " + s.getName();
+                }
+                shopsString = shopsString.substring(2); // удаление первой запятой
+                    
+                lowerMap.put(employee.getUsername(), employee.getFullName() + " (" + shopsString + ")");
+            }
+            else
+            {
+                upperMap.put(employee.getUsername(), employee.getFullName());
+            }
+        }
+        
+        loginMap.put("#nologin1", "   -- Выберите пользователя --");
+        loginMap.putAll(upperMap);
+        loginMap.put("#nologin2", "          -- Магазины --");
+        loginMap.putAll(lowerMap);
+        
+        model.addAttribute("loginMap", loginMap);
 
         return "login";
     }

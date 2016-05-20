@@ -16,10 +16,10 @@
                         </a> 
                     </td>
                 </tr>
-
+                
                 <tr ${sideMenuActiveItem == "graph" ? "class='info'" : ""}>
                     <td>
-                        <a href="<c:url value="/reports/sales-pass?graph=true" />">
+                        <a href="<c:url value="/reports/graph/sales-pass" />">
                             Графики
                         </a> 
                     </td>

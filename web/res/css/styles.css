@@ -208,6 +208,11 @@ body {
     background-color: lightcyan !important;
 }
 
+.ui-widget-content .jqrow-yellow td {
+    //font-weight: bold !important;
+    background-color: lightyellow;
+}
+
 .jqcol-font-bold {
     font-weight: bold !important;
 }
@@ -217,4 +222,12 @@ body {
 }
 .jqcol-hyperlink:hover {
     text-decoration: underline;
+}
+
+.ui-subtblcell td {
+    padding: 1px 2px 1px 2px;
+}
+
+.ui-th-subgrid {
+    padding: 1px 2px 1px 2px;
 }

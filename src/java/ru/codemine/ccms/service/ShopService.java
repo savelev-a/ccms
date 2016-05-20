@@ -119,5 +119,11 @@ public class ShopService
         }
         return null;
     }
+    
+    @Transactional
+    public List<Shop> getShopsRuledBy(Employee employee)
+    {
+        return shopDAO.getByAdmin(employee);
+    }
 
 }

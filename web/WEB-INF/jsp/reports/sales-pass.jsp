@@ -98,21 +98,12 @@
 
     <script type="text/javascript">
         $(function () {
-            var data = [<c:forEach items="${salesMap}" var="entry">{
-                    shopname: "<a href='<c:url value="/sales/?shopid=${entry.key.id}&dateMonth=${selectedMonth}&dateYear=${selectedYear}" />'> <c:out value='${entry.key.name}' /> </a>",
-                    passability: <c:out value='${entry.value.passabilityTotals}' default="0" />,
-                    cheque: <c:out value='${entry.value.chequeTotals}' default="0" />,
-                    value: <c:out value='${entry.value.valueTotals}' default="0.0" />,
-                    cashback: <c:out value='${entry.value.cashbackTotals}' default="0.0" />,
-                    periodtotal: <c:out value='${entry.value.periodTotals}' default="0.0" />,
-                    midPrice: <c:out value='${entry.value.chequeTotals == 0 ? 0 : entry.value.periodMidPrice}' default="0.0" />,
-                    plan: <c:out value='${entry.value.plan}' default="0.0" />,
-                    plancoverage: <c:out value='${entry.value.plan == 0 ? 0 : entry.value.planCoverage}' default="0.0" />
-                }, </c:forEach>];
 
             $("#reportTable").jqGrid({
-                datatype: "local",
-                height: "100%",
+                url: "<c:url value="/reports/sales-pass/data?dateMonth=${selectedMonth}&dateYear=${selectedYear}" />",
+                datatype: "json",
+                loadonce: true,
+                height: "350px",
                 width: null,
                 shrinkToFit: false,
                 caption: "",
@@ -146,11 +137,44 @@
                         formatoptions: {
                             decimalSeparator: ".", thousandsSeparator: " ", decimalPlaces: 2, defaultValue: '0.00', suffix: '%'
                         }}
-                ]
+                ],
+                subGrid: true,
+                subGridRowExpanded: function(subgrid_id, row_id) {
+                    var subgrid_table_id = subgrid_id + "_t";
+                    var shopname = jQuery("#reportTable").jqGrid('getCell', row_id, 'shopname');
+                    var subgrid_width = jQuery("#reportTable").width() - 25;
+                    
+                    $("#"+subgrid_id).html("<table id='"+subgrid_table_id+"' class='scroll'></table>");
+                    jQuery("#"+subgrid_table_id).jqGrid({
+                        url: "<c:url value="/reports/sales-pass/details?dateMonth=${selectedMonth}&dateYear=${selectedYear}&shopname=" />" + shopname,
+                        datatype: "json",
+                        height: "100%",
+                        //autowidth: true,
+                        shrinkToFit: false,
+                        width: subgrid_width,
+                        colNames: [<c:forEach items="${subgridColNames}" var="colName" >'<c:out value="${colName}" />', </c:forEach>],
+                        colModel: [
+                                {name: "info", index: "info", width: 100, classes: 'jqcol-bold'},
+                                <c:forEach items="${subgridColNames}" varStatus="idx" begin="2">
+                                        {name: "c${idx.count}", index: "c${idx.count}", width: 70, align: "right", formatter: 'number', 
+                                            formatoptions: {
+                                                decimalSeparator: ".", thousandsSeparator: " ", decimalPlaces: 2, defaultValue: '0.00'
+                                            }
+                                        },
+                                </c:forEach>
+                                {name: "totals", index: "totals", width: 70, align: "right", formatter: 'number', 
+                                formatoptions: {
+                                                decimalSeparator: ".", thousandsSeparator: " ", decimalPlaces: 2, defaultValue: '0.00'
+                                            }
+                                        }
+                        ],
+                        rowattr: function(rd) {
+                            if(rd.info == "Выручка" || rd.info == "Средний чек") return { "class": "jqrow-yellow" };
+                        }
+                    });
+                }
+                
             });
-
-            for (var i = 0; i <= data.length; i++)
-                jQuery("#reportTable").jqGrid('addRowData', i + 1, data[i]);
         });
     </script>
 

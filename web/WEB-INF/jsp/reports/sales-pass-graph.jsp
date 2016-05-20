@@ -42,7 +42,7 @@
 
                                 <!-- Выбор периода и магазина -->
                                 <div class="form-inline" align="right">
-                                    <form name="dateChooseForm" action="<c:url value="/reports/sales-pass" />" method="GET">
+                                    <form name="dateChooseForm" action="<c:url value="/reports/graph/sales-pass" />" method="GET">
                                         Магазин: 
                                         <select name="shopid" class="form-control" >
                                             <c:forEach items="${shopList}" var="shp" >
