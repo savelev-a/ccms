@@ -107,6 +107,7 @@
                 width: null,
                 shrinkToFit: false,
                 caption: "",
+                rowNum: -1,
                 sortname: "shopname",
                 colNames: ['Магазин', 'Проходимость', 'Кол-во покупок', 'Выручка по ККМ', 'Возвраты', 'Средний чек', 'Итого', 'План', 'Выполнение'],
                 colModel: [

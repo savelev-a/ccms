@@ -69,7 +69,7 @@ public class Sales implements Serializable, Comparable<Sales>
     private Integer chequeCount;
     
     //@Digits(integer = 5, fraction = 2)
-    @Range(min = 0)
+    //@Range(min = 0)
     @NotNull
     @Column(name = "s_value", nullable = false)
     private Double value;
