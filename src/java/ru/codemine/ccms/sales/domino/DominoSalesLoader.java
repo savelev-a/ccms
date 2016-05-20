@@ -25,6 +25,7 @@ import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -67,9 +68,9 @@ public class DominoSalesLoader implements SalesLoader
         File path = new File(settingsService.getStorageEmailPath());
         FilenameFilter filter = new EndsWithFilenameFilter(".xls", EndsWithFilenameFilter.NEVER);
         Map<LocalDate, Map<String, Double>> result = new HashMap<>();
-        try
+        for (File file : path.listFiles(filter))
         {
-            for (File file : path.listFiles(filter))
+            try
             {
 
                 log.info("Starting file processing: " + file.getName());
@@ -99,7 +100,7 @@ public class DominoSalesLoader implements SalesLoader
                         {
                             dateFound = true;
                             fileDate = startDate;
-                            log.debug("date found! it is: " + fileDate);
+                            log.info("date found! it is: " + fileDate);
                         }
 
                     } else if (firstCell.getCellType() == Cell.CELL_TYPE_STRING && firstCell.getStringCellValue().startsWith("№ п/п"))
@@ -110,7 +111,7 @@ public class DominoSalesLoader implements SalesLoader
                             {
                                 colFound = true;
                                 colNumber = headersCell.getColumnIndex();
-                                log.debug("headers found! it in col number " + colNumber);
+                                log.info("headers found! it in col number " + colNumber);
                             }
                         }
                     } else if (dateFound && colFound
@@ -121,13 +122,17 @@ public class DominoSalesLoader implements SalesLoader
                         //String[] names = namesStr.split(" - ");
                         //String name = names[1];  - Не подходит для некоторых названий
                         String delimiter = " - ";
-                        String name = namesStr.substring(
+                        if(namesStr.indexOf(delimiter) > 0 && namesStr.indexOf(delimiter) != namesStr.lastIndexOf(delimiter))
+                        {
+                            String name = namesStr.substring(
                                 namesStr.indexOf(delimiter) + delimiter.length(),
                                 namesStr.lastIndexOf(delimiter));
 
-                        Double value = row.getCell(colNumber).getNumericCellValue();
-                        parsedFileMap.put(name, value);
-                        log.debug("Recieved file map: " + parsedFileMap);
+                            Double value = row.getCell(colNumber).getNumericCellValue();
+                            parsedFileMap.put(name, value);
+                            log.debug("Recieved file map: " + parsedFileMap);
+                        }
+                        
                     }
 
                 } // foreach row in sheet
@@ -150,12 +155,13 @@ public class DominoSalesLoader implements SalesLoader
                     log.error("cannot process file " + file.getName());
                 }
 
-            }// foreach file in path
+            }
+            catch (Exception e)
+            {
+                log.error("Cannot process files, error is: " + e.getMessage());
+            }
 
-        } catch (Exception e)
-        {
-            log.error("Cannot process files, error is: " + e.getMessage());
-        }
+        } // foreach file in path
 
         return result;
     }   // getSalesMap()
@@ -170,22 +176,26 @@ public class DominoSalesLoader implements SalesLoader
 
         if (!processMap.isEmpty())
         {
-            LocalDate date = processMap.keySet().iterator().next();
-            Map<String, Double> valuesMap = processMap.get(date);
-            for (Shop shop : shops)
+            for(Entry<LocalDate, Map<String, Double>> entry : processMap.entrySet())
             {
-                Double salesVal = valuesMap.get(shop.getDominoName());
-                if(salesVal != null)
+                LocalDate date = entry.getKey();
+                Map<String, Double> valuesMap = entry.getValue();
+                
+                for (Shop shop : shops)
                 {
-                    SalesMeta sm = salesService.getByShopAndDate(shop, date.withDayOfMonth(1), date.dayOfMonth().withMaximumValue());
-                    Sales sales = sm.getByDate(date);
-                    sales.setValue(salesVal);
-                    salesService.update(sm);
-                }
-                else
-                {
-                    log.warn("Cannot get sales value for shop " + shop.getName() + ", not fount in table!");
-                    log.warn("Domino name is: " + shop.getDominoName());
+                    Double salesVal = valuesMap.get(shop.getDominoName());
+                    if(salesVal != null)
+                    {
+                        SalesMeta sm = salesService.getByShopAndDate(shop, date.withDayOfMonth(1), date.dayOfMonth().withMaximumValue());
+                        Sales sales = sm.getByDate(date);
+                        sales.setValue(salesVal);
+                        salesService.update(sm);
+                    }
+                    else
+                    {
+                        log.warn("Cannot get sales value for shop " + shop.getName() + ", not fount in table!");
+                        log.warn("Domino name is: " + shop.getDominoName());
+                    }
                 }
             }
             
