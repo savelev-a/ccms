@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,11 +64,11 @@ public class DominoSalesLoader implements SalesLoader
     @Autowired
     private SalesService salesService;
 
-    private Map<LocalDate, Map<String, Double>> getSalesMaps()
+    private Map<LocalDate, Map<String, Sales>> getSalesMap()
     {
         File path = new File(settingsService.getStorageEmailPath());
         FilenameFilter filter = new EndsWithFilenameFilter(".xls", EndsWithFilenameFilter.NEVER);
-        Map<LocalDate, Map<String, Double>> result = new HashMap<>();
+        Map<LocalDate, Map<String, Sales>> result = new HashMap();
         for (File file : path.listFiles(filter))
         {
             try
@@ -82,12 +83,16 @@ public class DominoSalesLoader implements SalesLoader
                 boolean colFound = false;
                 Integer colNumber = 0;
                 LocalDate fileDate = null;
-                Map<String, Double> parsedFileMap = new HashMap();
+                Map<String, Sales> parsedFileMap = new HashMap();
 
                 for (Row row : sheet)
                 {
                     Cell firstCell = row.getCell(0);
 
+                    
+                    //
+                    // Поиск даты документа
+                    //
                     if (firstCell.getCellType() == Cell.CELL_TYPE_STRING
                             && firstCell.getStringCellValue().startsWith("Отчет по реализации и возвратам"))
                     {
@@ -103,7 +108,13 @@ public class DominoSalesLoader implements SalesLoader
                             log.info("date found! it is: " + fileDate);
                         }
 
-                    } else if (firstCell.getCellType() == Cell.CELL_TYPE_STRING && firstCell.getStringCellValue().startsWith("№ п/п"))
+                    } 
+                    
+                    //
+                    // Поиск столбца с фактической суммой
+                    //
+                    
+                    else if (firstCell.getCellType() == Cell.CELL_TYPE_STRING && firstCell.getStringCellValue().startsWith("№ п/п"))
                     {
                         for (Cell headersCell : row)
                         {
@@ -114,23 +125,56 @@ public class DominoSalesLoader implements SalesLoader
                                 log.info("headers found! it in col number " + colNumber);
                             }
                         }
-                    } else if (dateFound && colFound
+                    } 
+                    
+                    //
+                    // Поиск и обработка записей магазинов
+                    //
+                    
+                    else if (dateFound && colFound
                             && firstCell.getCellType() == Cell.CELL_TYPE_STRING
-                            && firstCell.getStringCellValue().startsWith("Итого по:"))
+                            && firstCell.getStringCellValue().startsWith("Подразделение:"))
                     {
-                        String namesStr = firstCell.getStringCellValue().replace("Итого по: ", "");
-                        //String[] names = namesStr.split(" - ");
-                        //String name = names[1];  - Не подходит для некоторых названий
+                        Sales sale = new Sales();
+                        
+                        // Поиск имени магазина
+                        String namesStr = firstCell.getStringCellValue().replace("Подразделение: ", "");
                         String delimiter = " - ";
                         if(namesStr.indexOf(delimiter) > 0 && namesStr.indexOf(delimiter) != namesStr.lastIndexOf(delimiter))
                         {
                             String name = namesStr.substring(
                                 namesStr.indexOf(delimiter) + delimiter.length(),
                                 namesStr.lastIndexOf(delimiter));
-
-                            Double value = row.getCell(colNumber).getNumericCellValue();
-                            parsedFileMap.put(name, value);
-                            log.debug("Recieved file map: " + parsedFileMap);
+                            
+                            // Разбор записи магазина
+                            boolean shopFinished = false;
+                            int i = 1;
+                            while(!shopFinished)    
+                            {
+                                Row r = sheet.getRow(row.getRowNum() + i);
+                                if(r.getCell(0).getCellType() == Cell.CELL_TYPE_NUMERIC) // строка с продажей или возвратом
+                                {
+                                    Double val = r.getCell(colNumber).getNumericCellValue();
+                                    //log.debug("i is: " + i + ", val is: " + val);
+                                    if(val > 0)
+                                        sale.setValue(sale.getValue() + val);           //выручка
+                                    else
+                                        sale.setCashback(sale.getCashback() - val);     //возврат
+                                }
+                                else if(r.getCell(0).getStringCellValue().startsWith("Итого по:"))
+                                {
+                                    //log.debug("finished shop record, i is: " + i);
+                                    sale.setChequeCount(i - 1);
+                                    shopFinished = true;
+                                }
+                                
+                                i++;
+                            }
+                            
+                            parsedFileMap.put(name, sale);
+                            //Double value = row.getCell(colNumber).getNumericCellValue();
+                            //parsedFileMap.put(name, value);
+                            //log.debug("Recieved file map: " + parsedFileMap);
                         }
                         
                     }
@@ -158,6 +202,7 @@ public class DominoSalesLoader implements SalesLoader
             }
             catch (Exception e)
             {
+                //e.printStackTrace();
                 log.error("Cannot process files, error is: " + e.getMessage());
             }
 
@@ -171,24 +216,25 @@ public class DominoSalesLoader implements SalesLoader
     {
         emailExtractor.saveAllAttachment();
 
-        Map<LocalDate, Map<String, Double>> processMap = getSalesMaps();
-        log.debug("ready: " + processMap);
+        Map<LocalDate, Map<String, Sales>> processMap = getSalesMap();
 
         if (!processMap.isEmpty())
         {
-            for(Entry<LocalDate, Map<String, Double>> entry : processMap.entrySet())
+            for(Entry<LocalDate, Map<String, Sales>> entry : processMap.entrySet())
             {
                 LocalDate date = entry.getKey();
-                Map<String, Double> valuesMap = entry.getValue();
+                Map<String, Sales> valuesMap = entry.getValue();
                 
                 for (Shop shop : shops)
                 {
-                    Double salesVal = valuesMap.get(shop.getDominoName());
-                    if(salesVal != null)
+                    Sales saleFromMap = valuesMap.get(shop.getDominoName());
+                    if(saleFromMap != null)
                     {
                         SalesMeta sm = salesService.getByShopAndDate(shop, date.withDayOfMonth(1), date.dayOfMonth().withMaximumValue());
                         Sales sales = sm.getByDate(date);
-                        sales.setValue(salesVal);
+                        sales.setValue(saleFromMap.getValue());
+                        sales.setCashback(saleFromMap.getCashback());
+                        sales.setChequeCount(saleFromMap.getChequeCount());
                         salesService.update(sm);
                     }
                     else

@@ -80,7 +80,13 @@ public class Sales implements Serializable, Comparable<Sales>
     @Column(name = "s_cashback", nullable = false)
     private Double cashback;
 
-    public Sales(){}
+    public Sales()
+    {
+        this.cashback = 0.0;
+        this.chequeCount = 0;
+        this.passability = 0;
+        this.value = 0.0;
+    }
     
     public Sales(Shop shop, LocalDate date)
     {
