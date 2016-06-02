@@ -148,10 +148,11 @@ public class DominoSalesLoader implements SalesLoader
                             
                             // Разбор записи магазина
                             boolean shopFinished = false;
-                            int i = 1;
+                            int rcrd = 1;
+                            int cashb_rcrd = 0;
                             while(!shopFinished)    
                             {
-                                Row r = sheet.getRow(row.getRowNum() + i);
+                                Row r = sheet.getRow(row.getRowNum() + rcrd);
                                 if(r.getCell(0).getCellType() == Cell.CELL_TYPE_NUMERIC) // строка с продажей или возвратом
                                 {
                                     Double val = r.getCell(colNumber).getNumericCellValue();
@@ -159,16 +160,19 @@ public class DominoSalesLoader implements SalesLoader
                                     if(val > 0)
                                         sale.setValue(sale.getValue() + val);           //выручка
                                     else
+                                    {
                                         sale.setCashback(sale.getCashback() - val);     //возврат
+                                        cashb_rcrd++;
+                                    }
                                 }
                                 else if(r.getCell(0).getStringCellValue().startsWith("Итого по:"))
                                 {
                                     //log.debug("finished shop record, i is: " + i);
-                                    sale.setChequeCount(i - 1);
+                                    sale.setChequeCount(rcrd - cashb_rcrd - 1);
                                     shopFinished = true;
                                 }
                                 
-                                i++;
+                                rcrd++;
                             }
                             
                             parsedFileMap.put(name, sale);
