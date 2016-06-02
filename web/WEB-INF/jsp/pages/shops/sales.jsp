@@ -307,6 +307,8 @@
             };
             
             $("#saveTable").click(function () {
+                $("#salesTable").jqGrid("editCell", 0, 0, false);
+            
                 var localGridData = jQuery("#salesTable").jqGrid('getGridParam', 'data');
                     sendData(localGridData);
             });
