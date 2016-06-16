@@ -1,6 +1,6 @@
 <%-- 
-    Document   : shopsAll
-    Created on : 15.04.2016, 12:05:29
+    Document   : shops
+    Created on : 09.06.2016, 10:31:01
     Author     : Alexander Savelev
 --%>
 
@@ -16,27 +16,26 @@
         <link rel="stylesheet" href="<c:url value="/res/css/bootstrap.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/bootstrap-theme.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/styles.css" />" >
-        <title><c:out value="${title}" /></title>
+        <style type="text/css" media="print">
+            @page { size: landscape; margin: 0cm }
+        </style>
+        <title>Магазины</title>
     </head>
 
-    <body>
+    <body><small>
         <div class="wrapper">
             <div class="container-fluid content">
-                <%@include file="../../modules/header.jspf" %>
-
-                <br>
+                
+                <br><br>
 
                 <div class="row">
 
-                    <%@include file="../../modules/sideMenu/sideMenu_shops.jspf" %>
-
-                    <br><br>
-
-                    <div class="col-md-10">
+                    <div class="col-md-12">
                         <div class="panel panel-primary panel-primary-dark">
                             <div class="panel-heading panel-heading-dark" align="center">Магазины</div>
                             <div class="panel-body">
-                                <table id="shopsTable" class="table table-hover table-condensed">
+                                <table class="table table-condensed">
+
                                     <thead>
                                         <tr>
                                             <td><b>#</b></td>
@@ -50,13 +49,13 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <c:forEach items="${allshops}" var="shop">
-                                            <tr ${shop.closed ? "class='tr-closed-shop'" : ""}>
-                                                <td>${shop.closed ? "<span class='glyphicon glyphicon-lock'></span>" : "*"}</td>
+                                        <c:forEach items="${openshops}" var="shop">
+                                            <tr>
+                                                <td>*</td>
                                                 <td>
-                                                    <a href="<c:url value="/shop?id=${shop.id}" />">
+                                                    <b>
                                                         <c:out value="${shop.name}" />
-                                                    </a>
+                                                    </b>
                                                 </td>
                                                 <td><c:out value="${shop.organisation.name}" /></td>
                                                 <td>
@@ -66,57 +65,30 @@
                                                 <td><c:out value="${shop.workingTime}" /></td>
                                                 <td>
                                                     <span class="glyphicon glyphicon-envelope"></span>
-                                                    <a href="mailto:<c:out value="${shop.email}" />">
+                                                    <u>
                                                         <c:out value="${shop.email}" />
-                                                    </a>
+                                                    </u>
                                                 </td>
                                                 <td><c:out value="${shop.address}" /></td>
                                             </tr>
                                         </c:forEach>
                                     </tbody>
                                 </table>
-                                <br>
 
-                                <span class="glyphicon glyphicon-cog"></span>
-                                <a href="<c:url value="/admin/shops" />" > Управление магазинами </a>
-                                &nbsp;
-                                <span class="glyphicon glyphicon-print"></span>
-                                <a href="<c:url value='/shops?mode=print' /> " target="_blank">Распечатать</a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <%@include file="../../modules/footer.jspf" %>
+            <div class="footer">
+                Актуально на <c:out value="${currentDate}" />
+            </div>
 
         </div>
 
-    <link rel="stylesheet" href="<c:url value="/res/css/jquery.dataTables.css" />" >
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $("#shopsTable").DataTable({
-                "columnDefs": [
-                    {"visible": false, "targets": 2}
-                ],
-                "order": [[2, 'asc']],
-                "paging": false,
-                "drawCallback": function (settings) {
-                    var api = this.api();
-                    var rows = api.rows({page: 'current'}).nodes();
-                    var last = null;
+            <script type="text/javascript">
+                window.onload = function() { window.print(); };
+            </script>
 
-                    api.column(2, {page: 'current'}).data().each(function (group, i) {
-                        if (last !== group) {
-                            $(rows).eq(i).before(
-                                    '<tr class="tr-group"><td colspan="6">' + group + '</td></tr>'
-                                    );
-                            last = group;
-                        }
-                    });
-                }
-            });
-        });
-    </script>
-
-</body>
+            </small></body>
 </html>

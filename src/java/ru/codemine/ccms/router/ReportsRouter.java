@@ -65,7 +65,8 @@ public class ReportsRouter //TODO this class NEEDS refactoring
     @RequestMapping(value = "/reports/sales-pass", method = RequestMethod.GET)
     public String getSalesPassReport(
             @RequestParam(required = false) String dateMonth,
-            @RequestParam(required = false) String dateYear,
+            @RequestParam(required = false) String dateYear, 
+            @RequestParam(required = false) String mode,
             ModelMap model)
     {
 
@@ -93,7 +94,7 @@ public class ReportsRouter //TODO this class NEEDS refactoring
         
         model.addAttribute("subgridColNames", subgridColNames);
         
-        return "reports/sales-pass";
+        return "print".equals(mode) ? "printforms/reports/salesAllFrm" : "reports/sales-pass";
     }
 
     @Secured("ROLE_USER")

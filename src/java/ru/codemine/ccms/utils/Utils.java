@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
@@ -69,6 +70,7 @@ public class Utils
         modelMap.put("sideMenuActiveItem", sideMenuActiveItem);
         Employee currentUser = employeeService.getCurrentUser();
         modelMap.put("currentUser", currentUser);
+        modelMap.put("currentDate", DateTime.now().toString("dd.MM.YY"));
         if(currentUser != null && currentUser.getRoles() != null && currentUser.getRoles().contains("ROLE_SHOP"))
         {
             modelMap.put("currentShops", shopService.getCurrentUserShops());

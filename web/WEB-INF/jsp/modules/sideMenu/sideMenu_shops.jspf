@@ -16,13 +16,6 @@
                         </a> 
                     </td>
                 </tr>
-                <tr ${sideMenuActiveItem == "extended" ? "class='info'" : ""}>
-                    <td>
-                        <a href="<c:url value="/shops?extended=true" />">
-                            Подробно
-                        </a> 
-                    </td>
-                </tr>
             </table>
 
         </div> 

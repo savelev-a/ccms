@@ -21,6 +21,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
@@ -67,43 +68,49 @@ public class DefaultRouter
     // Основные пункты меню
     //
     @RequestMapping(value = "/shops", method = RequestMethod.GET)
-    public String getShops(ModelMap model)
+    public String getShops(ModelMap model, @RequestParam(required = false) String mode)
     {
         model.addAllAttributes(utils.prepareModel("Магазины - ИнфоПортал", "shops", "short"));
         model.addAttribute("allshops", shopService.getAll());
         model.addAttribute("allorgs", organisationService.getAll());
+        
+        if("print".equals(mode))
+        {
+            model.addAttribute("openshops", shopService.getAllOpen());
+            return "/printforms/shops";
+        }
 
         return "pages/shops/shopsAll";
     }
 
     @Secured("ROLE_USER")
     @RequestMapping(value = "/offices", method = RequestMethod.GET)
-    public String getOffices(ModelMap model)
+    public String getOffices(ModelMap model, @RequestParam(required = false) String mode)
     {
         model.addAllAttributes(utils.prepareModel("Офисы - ИнфоПортал", "offices", "all"));
         model.addAttribute("alloffices", officeService.getAll());
 
-        return "pages/offices/officesAll";
+        return "print".equals(mode) ? "printforms/offices" : "pages/offices/officesAll";
     }
 
     @Secured("ROLE_USER")
     @RequestMapping(value = "/employees", method = RequestMethod.GET)
-    public String getEmployees(ModelMap model)
+    public String getEmployees(ModelMap model, @RequestParam(required = false) String mode)
     {
         model.addAllAttributes(utils.prepareModel("Сотрудники - ИнфоПортал", "employees", "all"));
         model.addAttribute("allemps", employeeService.getAll());
 
-        return "pages/employees/employeesAll";
+        return "print".equals(mode) ? "printforms/employees" : "pages/employees/employeesAll";
     }
 
     @Secured("ROLE_USER")
     @RequestMapping(value = "/organisations", method = RequestMethod.GET)
-    public String getOrganisations(ModelMap model)
+    public String getOrganisations(ModelMap model, @RequestParam(required = false) String mode)
     {
         model.addAllAttributes(utils.prepareModel("Юр. лица - ИнфоПортал", "organisations", "all"));
         model.addAttribute("allorgs", organisationService.getAll());
 
-        return "pages/organisations/organisationsAll";
+        return "print".equals(mode) ? "/printforms/organisations" : "pages/organisations/organisationsAll";
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
@@ -151,13 +158,13 @@ public class DefaultRouter
     
     @Secured("ROLE_USER")
     @RequestMapping(value = "/shop", method = RequestMethod.GET)
-    public String getShop(ModelMap model, @RequestParam Integer id)
+    public String getShop(ModelMap model, @RequestParam Integer id, @RequestParam(required = false) String mode)
     {
         Shop shop = shopService.getById(id);
         model.addAllAttributes(utils.prepareModel("Магазин - " + shop.getName() + " - ИнфоПортал", "shops", "general"));
         model.addAttribute("shop", shop);
         
-        return "pages/shops/shop";
+        return "print".equals(mode) ? "/printforms/shopfrm" : "pages/shops/shop";
     }
     
     //
@@ -166,13 +173,13 @@ public class DefaultRouter
 
     @Secured("ROLE_USER")
     @RequestMapping(value = "/office", method = RequestMethod.GET)
-    public String getOffice(ModelMap model, @RequestParam Integer id)
+    public String getOffice(ModelMap model, @RequestParam Integer id, @RequestParam(required = false) String mode)
     {
         Office office = officeService.getById(id);
         model.addAllAttributes(utils.prepareModel("Офис - " + office.getName() + " - ИнфоПортал", "offices", ""));
         model.addAttribute("office", office);
 
-        return "pages/offices/office";
+        return "print".equals(mode) ? "/printforms/officefrm" : "pages/offices/office";
 
     }
 
@@ -182,13 +189,13 @@ public class DefaultRouter
     
     @Secured("ROLE_USER")
     @RequestMapping(value = "/organisation", method = RequestMethod.GET)
-    public String getOrganisation(ModelMap model, @RequestParam Integer id)
+    public String getOrganisation(ModelMap model, @RequestParam Integer id, @RequestParam(required = false) String mode)
     {
         Organisation org = organisationService.getById(id);
         model.addAllAttributes(utils.prepareModel("Реквизиты - " + org.getName() + " - ИнфоПортал", "organisations", ""));
         model.addAttribute("organisation", org);
 
-        return "pages/organisations/organisation";
+        return "print".equals(mode) ? "/printforms/organisationfrm" : "pages/organisations/organisation";
     }
     
     //
@@ -197,16 +204,16 @@ public class DefaultRouter
     
     @Secured("ROLE_USER")
     @RequestMapping(value = "/employee", method = RequestMethod.GET)
-    public String getEmployee(ModelMap model, @RequestParam Integer id)
+    public String getEmployee(ModelMap model, @RequestParam Integer id, @RequestParam(required = false) String mode)
     {
         Employee employee = employeeService.getById(id);
         model.addAllAttributes(utils.prepareModel("Профиль - " + employee.getFullName() + " - ИнфоПортал", "employees", ""));
         model.addAttribute("employee", employee);
 
-        return "pages/employees/employee";
+        return "print".equals(mode) ? "/printforms/employeefrm" : "pages/employees/employee";
     }
     
-    
+
     //
     // Ошибки
     //

@@ -71,7 +71,8 @@
                                     </table>
                                 </div>
                                 <br><br>
-                                <b>Примечание:</b> Чтобы увидеть подробный отчет по конкретному магазину - кликните на его названии 
+                                <span class="glyphicon glyphicon-print"></span>
+                                <a href="<c:url value='/reports/sales-pass?dateMonth=${selectedMonth}&dateYear=${selectedYear}&mode=print' /> " target="_blank">Распечатать</a>
                                 <sec:authorize access="hasRole('ROLE_ADMIN')">
                                     <br><br>
                                     <form action="<c:url value='/forceSalesAutoload' />" method="POST">

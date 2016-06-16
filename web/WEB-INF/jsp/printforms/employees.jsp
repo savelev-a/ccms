@@ -1,6 +1,6 @@
 <%-- 
     Document   : employees
-    Created on : 08.04.2016, 13:43:48
+    Created on : 04.06.2016, 8:03:42
     Author     : Alexander Savelev
 --%>
 
@@ -16,21 +16,19 @@
         <link rel="stylesheet" href="<c:url value="/res/css/bootstrap.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/bootstrap-theme.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/styles.css" />" >
-        <title><c:out value="${title}" /></title>
+        <style type="text/css" media="print">
+            @page { size: portrait; margin: 0cm }
+        </style>
+        <title>Сотрудники компании</title>
     </head>
 
-    <body>
+    <body><small>
         <div class="wrapper">
             <div class="container-fluid content">
-                <%@include file="../../modules/header.jspf" %>
-
-                <br>
+                
+                <br><br>
 
                 <div class="row">
-
-                    <%@include file="../../modules/sideMenu/sideMenu_employees.jspf" %>
-
-                    <br><br>
 
                     <div class="col-md-10">
                         <div class="panel panel-primary panel-primary-dark">
@@ -53,15 +51,15 @@
                                             <tr>
                                                 <td>${idx.count}</td>
                                                 <td>
-                                                    <a href="<c:url value="/employee?id=${employee.id}" />" >
+                                                    <b>
                                                         <c:out value="${employee.fullName}" />
-                                                    </a>
+                                                    </b>
                                                 </td>
                                                 <td>
                                                     <span class="glyphicon glyphicon-envelope"></span>
-                                                    <a href="mailto:<c:out value="${employee.email}" />">
+                                                    <u>
                                                         <c:out value="${employee.email}" />
-                                                    </a>
+                                                    </u>
                                                 </td>
                                                 <td><span class="glyphicon glyphicon-phone-alt"></span> <c:out value="${employee.phone}" /></td>
                                                 <td><c:out value="${employee.position}" /></td>
@@ -69,29 +67,21 @@
                                         </c:forEach>
                                     </tbody>
                                 </table>
-                                <br>
-
-                                <span class="glyphicon glyphicon-cog"></span>
-                                <a href="<c:url value="/admin/employees" />" > Управление сотрудниками </a>
-                                &nbsp;
-                                <span class="glyphicon glyphicon-print"></span>
-                                <a href="<c:url value='/employees?mode=print' /> " target="_blank">Распечатать</a>
 
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <%@include file="../../modules/footer.jspf" %>
+            <div class="footer">
+                Актуально на <c:out value="${currentDate}" />
+            </div>
 
         </div>
 
-    <link rel="stylesheet" href="<c:url value="/res/css/jquery.dataTables.css" />" >
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $("#employeesTable").DataTable();
-        });
-    </script>
+            <script type="text/javascript">
+                window.onload = function() { window.print(); };
+            </script>
 
-</body>
+            </small></body>
 </html>

@@ -1,6 +1,6 @@
 <%-- 
-    Document   : officesAll
-    Created on : 12.04.2016, 21:03:25
+    Document   : offices
+    Created on : 09.06.2016, 10:15:11
     Author     : Alexander Savelev
 --%>
 
@@ -16,27 +16,25 @@
         <link rel="stylesheet" href="<c:url value="/res/css/bootstrap.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/bootstrap-theme.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/styles.css" />" >
-        <title><c:out value="${title}" /></title>
+        <style type="text/css" media="print">
+            @page { size: landscape; margin: 0cm }
+        </style>
+        <title>Офисы</title>
     </head>
 
-    <body>
+    <body><small>
         <div class="wrapper">
             <div class="container-fluid content">
-                <%@include file="../../modules/header.jspf" %>
-
-                <br>
+                
+                <br><br>
 
                 <div class="row">
 
-                    <%@include file="../../modules/sideMenu/sideMenu_offices.jspf" %> 
-
-                    <br><br>
-
-                    <div class="col-md-10">
+                    <div class="col-md-12">
                         <div class="panel panel-primary panel-primary-dark">
                             <div class="panel-heading panel-heading-dark" align="center">Офисы</div>
                             <div class="panel-body">
-                                <table id="officesTable" class="table table-hover table-condensed">
+                                <table id="employeesTable" class="table table-hover table-condensed">
 
                                     <thead>
                                         <tr>
@@ -46,7 +44,7 @@
                                             <th>E-mail</th>
                                             <th>Телефон</th>
                                             <th>Адрес</th>
-
+                                            <th>Директор</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -54,49 +52,42 @@
                                             <tr>
                                                 <td>${idx.count}</td>
                                                 <td>
-                                                    <a href="<c:url value="/office?id=${office.id}" />">
+                                                    <b>
                                                         <c:out value="${office.name}" />
-                                                    </a>
+                                                    </b>
                                                 </td>
                                                 <td><c:out value="${office.organisation.name}" /></td>
                                                 <td>
                                                     <span class="glyphicon glyphicon-envelope"></span> 
-                                                    <a href="mailto:<c:out value="${office.email}" />">
+                                                    <u>
                                                         <c:out value="${office.email}" />
-                                                    </a>
+                                                    </u>
                                                 </td>
                                                 <td>
                                                     <span class="glyphicon glyphicon-phone-alt"></span> 
                                                     <c:out value="${office.phone}" />
                                                 </td>
                                                 <td><c:out value="${office.address}" /></td>
+                                                <td><c:out value="${office.director.fullName}" /></td>
                                             </tr>
                                         </c:forEach>
                                     </tbody>
                                 </table>
-                                <br>
-
-                                <span class="glyphicon glyphicon-cog"></span>
-                                <a href="<c:url value="/admin/offices" />" > Управление офисами </a>
-                                &nbsp;
-                                <span class="glyphicon glyphicon-print"></span>
-                                <a href="<c:url value='/offices?mode=print' />" target="_blank">Распечатать</a>
 
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <%@include file="../../modules/footer.jspf" %>
+            <div class="footer">
+                Актуально на <c:out value="${currentDate}" />
+            </div>
 
         </div>
 
-    <link rel="stylesheet" href="<c:url value="/res/css/jquery.dataTables.css" />" >
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $("#officesTable").DataTable();
-        });
-    </script>
+            <script type="text/javascript">
+                window.onload = function() { window.print(); };
+            </script>
 
-</body>
+            </small></body>
 </html>

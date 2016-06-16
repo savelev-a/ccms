@@ -12,14 +12,7 @@
                 <tr ${sideMenuActiveItem == "all" ? "class='info'" : ""}>
                     <td>
                         <a href="<c:url value="/employees" />">
-                            Все
-                        </a> 
-                    </td>
-                </tr>
-                <tr ${sideMenuActiveItem == "byShops" ? "class='info'" : ""}>
-                    <td>
-                        <a href="<c:url value="/shops?mode=1" />">
-                            По магазинам
+                            Показать всех
                         </a> 
                     </td>
                 </tr>

@@ -1,6 +1,6 @@
 <%-- 
-    Document   : organisation
-    Created on : 12.04.2016, 14:44:29
+    Document   : organisationfrm
+    Created on : 16.06.2016, 10:53:00
     Author     : Alexander Savelev
 --%>
 
@@ -16,27 +16,25 @@
         <link rel="stylesheet" href="<c:url value="/res/css/bootstrap.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/bootstrap-theme.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/styles.css" />" >
-        <title><c:out value="${title}" /></title>
+        <style type="text/css" media="print">
+            @page { size: portrait; margin: 0cm }
+        </style>
+        <title>Реквизиты организации</title>
     </head>
 
-    <body>
+    <body><small>
         <div class="wrapper">
             <div class="container-fluid content">
-                <%@include file="../../modules/header.jspf" %>
-
-                <br>
+                
+                <br><br>
 
                 <div class="row">
 
-                    <%@include file="../../modules/sideMenu/sideMenu_dummy.jspf" %>
-
-                    <br><br>
-
-                    <div class="col-md-5">
+                    <div class="col-md-12">
                         <div class="panel panel-primary panel-primary-dark">
                             <div class="panel-heading panel-heading-dark" align="center">Реквизиты организации <c:out value="${organisation.name}" /></div>
                             <div class="panel-body">
-                                <table class="table table-hover table-condensed">
+                                <table id="employeesTable" class="table table-hover table-condensed">
 
                                     <tbody>
                                         <tr>
@@ -85,62 +83,28 @@
                                         <tr>
                                             <td>Директор</td>
                                             <td>
-                                                <a href="<c:url value="/employee?id=${organisation.director.id}" />" >
                                                     <c:out value="${organisation.director.lastName}" /> 
                                                     <c:out value="${organisation.director.firstName}" /> 
                                                     <c:out value="${organisation.director.middleName}" /> 
-                                                </a>
                                             </td>
                                         </tr>
                                     </tbody>
                                 </table>
-                                <br>
 
-                                <span class="glyphicon glyphicon-cog"></span>
-                                <a href="<c:url value="/admin/orgprofile?id=${organisation.id}&userpage=true" />" > Редактировать организацию </a>
-                                &nbsp;
-                                <span class="glyphicon glyphicon-print"></span>
-                                <a href="<c:url value='/organisation?id=${organisation.id}&mode=print' /> " target="_blank">Распечатать реквизиты</a>
-                            </div>
-                        </div>
-                    </div>
-                                
-                    <div class="col-md-5">
-                        <div class="panel panel-primary panel-primary-dark">
-                            <div class="panel-heading panel-heading-dark" align="center">Магазины, связанные с этим юр. лицом</div>
-                            <div class="panel-body">
-                                <table class="table table-hover table-condensed">
-
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Наименование</th>
-                                            <th>Адрес</th>
-                                            <th>Телефон</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <c:forEach items="${organisation.shops}" var="shop" varStatus="idx">
-                                            <tr>
-                                                <td>${idx.count}</td>
-                                                <td>
-                                                    <a href="<c:url value="/shop?id=${shop.id}" />">
-                                                        <c:out value="${shop.name}" />
-                                                    </a>
-                                                </td>
-                                                <td><c:out value="${shop.address}" /></td>
-                                                <td><span class="glyphicon glyphicon-phone-alt"></span> <c:out value="${shop.phone}" /></td>
-                                            </tr>
-                                        </c:forEach>
-                                    </tbody>
-                                </table>  
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <br>
-            <%@include file="../../modules/footer.jspf" %>
+            <div class="footer">
+                Актуально на <c:out value="${currentDate}" />
+            </div>
+
         </div>
-    </body>
+
+            <script type="text/javascript">
+                window.onload = function() { window.print(); };
+            </script>
+
+            </small></body>
 </html>

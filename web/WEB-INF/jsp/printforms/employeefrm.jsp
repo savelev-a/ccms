@@ -1,6 +1,6 @@
 <%-- 
-    Document   : employee
-    Created on : 15.04.2016, 14:51:38
+    Document   : employeefrm
+    Created on : 16.06.2016, 10:07:31
     Author     : Alexander Savelev
 --%>
 
@@ -16,27 +16,25 @@
         <link rel="stylesheet" href="<c:url value="/res/css/bootstrap.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/bootstrap-theme.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/styles.css" />" >
-        <title><c:out value="${title}" /></title>
+        <style type="text/css" media="print">
+            @page { size: portrait; margin: 0cm }
+        </style>
+        <title>Профиль сотрудника</title>
     </head>
 
-    <body>
+    <body><small>
         <div class="wrapper">
             <div class="container-fluid content">
-                <%@include file="../../modules/header.jspf" %>
-
-                <br>
+                
+                <br><br>
 
                 <div class="row">
 
-                    <%@include file="../../modules/sideMenu/sideMenu_dummy.jspf" %>
-
-                    <br><br>
-
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                         <div class="panel panel-primary panel-primary-dark">
-                            <div class="panel-heading panel-heading-dark" align="center">Профиль сотрудника <c:out value="${employee.fullName}" /></div>
+                            <div class="panel-heading panel-heading-dark" align="center">Профиль</div>
                             <div class="panel-body">
-                                <table class="table table-hover table-condensed">
+                                <table id="employeesTable" class="table table-hover table-condensed">
 
                                     <tbody>
                                         <tr>
@@ -72,21 +70,21 @@
                                         </tr>
                                     </tbody>
                                 </table>
-                                <br>
 
-                                <span class="glyphicon glyphicon-cog"></span>
-                                <a href="<c:url value="/admin/profile?id=${employee.id}&userpage=true" />" > Редактировать сотрудника </a>
-                                &nbsp;
-                                <span class="glyphicon glyphicon-print"></span>
-                                <a href="<c:url value='/employee?id=${employee.id}&mode=print' /> " target="_blank">Распечатать</a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <br>
-            <%@include file="../../modules/footer.jspf" %>
-        </div>
-    </body>
-</html>
+            <div class="footer">
+                Актуально на <c:out value="${currentDate}" />
+            </div>
 
+        </div>
+
+            <script type="text/javascript">
+                window.onload = function() { window.print(); };
+            </script>
+
+            </small></body>
+</html>

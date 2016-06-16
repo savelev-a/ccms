@@ -1,6 +1,6 @@
 <%-- 
-    Document   : office
-    Created on : 15.04.2016, 15:11:52
+    Document   : officefrm
+    Created on : 16.06.2016, 10:43:57
     Author     : Alexander Savelev
 --%>
 
@@ -16,27 +16,25 @@
         <link rel="stylesheet" href="<c:url value="/res/css/bootstrap.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/bootstrap-theme.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/styles.css" />" >
-        <title><c:out value="${title}" /></title>
+        <style type="text/css" media="print">
+            @page { size: portrait; margin: 0cm }
+        </style>
+        <title>Профиль офиса</title>
     </head>
 
-    <body>
+    <body><small>
         <div class="wrapper">
             <div class="container-fluid content">
-                <%@include file="../../modules/header.jspf" %>
-
-                <br>
+                
+                <br><br>
 
                 <div class="row">
 
-                    <%@include file="../../modules/sideMenu/sideMenu_dummy.jspf" %>
-
-                    <br><br>
-
-                    <div class="col-md-10">
+                    <div class="col-md-12">
                         <div class="panel panel-primary panel-primary-dark">
-                            <div class="panel-heading panel-heading-dark" align="center">Офис - <c:out value="${office.name}" /></div>
+                            <div class="panel-heading panel-heading-dark" align="center"><c:out value="${office.name}" /></div>
                             <div class="panel-body">
-                                <table class="table table-hover table-condensed">
+                                <table id="employeesTable" class="table table-hover table-condensed">
 
                                     <tbody>
                                         <tr>
@@ -49,17 +47,15 @@
                                         <tr>
                                             <th>Юр. лицо</th>
                                             <td>
-                                                <a href="<c:url value="/organisation?id=${office.organisation.id}" />">
                                                     <c:out value="${office.organisation.name}" />
-                                                </a>
                                             </td>
 
                                             <th>E-mail</th>
                                             <td>
                                                 <span class="glyphicon glyphicon-envelope"></span>
-                                                <a href="mailto:<c:out value="${office.email}" />">
+                                                <u>
                                                     <c:out value="${office.email}" />
-                                                </a>
+                                                </u>
                                             </td>
                                         </tr>
 
@@ -79,17 +75,13 @@
                                         <tr>
                                             <th>Администратор</th>
                                             <td>
-                                                <a href="<c:url value="/employee?id=${office.director.id}" />">
                                                     <c:out value="${office.director.fullName}" />
-                                                </a>
                                             </td>
 
                                             <th>Сотрудники</th>
                                             <td>
                                                 <c:forEach items="${office.officeEmployees}" var="employee">
-                                                    <a href="<c:url value="/employee?id=${employee.id}" />">
                                                         <c:out value="${employee.fullName}" />
-                                                    </a>
                                                     &nbsp;
                                                     <c:if test="${employee.position != ''}"> (<c:out value="${employee.position}" />) </c:if>
                                                         <br>
@@ -100,21 +92,21 @@
 
                                     </tbody>
                                 </table>
-                                <br>
 
-                                <span class="glyphicon glyphicon-cog"></span>
-                                <a href="<c:url value="/admin/officeprofile?id=${office.id}&userpage=true" />" > Редактировать офис </a>
-                                &nbsp;
-                                <span class="glyphicon glyphicon-print"></span>
-                                <a href="<c:url value='/office?id=${office.id}&mode=print' /> " target="_blank">Распечатать</a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <br>
-            <%@include file="../../modules/footer.jspf" %>
-        </div>
-    </body>
-</html>
+            <div class="footer">
+                Актуально на <c:out value="${currentDate}" />
+            </div>
 
+        </div>
+
+            <script type="text/javascript">
+                window.onload = function() { window.print(); };
+            </script>
+
+            </small></body>
+</html>
