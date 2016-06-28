@@ -74,7 +74,9 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li><a href="<c:url value="/reports/sales-pass" />" >Отчет по проходимости и выручке</a></li>
-
+                        <sec:authorize access="hasRole('ROLE_ADMIN')">
+                            <li><a href="<c:url value="/reports/shopproviders" />" >Отчет по провайдерам в магазинах</a></li>
+                        </sec:authorize>
 
                     </ul>
                 </li>

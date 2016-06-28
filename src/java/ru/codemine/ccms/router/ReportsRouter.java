@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import org.apache.log4j.Logger;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
@@ -319,6 +318,17 @@ public class ReportsRouter //TODO this class NEEDS refactoring
         }
         
         return resultList;
+    }
+    
+    
+    
+    @RequestMapping(value = "/reports/shopproviders", method = RequestMethod.GET)
+    public String getShopProvidersReport(ModelMap model)
+    {
+        model.addAllAttributes(utils.prepareModel("Отчет по провайдерам - ИнфоПортал", "reports", ""));
+        model.addAttribute("allshops", shopService.getAll());
+        
+        return "reports/shopprov";
     }
 
 }
