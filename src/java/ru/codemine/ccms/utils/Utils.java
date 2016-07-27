@@ -37,7 +37,9 @@ import ru.codemine.ccms.entity.Shop;
 import ru.codemine.ccms.service.CounterService;
 import ru.codemine.ccms.service.EmployeeService;
 import ru.codemine.ccms.service.SalesService;
+import ru.codemine.ccms.service.SettingsService;
 import ru.codemine.ccms.service.ShopService;
+import ru.codemine.ccms.service.TaskService;
 
 /**
  *
@@ -51,6 +53,8 @@ public class Utils
     @Autowired private ShopService shopService;
     @Autowired private SalesService salesService;
     @Autowired private CounterService counterService;
+    @Autowired private TaskService taskService;
+    @Autowired private SettingsService settingsService;
     
     /**
      * Заполнение основных полей модели
@@ -71,9 +75,14 @@ public class Utils
         Employee currentUser = employeeService.getCurrentUser();
         modelMap.put("currentUser", currentUser);
         modelMap.put("currentDate", DateTime.now().toString("dd.MM.YY"));
-        if(currentUser != null && currentUser.getRoles() != null && currentUser.getRoles().contains("ROLE_SHOP"))
+        modelMap.put("companyName", settingsService.getCompanyName());
+        if(currentUser != null && currentUser.getRoles() != null)
         {
-            modelMap.put("currentShops", shopService.getCurrentUserShops());
+            if (currentUser.getRoles().contains("ROLE_SHOP")) {
+                modelMap.put("currentShops", shopService.getCurrentUserShops());
+            }
+            
+            modelMap.put("currentUserActiveTasksCount", taskService.getUserActiveTaskCount(currentUser));
         }
         
         return modelMap;

@@ -39,6 +39,7 @@ import ru.codemine.ccms.service.OfficeService;
 import ru.codemine.ccms.service.OrganisationService;
 import ru.codemine.ccms.service.SettingsService;
 import ru.codemine.ccms.service.ShopService;
+import ru.codemine.ccms.service.TaskService;
 import ru.codemine.ccms.utils.Utils;
 
 /**
@@ -56,6 +57,7 @@ public class AdminRouter
     @Autowired private ShopService shopService;
     @Autowired private OfficeService officeService;
     @Autowired private SettingsService settingsService;
+    @Autowired private TaskService taskService;
     @Autowired private Utils utils;
     
     
@@ -450,6 +452,21 @@ public class AdminRouter
         settingsService.saveForm(settingsForm);
         
         return "redirect:/admin/settings";
+    }
+    
+    //
+    // Задачи
+    //
+    
+    @Secured("ROLE_ADMIN")
+    @RequestMapping(value = "/admin/tasks")
+    public String getTasks(ModelMap model)
+    {
+        model.addAllAttributes(utils.prepareModel("Администрирование - задачи - ИнфоПортал", "tasks", "tasksadm"));
+        model.addAttribute("openTasksCount", taskService.getOpenTaskCount());
+        model.addAttribute("alltasks", taskService.getAll());
+        
+        return "admin/tasks";
     }
     
     //

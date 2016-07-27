@@ -1,0 +1,75 @@
+<%@ page pageEncoding="UTF-8" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
+<div class="col-md-2 right-line">
+    <br>
+    <br>
+
+    <div class="panel panel-primary panel-primary-dark">
+        <div class="panel-heading panel-heading-dark" align="center">Опции</div>
+        <div class="panel-body">
+            <table class="table table-condensed">
+                <tr ${sideMenuActiveItem == "newtask" ? "class='info'" : ""}>
+                    <td>
+                        <a href="<c:url value="/tasks/create" />">
+                            Создать задачу
+                        </a> 
+                    </td>
+                </tr>
+                
+                <tr><td> </td></tr>
+
+                <tr ${sideMenuActiveItem == "performed" ? "class='info'" : ""}>
+                    <td>
+                        <a href="<c:url value="/tasks/mytasks" />">
+                            Назначенные мне
+                            <c:if test="${currentUserActiveTasksCount != 0}">
+                            <span class="badge badge-right"><c:out value="${currentUserActiveTasksCount}" /></span>
+                        </c:if>
+                        </a> 
+                    </td>
+                </tr>
+                <tr ${sideMenuActiveItem == "created" ? "class='info'" : ""}>
+                    <td>
+                        <a href="<c:url value="/tasks/mytasks/created" />">
+                            Созданные мной
+                        </a> 
+                    </td>
+                </tr>
+                <tr ${sideMenuActiveItem == "free" ? "class='info'" : ""}>
+                    <td>
+                        <a href="<c:url value="/tasks/freetasks" />">
+                            Свободные 
+                            <c:if test="${openTasksCount != 0}">
+                                <span class="badge badge-right"><c:out value="${openTasksCount}" /></span>
+                            </c:if>
+                        </a> 
+                    </td>
+                </tr>
+                <tr ${sideMenuActiveItem == "closed" ? "class='info'" : ""}>
+                    <td>
+                        <a href="<c:url value="/tasks/mytasks/closed" />">
+                            Закрытые
+                        </a> 
+                    </td>
+                </tr>
+                
+                <tr><td> </td></tr>
+                
+                <sec:authorize access="hasRole('ROLE_ADMIN')">
+                    <tr ${sideMenuActiveItem == "tasksadm" ? "class='info'" : ""}>
+                        <td>
+                            <a href="<c:url value="/admin/tasks" />">
+                                Управление задачами
+                            </a> 
+                        </td>
+                    </tr>
+                </sec:authorize>
+                
+            </table>
+
+        </div> 
+
+    </div> 
+</div>

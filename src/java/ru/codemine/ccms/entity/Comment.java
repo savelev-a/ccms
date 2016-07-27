@@ -30,6 +30,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.joda.time.DateTime;
 
 /**
@@ -47,7 +48,8 @@ public class Comment implements Serializable, Comparable<Comment>
     @Column(name = "id", nullable = false)
     private Integer id;
     
-    @Length(max = 128)
+    @NotEmpty(message = "Это поле не может быть пустым")
+    @Length(max = 128, message = "Слишком длинное значение")
     @Column(name = "title", length = 128, nullable = false)
     private String title;
     
@@ -62,7 +64,18 @@ public class Comment implements Serializable, Comparable<Comment>
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     private DateTime creationTime;
 
+    public Comment()
+    {
+        this.creationTime = DateTime.now();
+        this.text = "";
+    }
     
+    public Comment(Employee creator)
+    {
+        this.creationTime = DateTime.now();
+        this.creator = creator;
+        this.text = "";
+    }
     
     public Integer getId()
     {

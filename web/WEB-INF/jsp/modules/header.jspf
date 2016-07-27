@@ -73,14 +73,56 @@
                         <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a href="<c:url value="/reports/sales-pass" />" >Отчет по проходимости и выручке</a></li>
+                        <li>
+                            <a href="<c:url value="/reports/sales-pass" />" >
+                                <span class="glyphicon glyphicon-list-alt"></span>  Отчет по проходимости и выручке
+                            </a>
+                        </li>
                         <sec:authorize access="hasRole('ROLE_ADMIN')">
-                            <li><a href="<c:url value="/reports/shopproviders" />" >Отчет по провайдерам в магазинах</a></li>
+                            <li>
+                                <a href="<c:url value="/reports/shopproviders" />" >
+                                    <span class="glyphicon glyphicon-list-alt"></span>  Отчет по провайдерам в магазинах
+                                </a>
+                            </li>
+                        </sec:authorize>
+                    </ul>
+                </li>
+                <!--
+                <li class="dropdown ${mainMenuActiveItem == "tasks" ? "active" : ""}">
+                    <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown">
+                        Задачи 
+                        <c:if test="${currentUserActiveTasksCount != 0}">
+                            <span class="badge"><c:out value="${currentUserActiveTasksCount}" /></span>
+                        </c:if>
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="<c:url value="/tasks/create" />" >
+                                <span class="glyphicon glyphicon-plus"></span>  Создать задачу
+                            </a>
+                        </li>
+                        <li>
+                            <a href="<c:url value="/tasks/mytasks" />" >
+                                <span class="glyphicon glyphicon-briefcase"></span>  Мои задачи
+                            </a>
+                        </li>
+                        <li>
+                            <a href="<c:url value="/tasks/freetasks" />" >
+                                <span class="glyphicon glyphicon-dashboard"></span>  Свободные задачи
+                            </a>
+                        </li>
+                        <sec:authorize access="hasRole('ROLE_ADMIN')">
+                            <li>
+                                <a href="<c:url value="/admin/tasks" />" >
+                                    <span class="glyphicon glyphicon-cog"></span>  Управление задачами
+                                </a>
+                            </li>
                         </sec:authorize>
 
                     </ul>
                 </li>
-
+                -->
                 <sec:authorize access="hasRole('ROLE_ADMIN')">
                     <li ${mainMenuActiveItem == "admin" ? "class=active" : ""}>
                         <a href="<c:url value="/admin" />">
@@ -103,9 +145,13 @@
                                 <span class="caret"></span>
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a href="<c:url value="/admin/profile?id=${currentUser.id}" />" >Мой профиль</a></li>
+                                <li>
+                                    <a href="<c:url value="/admin/profile?id=${currentUser.id}" />" >
+                                        <span class="glyphicon glyphicon-file"></span>  Мой профиль
+                                    </a>
+                                </li>
                                 <br>
-                                <li><a href="#" id="logout">Выход</a></li>
+                                <li><a href="#" id="logout"><span class="glyphicon glyphicon-log-out"></span>  Выход</a></li>
 
                             </ul>
                         </li>

@@ -18,9 +18,9 @@
 
 package ru.codemine.ccms.entity;
 
-import com.sun.org.apache.bcel.internal.generic.NEW;
 import java.io.Serializable;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -35,10 +35,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import org.apache.log4j.Logger;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.Length;
 import org.joda.time.DateTime;
+import org.joda.time.Period;
+import org.joda.time.format.PeriodFormatter;
+import org.joda.time.format.PeriodFormatterBuilder;
 
 /**
  *
@@ -49,6 +53,9 @@ import org.joda.time.DateTime;
 @Table(name = "tasks")
 public class Task implements Serializable
 {
+    
+    private static final Logger log = Logger.getLogger("Task");
+    
     public enum Status
     {
         NEW,
@@ -64,6 +71,29 @@ public class Task implements Serializable
         MEDIUM,
         HIGH,
         CRITICAL
+    }
+    
+    public Task()
+    {
+        this.creationTime = DateTime.now();
+        this.status = Status.NEW;
+        this.urgency = Urgency.MEDIUM;
+        this.deadline = DateTime.now().plusDays(3);
+        this.comments = new LinkedHashSet<>();
+        this.title = "";
+        this.text = "";
+    }
+    
+    public Task(Employee creator)
+    {
+        this.creationTime = DateTime.now();
+        this.status = Status.NEW;
+        this.creator = creator;
+        this.urgency = Urgency.MEDIUM;
+        this.deadline = DateTime.now().plusDays(3);
+        this.comments = new LinkedHashSet<>();
+        this.title = "";
+        this.text = "";
     }
     
     @Id
@@ -88,14 +118,18 @@ public class Task implements Serializable
     private DateTime creationTime;
     
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "performer_id")
+    @JoinColumn(name = "performer_id", nullable = true)
     private Employee performer;
     
     @Enumerated(EnumType.ORDINAL)
     @Column(name = "status", nullable = false)
     private Status status;
     
-    @Column(name = "closeTime", nullable = false)
+    @Column(name = "deadline", nullable = false)
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+    private DateTime deadline;
+    
+    @Column(name = "closeTime", nullable = true)
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     private DateTime closeTime;
     
@@ -107,8 +141,8 @@ public class Task implements Serializable
     @JoinTable(name = "task_comm", 
             joinColumns = @JoinColumn(name = "task_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "comm_id", referencedColumnName = "id"))
-    @OrderBy(value = "creationTime ASC")
-    private List<Comment> comments;
+    @OrderBy(value = "id ASC")
+    private Set<Comment> comments;
 
     
     
@@ -203,18 +237,138 @@ public class Task implements Serializable
         this.urgency = urgency;
     }
 
-    public List<Comment> getComments()
+    public Set<Comment> getComments()
     {
         return comments;
     }
 
-    public void setComments(List<Comment> comments)
+    public void setComments(Set<Comment> comments)
     {
         this.comments = comments;
     }
+
+    public DateTime getDeadline()
+    {
+        return deadline;
+    }
+
+    public void setDeadline(DateTime deadline)
+    {
+        this.deadline = deadline;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "Task{" + "id=" + id + ", title=" + title + ", text=" + text + '}';
+    }
+
+
     
+    public boolean hasPerformer()
+    {
+        return this.performer != null;
+    }
     
+    public void assign(Employee performer)
+    {
+        if(performer == null) 
+        {
+            drop();
+            return;
+        }
+        
+        this.performer = performer;
+        this.status = Status.ASSIGNED;
+
+        Comment comment = new Comment();
+        comment.setTitle("Задача назначена сотруднику " + performer.getFullName());
+        this.comments.add(comment);
+    }
     
+    public void drop()
+    {
+        if(this.performer != null)
+        {
+            Comment comment = new Comment();
+            comment.setTitle("Сотрудник " + performer.getFullName() + " прекратил выполнение задачи");
+            this.comments.add(comment);
+        }
+        
+        this.performer = null;
+        this.status = Status.NEW;
+        
+    }
     
+    public void close()
+    {
+        this.closeTime = DateTime.now();
+        this.status = Status.CLOSED;
+        
+        Comment comment = new Comment();
+        comment.setTitle("Задача закрыта");
+        this.comments.add(comment);
+    }
+    
+    public boolean isOverdued()
+    {
+        return DateTime.now().isAfter(deadline);
+    }
+    
+    public String getUrgencyString()
+    {
+        switch(urgency)
+        {
+            case CRITICAL:
+                return "Чрезвычайный";
+            case HIGH:
+                return "Высокий";
+            case LOW:
+                return "Низкий";
+        }
+        
+        return "Средний";
+    }
+    
+    public String getStatusString()
+    {
+        switch(status)
+        {
+            case NEW:
+                return "Новая";
+            case ASSIGNED:
+                return "Назначена";
+            case INWORK:
+                return "В работе";
+            case PAUSED:
+                return "Приостановлена";
+        }
+        
+        return "Закрыта";
+    }
+    
+    public String getDeadlineString()
+    {
+        PeriodFormatter formatter = new PeriodFormatterBuilder()
+                .appendDays()
+                .appendSuffix(" день", " дней")
+                .appendSeparator(" ")
+                .appendHours()
+                .appendSuffix(" час", " часов")
+                .appendSeparator(" ")
+                .appendMinutes()
+                .appendSuffix(" минута", " минут")
+                .toFormatter();
+        
+        if(!isOverdued())
+        {
+            Period deadlinePeriod = new Period(DateTime.now(), deadline);
+            return formatter.print(deadlinePeriod);
+        }
+        
+        Period deadlinePeriod = new Period(deadline, DateTime.now());
+        return "Просрочено на " + formatter.print(deadlinePeriod);
+        
+    }
 
 }

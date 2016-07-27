@@ -79,6 +79,10 @@ body {
     background: #f3f3f3 !important;
 }
 
+.td-redfont {
+    color: red;
+}
+
 #login-box {
     width: 400px;
     padding: 20px;
@@ -230,4 +234,8 @@ body {
 
 .ui-th-subgrid {
     padding: 1px 2px 1px 2px;
+}
+
+.badge-right {
+    float: right;
 }

@@ -81,6 +81,7 @@ http://www.springframework.org/schema/task/spring-task-4.0.xsd
             <list>
                 <bean class="ru.codemine.ccms.converter.idToEmployeeConverter" />
                 <bean class="ru.codemine.ccms.converter.idToOrganisationConverter" />
+                <bean class="ru.codemine.ccms.converter.StringToDatetimeConverter" />
             </list>
         </property>
     </bean>
