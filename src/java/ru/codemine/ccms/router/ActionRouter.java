@@ -19,6 +19,7 @@ package ru.codemine.ccms.router;
 
 import java.util.List;
 import java.util.Set;
+import javax.validation.Valid;
 import org.apache.log4j.Logger;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
@@ -27,14 +28,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import ru.codemine.ccms.entity.Expence;
 import ru.codemine.ccms.entity.SalesMeta;
 import ru.codemine.ccms.entity.Shop;
 import ru.codemine.ccms.forms.SalesPlanForm;
+import ru.codemine.ccms.service.ExpenceService;
+import ru.codemine.ccms.service.ExpenceTypeService;
 import ru.codemine.ccms.service.OrganisationService;
 import ru.codemine.ccms.service.SalesService;
 import ru.codemine.ccms.service.ShopService;
@@ -53,6 +59,8 @@ public class ActionRouter
     @Autowired private ShopService shopService;
     @Autowired private SalesService salesService;
     @Autowired private OrganisationService organisationService;
+    @Autowired private ExpenceService expenceService;
+    @Autowired private ExpenceTypeService expenceTypeService;
     @Autowired private Utils utils;
 
     @Secured("ROLE_OFFICE")
@@ -196,6 +204,98 @@ public class ActionRouter
         
         return resultStr;
         
+    }
+    
+    
+    //
+    // Расходы
+    //
+    
+    @Secured("ROLE_OFFICE")
+    @RequestMapping(value = "/actions/setexpences", method = RequestMethod.GET)
+    public String getExpencesSetupPage(@RequestParam Integer shopid, ModelMap model)
+    {
+        Shop shop = shopService.getById(shopid);
+        model.addAllAttributes(utils.prepareModel("Установка расходов по магазину - " + shop.getName() + " - ИнфоПортал", "shops", "expences"));
+        model.addAttribute("recurrentExpences", expenceService.getByShop(shop, true));
+        model.addAttribute("oneshotExpences", expenceService.getByShop(shop, false));
+        model.addAttribute("recurrentExpFrm", new Expence(shop));
+        model.addAttribute("oneshotExpFrm", new Expence(shop));
+        model.addAttribute("recurrentExpTypes", expenceTypeService.getAllRecurrent());
+        model.addAttribute("oneshotExpTypes", expenceTypeService.getAllOneshot());
+        
+        return "actions/setExpences";
+        
+    }
+    
+    @Secured("ROLE_OFFICE")
+    @RequestMapping(value = "/actions/setoneshotexpences", method = RequestMethod.POST)
+    public String addOneshotExpence(@Valid @ModelAttribute("oneshotExpFrm") Expence expence, 
+            BindingResult result, 
+            ModelMap model)
+    {
+        Shop shop = shopService.getById(expence.getShop().getId());
+        
+        if(result.hasErrors())
+        {
+            model.addAllAttributes(utils.prepareModel("Установка расходов по магазину - " + shop.getName() + " - ИнфоПортал", "shops", "expences"));
+            model.addAttribute("recurrentExpences", expenceService.getByShop(shop, true));
+            model.addAttribute("oneshotExpences", expenceService.getByShop(shop, false));
+            model.addAttribute("recurrentExpFrm", new Expence(shop));
+            model.addAttribute("recurrentExpTypes", expenceTypeService.getAllRecurrent());
+            model.addAttribute("oneshotExpTypes", expenceTypeService.getAllOneshot());
+        
+            return "actions/setExpences";
+        }
+        
+        expence.setShop(shop);
+        expence.setRecurrent(false);
+        
+        expenceService.create(expence);
+        
+        return "redirect:/actions/setexpences?shopid=" + shop.getId();
+    }
+    
+    
+    @Secured("ROLE_OFFICE")
+    @RequestMapping(value = "/actions/setrecurrentexpences", method = RequestMethod.POST)
+    public String addRecurrentExpence(@Valid @ModelAttribute("oneshotExpFrm") Expence expence, 
+            BindingResult result, 
+            ModelMap model)
+    {
+        //if(expence == null || expence.getShop() == null) return "redirect:/actions/setexpences";
+        
+        Shop shop = shopService.getById(expence.getShop().getId());
+        
+        if(result.hasErrors())
+        {
+            model.addAllAttributes(utils.prepareModel("Установка расходов по магазину - " + shop.getName() + " - ИнфоПортал", "shops", "expences"));
+            model.addAttribute("recurrentExpences", expenceService.getByShop(shop, true));
+            model.addAttribute("oneshotExpences", expenceService.getByShop(shop, false));
+            model.addAttribute("oneshotExpFrm", new Expence(shop));
+            model.addAttribute("recurrentExpTypes", expenceTypeService.getAllRecurrent());
+            model.addAttribute("oneshotExpTypes", expenceTypeService.getAllOneshot());
+        
+            return "actions/setExpences";
+        }
+        
+        expence.setShop(shop);
+        expence.setRecurrent(true);
+        
+        expenceService.create(expence);
+        
+        return "redirect:/actions/setexpences?shopid=" + shop.getId();
+    }
+    
+    @Secured("ROLE_OFFICE")
+    @RequestMapping(value = "/actions/expences/delete", method = RequestMethod.POST)
+    public String deleteExpence(@RequestParam("id") Integer id)
+    {
+        Expence e = expenceService.getById(id);
+        Shop shop = e.getShop();
+        expenceService.delete(e);
+        
+        return "redirect:/actions/setexpences?shopid=" + shop.getId();
     }
 
 }

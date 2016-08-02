@@ -6,7 +6,7 @@
     <br>
 
     <div class="panel panel-primary panel-primary-dark">
-        <div class="panel-heading panel-heading-dark" align="center">Отчеты</div>
+        <div class="panel-heading panel-heading-dark" align="center">Выручка</div>
         <div class="panel-body">
             <table class="table table-condensed">
                 <tr ${sideMenuActiveItem == "general" ? "class='info'" : ""}>

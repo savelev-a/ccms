@@ -1,5 +1,6 @@
 <%@ page pageEncoding="UTF-8" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <div class="col-md-2 right-line">
     <br>
@@ -25,13 +26,23 @@
                         </td>
                     </tr>
                 </c:if>
-                    <tr ${sideMenuActiveItem == "sales" ? "class='info'" : ""}>
+                <tr ${sideMenuActiveItem == "sales" ? "class='info'" : ""}>
                     <td>
                         <a href="<c:url value="/sales?shopid=${shop.id}" />">
                             Таблица проходимости
                         </a> 
                     </td>
                 </tr>
+                <sec:authorize access="hasRole('ROLE_OFFICE')">
+                    <tr><td> </td></tr>
+                    <tr ${sideMenuActiveItem == "expences" ? "class='info'" : ""}>
+                    <td>
+                        <a href="<c:url value="/actions/setexpences?shopid=${shop.id}" />">
+                            Расходы магазина
+                        </a> 
+                    </td>
+                </tr>
+                </sec:authorize>
             </table>
 
         </div> 

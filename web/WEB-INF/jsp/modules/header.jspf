@@ -78,7 +78,12 @@
                                 <span class="glyphicon glyphicon-list-alt"></span>  Отчет по проходимости и выручке
                             </a>
                         </li>
-                        <sec:authorize access="hasRole('ROLE_ADMIN')">
+                        <li>
+                            <a href="<c:url value="/reports/expences" />" >
+                                    <span class="glyphicon glyphicon-list-alt"></span>  Отчет по расходам
+                            </a>
+                        </li>
+                        <sec:authorize access="hasRole('ROLE_OFFICE')">
                             <li>
                                 <a href="<c:url value="/reports/shopproviders" />" >
                                     <span class="glyphicon glyphicon-list-alt"></span>  Отчет по провайдерам в магазинах

@@ -37,6 +37,18 @@
                         </a> 
                     </td>
                 </tr>
+                
+                <tr><td> </td></tr>
+                
+                <tr ${sideMenuActiveItem == "expenceTypes" ? "class='info'" : ""}>
+                    <td>
+                        <a href="<c:url value="/admin/expencetypes" />">
+                            Типы расходов
+                        </a> 
+                    </td>
+                </tr>
+                
+                <tr><td> </td></tr>
 
                 <tr ${sideMenuActiveItem == "settings" ? "class='info'" : ""}>
                     <td>
