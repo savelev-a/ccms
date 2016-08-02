@@ -79,9 +79,12 @@ http://www.springframework.org/schema/task/spring-task-4.0.xsd
         class="org.springframework.context.support.ConversionServiceFactoryBean">
         <property name="converters">
             <list>
+                <bean class="ru.codemine.ccms.converter.idToShopConverter" />
                 <bean class="ru.codemine.ccms.converter.idToEmployeeConverter" />
                 <bean class="ru.codemine.ccms.converter.idToOrganisationConverter" />
+                <bean class="ru.codemine.ccms.converter.idToExpenceTypeConverter" />
                 <bean class="ru.codemine.ccms.converter.StringToDatetimeConverter" />
+                <bean class="ru.codemine.ccms.converter.StringToLocalDateConverter" />
             </list>
         </property>
     </bean>
