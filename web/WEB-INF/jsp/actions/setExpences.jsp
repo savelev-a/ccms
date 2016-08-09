@@ -226,7 +226,7 @@
                     click: function () {
                         //$(this).dialog("close");
                         $.post("<c:url value="/actions/expences/delete" />", {"id": $.data(this, "idtodel").toString().substring(3), "${_csrf.parameterName}": "${_csrf.token}"});
-                        location.reload();
+                        setTimeout(function() { location.reload() },300);
                         
                     }
                 }, {
