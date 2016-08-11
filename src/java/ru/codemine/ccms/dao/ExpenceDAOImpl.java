@@ -134,7 +134,7 @@ public class ExpenceDAOImpl implements ExpenceDAO
         Session session = sessionFactory.getCurrentSession();
         Query query = session.createQuery(
                 "FROM Expence AS e WHERE e.date in "
-                        + "(SELECT MAX(e1.date) FROM Expence AS e1 WHERE e1.type = e.type AND e1.date <= :date) "
+                        + "(SELECT MAX(e1.date) FROM Expence AS e1 WHERE e1.type = e.type AND e1.date <= :date AND e1.shop.id = :id) "
                         + "AND e.shop.id = :id AND e.recurrent = true");
         
         query.setDate("date", date.toDate());
@@ -159,7 +159,7 @@ public class ExpenceDAOImpl implements ExpenceDAO
         Session session = sessionFactory.getCurrentSession();
         Query query = session.createQuery(
                 "FROM Expence AS e WHERE e.date in "
-                        + "(SELECT MAX(e1.date) FROM Expence AS e1 WHERE e1.type = e.type AND e1.date <= :date) "
+                        + "(SELECT MAX(e1.date) FROM Expence AS e1 WHERE e1.type = e.type AND e1.date <= :date AND e1.shop.id = :idshop) "
                         + "AND e.shop.id = :idshop AND e.type.id = :idtype AND e.recurrent = true");
         
         query.setDate("date", date.toDate());
