@@ -17,6 +17,13 @@
                     </td>
                 </tr>
                 
+                <tr ${sideMenuActiveItem == "graph" ? "class='info'" : ""}>
+                    <td>
+                        <a href="<c:url value="/reports/graph/expences" />">
+                            График(годовой)
+                        </a> 
+                    </td>
+                </tr>
                 
             </table>
 

@@ -65,7 +65,7 @@ public class ReportsRouter //TODO this class NEEDS refactoring
     @Autowired private ExpenceTypeService expenceTypeService;
     @Autowired private Utils utils;
 
-    @Secured("ROLE_USER")
+    @Secured("ROLE_OFFICE")
     @RequestMapping(value = "/reports/sales-pass", method = RequestMethod.GET)
     public String getSalesPassReport(
             @RequestParam(required = false) String dateMonth,
@@ -101,7 +101,7 @@ public class ReportsRouter //TODO this class NEEDS refactoring
         return "print".equals(mode) ? "printforms/reports/salesAllFrm" : "reports/sales-pass";
     }
 
-    @Secured("ROLE_USER")
+    @Secured("ROLE_OFFICE")
     @RequestMapping(value = "/reports/graph/sales-pass", method = RequestMethod.GET)
     public String getSalesPassGraph(
             @RequestParam(required = false) String dateMonth,
@@ -182,7 +182,7 @@ public class ReportsRouter //TODO this class NEEDS refactoring
     }
     
     
-    @Secured("ROLE_USER")
+    @Secured("ROLE_OFFICE")
     @RequestMapping(value = "/reports/sales-pass/data")
     public @ResponseBody List<Map<String, Object>> getSalesPassDataJson(
             @RequestParam(required = false) String dateMonth,
@@ -237,7 +237,7 @@ public class ReportsRouter //TODO this class NEEDS refactoring
         return resultList;
     }
     
-    @Secured("ROLE_USER")
+    @Secured("ROLE_OFFICE")
     @RequestMapping(value = "/reports/sales-pass/details")
     public @ResponseBody List<Map<String, Object>> getSalesPassDetailsJson(
             @RequestParam String dateMonth,
@@ -336,7 +336,7 @@ public class ReportsRouter //TODO this class NEEDS refactoring
         return "reports/shopprov";
     }
     
-    @Secured("ROLE_USER")
+    @Secured("ROLE_OFFICE")
     @RequestMapping(value = "/reports/expences", method = RequestMethod.GET)
     public String getExpencesReport(ModelMap model,
             @RequestParam(required = false) String dateMonth,
@@ -370,7 +370,7 @@ public class ReportsRouter //TODO this class NEEDS refactoring
     }
     
     
-    @Secured("ROLE_USER")
+    @Secured("ROLE_OFFICE")
     @RequestMapping(value = "/reports/expences/data")
     public @ResponseBody List<Map<String, Object>> getExpencesDataJson(
             @RequestParam(required = false) String dateMonth,
@@ -415,7 +415,7 @@ public class ReportsRouter //TODO this class NEEDS refactoring
         return resultList;
     }
     
-    @Secured("ROLE_USER")
+    @Secured("ROLE_OFFICE")
     @RequestMapping(value = "/reports/expences/details")
     public @ResponseBody List<Map<String, Object>> getExpensesDetailsJson(
             @RequestParam String dateMonth,
@@ -499,6 +499,57 @@ public class ReportsRouter //TODO this class NEEDS refactoring
         }
         
         return resultList;
+    }
+    
+    @Secured("ROLE_OFFICE")
+    @RequestMapping(value = "/reports/graph/expences", method = RequestMethod.GET)
+    public String getExpencesGraph(
+            @RequestParam(required = false) Integer shopid, 
+            @RequestParam(required = false) String dateYear,
+            ModelMap model)
+    {
+        model.addAllAttributes(utils.prepareModel("Графики выручки и расходов (годовой) - ИнфоПортал", 
+                "reports", "graph", 
+                null, dateYear));
+        
+        List<Shop> shopList = shopService.getAllOpen();
+        
+        List<String> graphDataSalesTotal = new ArrayList<>();
+        List<String> graphDataExpencesTotal = new ArrayList<>();
+
+        Shop shop;
+
+        if (shopid == null)
+        {
+            shop = shopList.get(0);
+        } else
+        {
+            shop = shopService.getById(shopid);
+        }
+
+        model.addAttribute("shop", shop);
+        model.addAttribute("shopList", shopList);
+        
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd.MM.YYYY");
+        if(dateYear == null) dateYear = LocalDate.now().toString("YYYY");
+        for(int i = 1; i <= 12; i++)
+        {
+            LocalDate monthStartDate = formatter.parseLocalDate("01." + (i > 9 ? i : ("0" + i)) + "." + dateYear);
+            LocalDate monthEndDate = monthStartDate.dayOfMonth().withMaximumValue();
+            
+            SalesMeta salesMeta = salesService.getByShopAndDate(shop, monthStartDate, monthEndDate);
+            Double salesTotal = salesMeta.getPeriodTotals();
+            
+            Double expenceTotal = expenceService.getExpencesValueForMonth(shop, monthStartDate);
+            
+            graphDataSalesTotal.add("[\"" + monthStartDate.toString("MMMM") + "\", " + salesTotal + "]");
+            graphDataExpencesTotal.add("[\"" + monthStartDate.toString("MMMM") + "\", " + expenceTotal + "]");
+        }
+        
+        model.addAttribute("graphDataSalesTotal", graphDataSalesTotal);
+        model.addAttribute("graphDataExpencesTotal", graphDataExpencesTotal);
+
+        return "reports/expences-graph";
     }
     
 
