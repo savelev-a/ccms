@@ -109,11 +109,11 @@ public class Organisation implements Serializable
     private String phone;
     
     
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "director_emp_id")
     private Employee director;
 
-    @OneToMany(mappedBy = "organisation", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "organisation", fetch = FetchType.LAZY)
     private Set<Shop> shops;
     
     public Integer getId()

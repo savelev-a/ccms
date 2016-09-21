@@ -30,50 +30,43 @@ import ru.codemine.ccms.entity.Office;
  * @author Alexander Savelev
  */
 @Service
+@Transactional
 public class OfficeService
 {
     private static final Logger log = Logger.getLogger("OfficeService");
     
-    @Autowired
-    private OfficeDAO officeDAO;
+    @Autowired private OfficeDAO officeDAO;
     
-    @Transactional
     public void create(Office office)
     {
         officeDAO.create(office);
     }
     
-    @Transactional
     public void delete(Office office)
     {
         officeDAO.delete(office);
     }
     
-    @Transactional
     public void deleteById(Integer id)
     {
         officeDAO.deleteById(id);
     }
     
-    @Transactional
     public void update(Office office)
     {
         officeDAO.update(office);
     }
     
-    @Transactional
     public Office getById(Integer id)
     {
         return officeDAO.getById(id);
     }
     
-    @Transactional
     public Office getByName(String name)
     {
         return officeDAO.getByName(name);
     }
     
-    @Transactional
     public List<Office> getAll()
     {
         return officeDAO.getAll();

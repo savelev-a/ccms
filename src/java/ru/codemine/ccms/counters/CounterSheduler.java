@@ -19,9 +19,11 @@ package ru.codemine.ccms.counters;
 
 import java.util.List;
 import org.apache.log4j.Logger;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import ru.codemine.ccms.counters.kondor.KondorClient;
 import ru.codemine.ccms.entity.Counter;
 import ru.codemine.ccms.entity.Shop;
@@ -38,15 +40,11 @@ public class CounterSheduler
 
     private static final Logger log = Logger.getLogger("CounterSheduler");
 
-    @Autowired
-    private ShopService shopService;
+    @Autowired private ShopService shopService;
+    @Autowired private CounterService counterService;
+    @Autowired private KondorClient kondorClient;
 
-    @Autowired
-    private CounterService counterService;
-
-    @Autowired
-    private KondorClient kondorClient;
-
+    @Transactional
     @Scheduled(fixedDelay = 3600000, initialDelay = 300000)
     public void updateAllCounters()
     {

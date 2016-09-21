@@ -31,50 +31,43 @@ import ru.codemine.ccms.entity.Organisation;
  */
 
 @Service
+@Transactional
 public class OrganisationService
 {
     private static final Logger log = Logger.getLogger("OrganisationService");
     
-    @Autowired
-    private OrganisationDAO organisationDAO;
+    @Autowired private OrganisationDAO organisationDAO;
     
-    @Transactional
     public void create(Organisation org)
     {
         organisationDAO.create(org);
     }
     
-    @Transactional
     public void delete(Organisation org)
     {
         organisationDAO.delete(org);
     }
     
-    @Transactional
     public void deleteById(Integer id)
     {
         organisationDAO.deleteById(id);
     }
     
-    @Transactional
     public void update(Organisation org)
     {
         organisationDAO.update(org);
     }
     
-    @Transactional
     public Organisation getById(Integer id)
     {
         return organisationDAO.getById(id);
     }
     
-    @Transactional
     public Organisation getByInn(String inn)
     {
         return organisationDAO.getByInn(inn);
     }
     
-    @Transactional
     public List<Organisation> getAll()
     {
         return organisationDAO.getAll();

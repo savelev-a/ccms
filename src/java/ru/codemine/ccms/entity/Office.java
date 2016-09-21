@@ -57,7 +57,7 @@ public class Office implements Serializable
     private String name;
     
     
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "org_id", nullable = false)
     private Organisation organisation;
     
@@ -76,11 +76,11 @@ public class Office implements Serializable
     @Column(name = "phone", length = 32, nullable = false)
     private String phone;
     
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "director_emp_id")
     private Employee director;
     
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "office_employees", 
             joinColumns = @JoinColumn(name = "office_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "employee_id", referencedColumnName = "id"))

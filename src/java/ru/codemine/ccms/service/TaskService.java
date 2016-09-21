@@ -34,17 +34,14 @@ import ru.codemine.ccms.entity.Task;
  */
 
 @Service
+@Transactional
 public class TaskService 
 {
     private static final Logger log = Logger.getLogger("TaskService");
     
-    @Autowired
-    private TaskDAO taskDAO;
+    @Autowired private TaskDAO taskDAO;
+    @Autowired private EmployeeDAO employeeDAO;
     
-    @Autowired
-    private EmployeeDAO employeeDAO;
-    
-    @Transactional
     public void create(Task task)
     {
         if(task.hasPerformer())
@@ -52,98 +49,82 @@ public class TaskService
         
         taskDAO.create(task);
     }
-    
-    @Transactional
+
     public void delete(Task task)
     {
         taskDAO.delete(task);
     }
     
-    @Transactional
     public void delete(Integer id)
     {
         taskDAO.delete(id);
     }
     
-    @Transactional
     public void update(Task task)
     {
         taskDAO.update(task);
     }
     
-    @Transactional
     public Task getById(Integer id)
     {
         return taskDAO.getById(id);
     }
     
-    @Transactional
     public List<Task> getByCreator(Employee creator)
     {
         return taskDAO.getByCreator(creator);
     }
     
-    @Transactional
     public List<Task> getByPerformer(Employee performer)
     {
         return taskDAO.getByPerformer(performer);
     }
     
-    @Transactional
     public List<Task> getByStatus(Task.Status status)
     {
         return taskDAO.getByStatus(status);
     }
     
-    @Transactional
     public List<Task> gedOverdue()
     {
         return taskDAO.gedOverdue();
     }
     
-    @Transactional
     public List<Task> getByCreatorAndStatus(Employee creator, Task.Status status)
     {
         return taskDAO.getByCreatorAndStatus(creator, status);
     }
     
-    @Transactional
     public List<Task> getByPerformerAndStatus(Employee performer, Task.Status status)
     {
         return taskDAO.getByPerformerAndStatus(performer, status);
     }
     
-    @Transactional
     public List<Task> getOverdueByCreator(Employee creator)
     {
         return taskDAO.getOverdueByCreator(creator);
     }
     
-    @Transactional
     public List<Task> getOverdueByPerformer(Employee performer)
     {
         return taskDAO.getOverdueByPerformer(performer);
     }
     
-    @Transactional
     public List<Task> getByCreatorNotClosed(Employee creator)
     {
         return taskDAO.getByCreatorNotClosed(creator);
     }
     
-    @Transactional
     public List<Task> getByPerformerNotClosed(Employee performer)
     {
         return taskDAO.getByPerformerNotClosed(performer);
     }
     
-    @Transactional
     public List<Task> getAll()
     {
         return taskDAO.getAll();
     }
     
-    @Transactional
     public Integer getUserActiveTaskCount(Employee performer)
     {
         if(performer != null)
@@ -155,7 +136,6 @@ public class TaskService
         return 0;
     }
     
-    @Transactional
     public Integer getOpenTaskCount()
     {
         return taskDAO.getOpenTaskCount();

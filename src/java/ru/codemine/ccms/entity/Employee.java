@@ -93,7 +93,7 @@ public class Employee implements Serializable
     @Column(name = "active", nullable = false)
     private boolean active;
     
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name="roles", joinColumns = {
         @JoinColumn(name="emp_id", referencedColumnName = "id"),
         @JoinColumn(name = "username", referencedColumnName = "username") })

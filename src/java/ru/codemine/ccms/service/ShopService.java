@@ -36,6 +36,7 @@ import ru.codemine.ccms.entity.Shop;
  */
 
 @Service
+@Transactional
 public class ShopService 
 {
     private static final Logger log = Logger.getLogger("ShopService");
@@ -46,55 +47,46 @@ public class ShopService
     @Autowired
     private EmployeeDAO employeeDAO;
     
-    @Transactional
     public void create(Shop shop)
     {
         shopDAO.create(shop);
     }
     
-    @Transactional
     public void delete(Shop shop)
     {
         shopDAO.delete(shop);
     }
     
-    @Transactional
     public void deleteById(Integer id)
     {
         shopDAO.deleteById(id);
     }
     
-    @Transactional
     public void update(Shop shop)
     {
         shopDAO.update(shop);
     }
     
-    @Transactional
     public Shop getById(Integer id)
     {
         return shopDAO.getById(id);
     }
     
-    @Transactional
     public Shop getByName(String name)
     {
         return shopDAO.getByName(name);
     }
     
-    @Transactional
     public List<Shop> getWithCounters()
     {
         return shopDAO.getWithCounters();
     }
     
-    @Transactional
     public List<Shop> getAllOpen()
     {
         return shopDAO.getAllOpen();
     }
     
-    @Transactional
     public List<Shop> getAll()
     {
         return shopDAO.getAll();
@@ -104,7 +96,6 @@ public class ShopService
      * Возвращает список магазинов, где текущий пользователь является администратором
      * @return
      */
-    @Transactional
     public List<Shop> getCurrentUserShops()
     {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -120,7 +111,6 @@ public class ShopService
         return null;
     }
     
-    @Transactional
     public List<Shop> getShopsRuledBy(Employee employee)
     {
         return shopDAO.getByAdmin(employee);

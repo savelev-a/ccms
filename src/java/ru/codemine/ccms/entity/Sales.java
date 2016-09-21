@@ -52,7 +52,7 @@ public class Sales implements Serializable, Comparable<Sales>
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDate")
     private LocalDate date;
     
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "s_shop_id")
     private Shop shop;
     

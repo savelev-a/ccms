@@ -33,58 +33,50 @@ import ru.codemine.ccms.entity.Shop;
  */
 
 @Service
+@Transactional
 public class SalesService
 {
     private static final Logger log = Logger.getLogger("SalesService");
     
-    @Autowired
-    private SalesDAO salesDAO;
+    @Autowired private SalesDAO salesDAO;
     
-    @Transactional
     public void create(SalesMeta sm)
     {
         salesDAO.create(sm);
     }
     
-    @Transactional
     public void delete(SalesMeta sm)
     {
         salesDAO.delete(sm);
     }
     
-    @Transactional
     public void deleteById(Integer id)
     {
         salesDAO.deleteById(id);
     }
     
-    @Transactional
     public void update(SalesMeta sm)
     {
         salesDAO.update(sm);
     }
     
-    @Transactional
     public boolean updatePlanAll(Double plan, LocalDate startDate, LocalDate endDate)
     {
         return salesDAO.updatePlanAll(plan, startDate, endDate);
     }
     
     
-    @Transactional
     public SalesMeta getById(Integer id)
     {
         return salesDAO.getById(id);
     }
     
-    @Transactional
     public List<SalesMeta> getByShop(Shop shop)
     {
         return salesDAO.getByShop(shop);
     }
     
     
-    @Transactional
     public SalesMeta getByShopAndDate(Shop shop, LocalDate startDate, LocalDate endDate)
     {
         SalesMeta sm = salesDAO.getByShopAndDate(shop, startDate, endDate);

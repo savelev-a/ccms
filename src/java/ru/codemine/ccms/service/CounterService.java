@@ -34,39 +34,34 @@ import ru.codemine.ccms.entity.Shop;
  */
 
 @Service
+@Transactional
 public class CounterService 
 {
     
     private static final Logger log = Logger.getLogger("CounterService");
     
-    @Autowired
-    private CounterDAO counterDAO;
+    @Autowired private CounterDAO counterDAO;
     
-    @Transactional
     public void saveCounter(Counter counter)
     {
         counterDAO.update(counter);
     }
     
-    @Transactional
     public List<Counter> getByShop(Shop shop)
     {
         return counterDAO.getByShop(shop);
     }
     
-    @Transactional
     public Counter getByShopAndDate(Shop shop, DateTime date)
     {
         return counterDAO.getByShopAndDate(shop, date);
     }
     
-    @Transactional
     public Integer getSumIn(DateTime date)
     {
         return counterDAO.getSumIn(date);
     }
     
-    @Transactional
     public Integer getSumOut(DateTime date)
     {
         return counterDAO.getSumOut(date);

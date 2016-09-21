@@ -21,6 +21,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import ru.codemine.ccms.service.ShopService;
 
 /**
@@ -33,12 +34,10 @@ public class SalesSheduler
 {
     private static final Logger log = Logger.getLogger("SalesSheduler");
 
-    @Autowired
-    private ShopService shopService;
+    @Autowired private ShopService shopService;
+    @Autowired private SalesLoader salesLoader;
     
-    @Autowired
-    private SalesLoader salesLoader;
-    
+    @Transactional
     @Scheduled(fixedDelay = 3600000, initialDelay = 600000)
     public void updateAllSales()
     {

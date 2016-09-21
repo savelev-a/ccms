@@ -31,54 +31,46 @@ import ru.codemine.ccms.entity.ExpenceType;
  */
 
 @Service
+@Transactional
 public class ExpenceTypeService 
 {
-    @Autowired
-    private ExpenceTypeDAO expenceTypeDAO;
+    @Autowired private ExpenceTypeDAO expenceTypeDAO;
     
-    @Transactional
     public void create(ExpenceType type)
     {
         expenceTypeDAO.create(type);
     }
     
-    @Transactional
     public void delete(ExpenceType type)
     {
         expenceTypeDAO.delete(type);
     }
     
-    @Transactional
     public void deleteById(Integer id)
     {
         expenceTypeDAO.deleteById(id);
     }
     
-    @Transactional
     public void update(ExpenceType type)
     {
         expenceTypeDAO.update(type);
     }
     
-    @Transactional
     public ExpenceType getById(Integer id)
     {
         return expenceTypeDAO.getById(id);
     }
     
-    @Transactional
     public List<ExpenceType> getAllOneshot()
     {
         return expenceTypeDAO.getAllOneshot();
     }
     
-    @Transactional
     public List<ExpenceType> getAllRecurrent()
     {
         return expenceTypeDAO.getAllRecurrent();
     }
     
-    @Transactional
     public List<ExpenceType> getAll()
     {
         return expenceTypeDAO.getAll();

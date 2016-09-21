@@ -34,42 +34,36 @@ import ru.codemine.ccms.entity.Shop;
  */
 
 @Service
+@Transactional
 public class ExpenceService 
 {
-    @Autowired
-    private ExpenceDAO expenceDAO;
+    @Autowired private ExpenceDAO expenceDAO;
     
-    @Transactional
     public void create(Expence expence)
     {
         expenceDAO.create(expence);
     }
     
-    @Transactional
     public void delete(Expence expence)
     {
         expenceDAO.delete(expence);
     }
     
-    @Transactional
     public void deleteById(Integer id)
     {
         expenceDAO.deleteById(id);
     }
     
-    @Transactional
     public void update(Expence expence)
     {
         expenceDAO.update(expence);
     }
     
-    @Transactional
     public Expence getById(Integer id)
     {
         return expenceDAO.getById(id);
     }
     
-    @Transactional
     public List<Expence> getByShop(Shop shop, boolean recurrent)
     {
         return expenceDAO.getByShop(shop, recurrent);
@@ -82,7 +76,6 @@ public class ExpenceService
      * @param date - Дата
      * @return
      */
-    @Transactional
     public List<Expence> getRecurrentExpencesByDate(Shop shop, LocalDate date)
     {
         return expenceDAO.getRecurrentExpencesByDate(shop, date);
@@ -96,7 +89,6 @@ public class ExpenceService
      * @param type - Тип расхода
      * @return
      */
-    @Transactional
     public List<Expence> getRecurrentExpencesByDate(Shop shop, LocalDate date, ExpenceType type)
     {
         return expenceDAO.getRecurrentExpencesByDate(shop, date, type);
@@ -110,7 +102,6 @@ public class ExpenceService
      * @param end - Конец периода
      * @return
      */
-    @Transactional
     public List<Expence> getOneshotExpencesByPeriod(Shop shop, LocalDate start, LocalDate end)
     {
         return expenceDAO.getOneshotExpencesByPeriod(shop, start, end);
@@ -124,55 +115,46 @@ public class ExpenceService
      * @param date - Месяц, на который считать расходы (любой его день)
      * @return значение расходов
      */
-    @Transactional
     public Double getExpencesMidValueForMonth(Shop shop, LocalDate date)
     {
         return expenceDAO.getExpencesMidValueForMonth(shop, date);
     }
     
-    @Transactional
     public Double getExpencesMidValueForMonth(Shop shop, LocalDate date, ExpenceType type)
     {
         return expenceDAO.getExpencesMidValueForMonth(shop, date, type);
     }
     
-    @Transactional
     public Double getRecurrentExpencesValueForMonth(Shop shop, LocalDate date)
     {
         return expenceDAO.getRecurrentExpencesValueForMonth(shop, date);
     }
     
-    @Transactional
     public Double getRecurrentExpencesValueForMonth(Shop shop, LocalDate date, ExpenceType type)
     {
         return expenceDAO.getRecurrentExpencesValueForMonth(shop, date, type);
     }
     
-    @Transactional
     public Double getRecurrentExpencesMidValueForMonth(Shop shop, LocalDate date, ExpenceType type)
     {
         return expenceDAO.getRecurrentExpencesMidValueForMonth(shop, date, type);
     }
     
-    @Transactional
     public Double getOneshotExpencesValueForMonth(Shop shop, LocalDate date)
     {
         return expenceDAO.getOneshotExpencesValueForMonth(shop, date);
     }
     
-    @Transactional
     public Double getOneshotExpencesValueForMonth(Shop shop, LocalDate date, ExpenceType type)
     {
         return expenceDAO.getOneshotExpencesValueForMonth(shop, date, type);
     }
     
-    @Transactional
     public Double getExpencesValueForMonth(Shop shop, LocalDate date)
     {
         return expenceDAO.getExpencesValueForMonth(shop, date);
     }
     
-    @Transactional
     public Double getExpencesValueForMonth(Shop shop, LocalDate date, ExpenceType type)
     {
         return expenceDAO.getExpencesValueForMonth(shop, date, type);
@@ -186,13 +168,11 @@ public class ExpenceService
      * @param type - Тип расхода
      * @return
      */
-    @Transactional
     public Double getOneshotValueForDate(Shop shop, LocalDate date, ExpenceType type)
     {
         return expenceDAO.getOneshotValueForDate(shop, date, type);
     }
     
-    @Transactional
     public boolean isShopHasExpenceForMonth(Shop shop, LocalDate date, ExpenceType type)
     {
         return expenceDAO.isShopHasExpenceForMonth(shop, date, type);

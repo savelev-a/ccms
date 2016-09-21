@@ -66,11 +66,11 @@ public class SalesMeta implements Serializable
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDate")
     private LocalDate endDate;
     
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "s_shop_id")
     private Shop shop;
     
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "link_sales", 
             joinColumns = @JoinColumn(name = "meta_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "sales_id", referencedColumnName = "id"))

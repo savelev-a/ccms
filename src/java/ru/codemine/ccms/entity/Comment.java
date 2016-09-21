@@ -56,7 +56,7 @@ public class Comment implements Serializable, Comparable<Comment>
     @Column(name = "text", nullable = false, columnDefinition = "TEXT")
     private String text;
     
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "creator_id")
     private Employee creator;
     

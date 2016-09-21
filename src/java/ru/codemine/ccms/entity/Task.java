@@ -109,7 +109,7 @@ public class Task implements Serializable
     @Column(name = "text", nullable = false, columnDefinition = "TEXT")
     private String text;
     
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "creator_id")
     private Employee creator;
     
@@ -117,7 +117,7 @@ public class Task implements Serializable
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     private DateTime creationTime;
     
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "performer_id", nullable = true)
     private Employee performer;
     
@@ -137,7 +137,7 @@ public class Task implements Serializable
     @Column(name = "urgency", nullable = false)
     private Urgency urgency;
     
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "task_comm", 
             joinColumns = @JoinColumn(name = "task_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "comm_id", referencedColumnName = "id"))

@@ -59,7 +59,7 @@ public class Shop implements Serializable
     private String name;
     
     
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "org_id", nullable = false)
     private Organisation organisation;
     
@@ -79,11 +79,11 @@ public class Shop implements Serializable
     private String phone;
     
     
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "adm_id", nullable = false)
     private Employee shopAdmin;
     
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "shop_employees", 
             joinColumns = @JoinColumn(name = "shop_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "employee_id", referencedColumnName = "id"))
@@ -107,11 +107,11 @@ public class Shop implements Serializable
     @Column(name = "comment", nullable = false, columnDefinition = "TEXT")
     private String comment;
     
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "shop_hw_id", nullable = false)
     private ShopHardware hardware;
     
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "shop_prov_id", nullable = false)
     private Provider provider;
     

@@ -92,7 +92,7 @@
                         </sec:authorize>
                     </ul>
                 </li>
-                <!--
+                
                 <li class="dropdown ${mainMenuActiveItem == "tasks" ? "active" : ""}">
                     <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown">
                         Задачи 
@@ -127,7 +127,7 @@
 
                     </ul>
                 </li>
-                -->
+                
                 <sec:authorize access="hasRole('ROLE_ADMIN')">
                     <li ${mainMenuActiveItem == "admin" ? "class=active" : ""}>
                         <a href="<c:url value="/admin" />">
