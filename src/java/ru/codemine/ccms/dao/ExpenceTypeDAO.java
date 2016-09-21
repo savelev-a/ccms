@@ -25,16 +25,8 @@ import ru.codemine.ccms.entity.ExpenceType;
  *
  * @author Alexander Savelev
  */
-public interface ExpenceTypeDAO 
+public interface ExpenceTypeDAO extends GenericDAO<ExpenceType, Integer>
 {
-    public void create(ExpenceType type);
-    
-    public void delete(ExpenceType type);
-    public void deleteById(Integer id);
-    
-    public void update(ExpenceType type);
-    
-    public ExpenceType getById(Integer id);
     public List<ExpenceType> getAllOneshot();
     public List<ExpenceType> getAllRecurrent();
     

@@ -21,10 +21,7 @@ package ru.codemine.ccms.dao;
 import java.util.List;
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.joda.time.DateTime;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import ru.codemine.ccms.entity.Employee;
 import ru.codemine.ccms.entity.Task;
@@ -35,70 +32,24 @@ import ru.codemine.ccms.entity.Task;
  */
 
 @Repository
-public class TaskDAOImpl implements TaskDAO
+public class TaskDAOImpl extends GenericDAOImpl<Task, Integer> implements TaskDAO
 {
     private static final Logger log = Logger.getLogger("TaskDAO");
-    
-    @Autowired
-    private SessionFactory sessionFactory;
-
-    @Override
-    public void create(Task task)
-    {
-        log.info("New task added: " + task.getTitle());
-        Session session = sessionFactory.getCurrentSession();
-        session.save(task);
-    }
-
-    @Override
-    public void delete(Task task)
-    {
-        log.info("Task deleted: " + task.getTitle());
-        Session session = sessionFactory.getCurrentSession();
-        session.delete(task);
-    }
-
-    @Override
-    public void delete(Integer id)
-    {
-        log.info("Task deleted: ID" + id);
-        Session session = sessionFactory.getCurrentSession();
-        Task task = getById(id);
-        
-        if(task != null) session.delete(task);
-    }
-
-    @Override
-    public void update(Task task)
-    {
-        log.info("Task updated: " + task.getTitle());
-        Session session = sessionFactory.getCurrentSession();
-        session.update(task);
-    }
-
-    @Override
-    public Task getById(Integer id)
-    {
-        Session session = sessionFactory.getCurrentSession();
-        Task task = (Task)session.createQuery("FROM Task t WHERE t.id = " + id).uniqueResult();
-        
-        return task;
-    }
 
     @Override
     public List<Task> getByCreator(Employee creator)
     {
-        Session session = sessionFactory.getCurrentSession();
-        List<Task> result = session.createQuery("FROM Task t WHERE t.creator.id = " + creator.getId()).list();
+        List<Task> result = getSession().createQuery("FROM Task t WHERE t.creator.id = " + creator.getId()).list();
         
         return result;
     }
 
+    //TODO: stopped here
+    error
     @Override
     public List<Task> getByPerformer(Employee performer)
     {
-        Session session = sessionFactory.getCurrentSession();
-        List<Task> result = session.createQuery("FROM Task t WHERE t.performer.id = " + performer.getId()).list();
+        List<Task> result = getSession().createQuery("FROM Task t WHERE t.performer.id = " + performer.getId()).list();
         
         return result;
     }
@@ -106,8 +57,7 @@ public class TaskDAOImpl implements TaskDAO
     @Override
     public List<Task> getByStatus(Task.Status status)
     {
-        Session session = sessionFactory.getCurrentSession();
-        List<Task> result = session.createQuery("FROM Task t WHERE t.status = '" + status.ordinal() + "'").list();
+        List<Task> result = getSession().createQuery("FROM Task t WHERE t.status = '" + status.ordinal() + "'").list();
         
         return result;
     }
@@ -115,8 +65,7 @@ public class TaskDAOImpl implements TaskDAO
     @Override
     public List<Task> getByCreatorAndStatus(Employee creator, Task.Status status)
     {
-        Session session = sessionFactory.getCurrentSession();
-        List<Task> result = session.createQuery("FROM Task t WHERE t.creator.id = " + creator.getId() 
+        List<Task> result = getSession().createQuery("FROM Task t WHERE t.creator.id = " + creator.getId() 
                 + " AND t.status = '" + status.ordinal() + "'").list();
         
         return result;
@@ -125,8 +74,7 @@ public class TaskDAOImpl implements TaskDAO
     @Override
     public List<Task> getByPerformerAndStatus(Employee performer, Task.Status status)
     {
-        Session session = sessionFactory.getCurrentSession();
-        List<Task> result = session.createQuery("FROM Task t WHERE t.performer.id = " + performer.getId() 
+        List<Task> result = getSession().createQuery("FROM Task t WHERE t.performer.id = " + performer.getId() 
                 + " AND t.status = '" + status.ordinal() + "'").list();
         
         return result;
@@ -135,8 +83,7 @@ public class TaskDAOImpl implements TaskDAO
     @Override
     public List<Task> getByCreatorNotClosed(Employee creator)
     {
-        Session session = sessionFactory.getCurrentSession();
-        List<Task> result = session.createQuery("FROM Task t WHERE t.creator.id = " + creator.getId() 
+        List<Task> result = getSession().createQuery("FROM Task t WHERE t.creator.id = " + creator.getId() 
                 + " AND t.status != '" + Task.Status.CLOSED.ordinal() + "'").list();
         
         return result;
@@ -145,8 +92,7 @@ public class TaskDAOImpl implements TaskDAO
     @Override
     public List<Task> getByPerformerNotClosed(Employee performer)
     {
-        Session session = sessionFactory.getCurrentSession();
-        List<Task> result = session.createQuery("FROM Task t WHERE t.performer.id = " + performer.getId() 
+        List<Task> result = getSession().createQuery("FROM Task t WHERE t.performer.id = " + performer.getId() 
                 + " AND t.status != '" + Task.Status.CLOSED.ordinal() + "'").list();
         
         return result;
@@ -155,8 +101,7 @@ public class TaskDAOImpl implements TaskDAO
     @Override
     public List<Task> getAll()
     {
-        Session session = sessionFactory.getCurrentSession();
-        List<Task> result = session.createQuery("FROM Task").list();
+        List<Task> result = getSession().createQuery("FROM Task").list();
         
         return result;
     }
@@ -164,8 +109,7 @@ public class TaskDAOImpl implements TaskDAO
     @Override
     public List<Task> gedOverdue()
     {
-        Session session = sessionFactory.getCurrentSession();
-        Query query = session.createQuery("FROM Task t WHERE t.deadline < :now AND t.status != '" + Task.Status.CLOSED.ordinal() + "'");
+        Query query = getSession().createQuery("FROM Task t WHERE t.deadline < :now AND t.status != '" + Task.Status.CLOSED.ordinal() + "'");
         query.setTimestamp("now", DateTime.now().toDate());
         List<Task> result = query.list();
         
@@ -175,8 +119,7 @@ public class TaskDAOImpl implements TaskDAO
     @Override
     public List<Task> getOverdueByCreator(Employee creator)
     {
-        Session session = sessionFactory.getCurrentSession();
-        Query query = session.createQuery("FROM Task t WHERE t.deadline < :now AND t.creator.id = " + creator.getId()
+        Query query = getSession().createQuery("FROM Task t WHERE t.deadline < :now AND t.creator.id = " + creator.getId()
                 + " AND t.status != '" + Task.Status.CLOSED.ordinal() + "'");
         query.setTimestamp("now", DateTime.now().toDate());
         List<Task> result = query.list();
@@ -187,8 +130,7 @@ public class TaskDAOImpl implements TaskDAO
     @Override
     public List<Task> getOverdueByPerformer(Employee performer)
     {
-        Session session = sessionFactory.getCurrentSession();
-        Query query = session.createQuery("FROM Task t WHERE t.deadline < :now AND t.performer.id = " + performer.getId() 
+        Query query = getSession().createQuery("FROM Task t WHERE t.deadline < :now AND t.performer.id = " + performer.getId() 
                 + " AND t.status != '" + Task.Status.CLOSED.ordinal() + "'");
         query.setTimestamp("now", DateTime.now().toDate());
         List<Task> result = query.list();
@@ -199,8 +141,7 @@ public class TaskDAOImpl implements TaskDAO
     @Override
     public Integer getPerfTaskCount(Employee performer)
     {
-        Session session = sessionFactory.getCurrentSession();
-        Long count = (Long)session.createQuery(
+        Long count = (Long)getSession().createQuery(
                 "SELECT COUNT(*) FROM Task t WHERE t.performer.id = " + performer.getId()
                         + " AND t.status != '" + Task.Status.CLOSED.ordinal() + "'").uniqueResult();
         return count == null ? 0 : count.intValue();
@@ -209,8 +150,7 @@ public class TaskDAOImpl implements TaskDAO
     @Override
     public Integer getOpenTaskCount()
     {
-        Session session = sessionFactory.getCurrentSession();
-        Long count = (Long)session.createQuery(
+        Long count = (Long)getSession().createQuery(
                 "SELECT COUNT(*) FROM Task t WHERE t.status = '" + Task.Status.NEW.ordinal() + "'").uniqueResult();
         return count == null ? 0 : count.intValue();
     }

@@ -18,21 +18,22 @@
 
 package ru.codemine.ccms.dao;
 
-import java.util.List;
-import org.joda.time.DateTime;
-import ru.codemine.ccms.entity.Counter;
-import ru.codemine.ccms.entity.Shop;
+import java.io.Serializable;
 
 /**
  *
  * @author Alexander Savelev
  */
-public interface CounterDAO 
+public interface GenericDAO<T, PK extends Serializable>
 {
-    public void update(Counter counter);
+    public void create(T t);
     
-    public List<Counter> getByShop(Shop shop);
-    public Counter getByShopAndDate(Shop shop, DateTime date);
-    public Integer getSumIn(DateTime date);
-    public Integer getSumOut(DateTime date);
+    public void delete(T t);
+    public void deleteById(PK id);
+    
+    public void update(T t);
+    
+    public T getById(PK id);
+    
+    public void evict(T t);
 }

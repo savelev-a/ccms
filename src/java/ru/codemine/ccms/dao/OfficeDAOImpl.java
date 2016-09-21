@@ -31,61 +31,15 @@ import ru.codemine.ccms.entity.Office;
  */
 
 @Repository
-public class OfficeDAOImpl implements OfficeDAO
+public class OfficeDAOImpl extends GenericDAOImpl<Office, Integer> implements OfficeDAO
 {
     private static final Logger log = Logger.getLogger("OfficeDAO");
-    
-    @Autowired
-    SessionFactory sessionFactory;
 
-    @Override
-    public void create(Office office)
-    {
-        log.info("Creating new office: " + office.getName());
-        Session session = sessionFactory.getCurrentSession(); 
-        session.save(office);
-    }
-
-    @Override
-    public void delete(Office office)
-    {
-        log.info("Removing office: " + office.getName());
-        Session session = sessionFactory.getCurrentSession();
-        session.delete(office);
-    }
-
-    @Override
-    public void deleteById(Integer id)
-    {
-        log.info("Removing office by id: " + id.toString());
-        Session session = sessionFactory.getCurrentSession();
-        Office office = getById(id);
-        
-        if(office != null) session.delete(office);
-    }
-
-    @Override
-    public void update(Office office)
-    {
-        log.info("Updating office: " + office.getName());
-        Session session = sessionFactory.getCurrentSession();
-        session.update(office);
-    }
-
-    @Override
-    public Office getById(Integer id)
-    {
-        Session session = sessionFactory.getCurrentSession();
-        Office office = (Office)session.get(Office.class, id);
-        
-        return office;    
-    }
 
     @Override
     public Office getByName(String name)
     {
-        Session session = sessionFactory.getCurrentSession();
-        Office org = (Office)session.createQuery("FROM Office O WHERE O.name = " + name).uniqueResult();
+        Office org = (Office)getSession().createQuery("FROM Office O WHERE O.name = " + name).uniqueResult();
         
         return org;
     }
@@ -93,8 +47,7 @@ public class OfficeDAOImpl implements OfficeDAO
     @Override
     public List<Office> getAll()
     {
-        Session session = sessionFactory.getCurrentSession();
-        List<Office> result = session.createQuery("FROM Office O ORDER BY O.name ASC").list();
+        List<Office> result = getSession().createQuery("FROM Office O ORDER BY O.name ASC").list();
         
         return result;
     }

@@ -20,9 +20,6 @@ package ru.codemine.ccms.dao;
 
 import java.util.List;
 import org.apache.log4j.Logger;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import ru.codemine.ccms.entity.ExpenceType;
 
@@ -32,64 +29,14 @@ import ru.codemine.ccms.entity.ExpenceType;
  */
 
 @Repository
-public class ExpenceTypeDAOImpl implements ExpenceTypeDAO
+public class ExpenceTypeDAOImpl extends GenericDAOImpl<ExpenceType, Integer> implements ExpenceTypeDAO
 {
     private static final Logger log = Logger.getLogger("ExpenceTypeDAO");
-    
-    @Autowired
-    SessionFactory sessionFactory;
-
-    @Override
-    public void create(ExpenceType type)
-    {
-        log.info("Creating new expence type: " + type.getDescription());
-        
-        Session session = sessionFactory.getCurrentSession();
-        session.save(type);
-    }
-
-    @Override
-    public void delete(ExpenceType type)
-    {
-        log.info("Removing expence type: " + type.getDescription());
-        
-        Session session = sessionFactory.getCurrentSession();
-        session.delete(type);
-    }
-
-    @Override
-    public void deleteById(Integer id)
-    {
-        log.info("Removing expence type by id: " + id.toString());
-        Session session = sessionFactory.getCurrentSession();
-        
-        ExpenceType type = getById(id);
-        if(type != null) session.delete(type);
-    }
-
-    @Override
-    public void update(ExpenceType type)
-    {
-        log.info("Updating expence type: " + type.getDescription());
-        
-        Session session = sessionFactory.getCurrentSession();
-        session.update(type);
-    }
-
-    @Override
-    public ExpenceType getById(Integer id)
-    {
-        Session session = sessionFactory.getCurrentSession();
-        ExpenceType type = (ExpenceType)session.createQuery("FROM ExpenceType e WHERE e.id = " + id).uniqueResult();
-        
-        return type;
-    }
 
     @Override
     public List<ExpenceType> getAllOneshot()
     {
-        Session session = sessionFactory.getCurrentSession();
-        List<ExpenceType> result = session.createQuery("FROM ExpenceType e WHERE e.recurrent = false").list();
+        List<ExpenceType> result = getSession().createQuery("FROM ExpenceType e WHERE e.recurrent = false").list();
         
         return result;
     }
@@ -97,8 +44,7 @@ public class ExpenceTypeDAOImpl implements ExpenceTypeDAO
     @Override
     public List<ExpenceType> getAllRecurrent()
     {
-        Session session = sessionFactory.getCurrentSession();
-        List<ExpenceType> result = session.createQuery("FROM ExpenceType e WHERE e.recurrent = true").list();
+        List<ExpenceType> result = getSession().createQuery("FROM ExpenceType e WHERE e.recurrent = true").list();
         
         return result;
     }
@@ -106,8 +52,7 @@ public class ExpenceTypeDAOImpl implements ExpenceTypeDAO
     @Override
     public List<ExpenceType> getAll()
     {
-        Session session = sessionFactory.getCurrentSession();
-        List<ExpenceType> result = session.createQuery("FROM ExpenceType e").list();
+        List<ExpenceType> result = getSession().createQuery("FROM ExpenceType e").list();
         
         return result;
     }

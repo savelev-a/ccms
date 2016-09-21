@@ -27,16 +27,8 @@ import ru.codemine.ccms.entity.Task;
  * @author Alexander Savelev
  */
 
-public interface TaskDAO 
+public interface TaskDAO extends GenericDAO<Task, Integer>
 {
-    public void create(Task task);
-    
-    public void delete(Task task);
-    public void delete(Integer id);
-    
-    public void update(Task task);
-    
-    public Task getById(Integer id);
     public List<Task> getByCreator(Employee creator);
     public List<Task> getByPerformer(Employee performer);
     public List<Task> getByStatus(Task.Status status);

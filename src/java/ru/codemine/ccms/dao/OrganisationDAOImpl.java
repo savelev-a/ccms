@@ -19,9 +19,6 @@ package ru.codemine.ccms.dao;
 
 import java.util.List;
 import org.apache.log4j.Logger;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import ru.codemine.ccms.entity.Organisation;
 
@@ -31,61 +28,14 @@ import ru.codemine.ccms.entity.Organisation;
  */
 
 @Repository
-public class OrganisationDAOImpl implements OrganisationDAO
+public class OrganisationDAOImpl extends GenericDAOImpl<Organisation, Integer> implements OrganisationDAO
 {
     private static final Logger log = Logger.getLogger("OrganisationDAO");
-    
-    @Autowired
-    SessionFactory sessionFactory;
-
-    @Override
-    public void create(Organisation org)
-    {
-        log.info("Creating new organisation: " + org.getName());
-        Session session = sessionFactory.getCurrentSession(); 
-        session.save(org);
-    }
-
-    @Override
-    public void delete(Organisation org)
-    {
-        log.info("Removing organisation: " + org.getName());
-        Session session = sessionFactory.getCurrentSession();
-        session.delete(org);
-    }
-
-    @Override
-    public void deleteById(Integer id)
-    {
-        log.info("Removing organisation by id: " + id.toString());
-        Session session = sessionFactory.getCurrentSession();
-        Organisation org = getById(id);
-        
-        if(org != null) session.delete(org);
-    }
-
-    @Override
-    public void update(Organisation org)
-    {
-        log.info("Updating organisation: " + org.getName());
-        Session session = sessionFactory.getCurrentSession();
-        session.update(org);
-    }
-
-    @Override
-    public Organisation getById(Integer id)
-    {
-        Session session = sessionFactory.getCurrentSession();
-        Organisation org = (Organisation)session.get(Organisation.class, id);
-        
-        return org;
-    }
 
     @Override
     public Organisation getByInn(String inn)
     {
-        Session session = sessionFactory.getCurrentSession();
-        Organisation org = (Organisation)session.createQuery("FROM Organisation O WHERE O.inn = " + inn).uniqueResult();
+        Organisation org = (Organisation)getSession().createQuery("FROM Organisation O WHERE O.inn = " + inn).uniqueResult();
         
         return org;
     }
@@ -93,8 +43,7 @@ public class OrganisationDAOImpl implements OrganisationDAO
     @Override
     public List<Organisation> getAll()
     {
-        Session session = sessionFactory.getCurrentSession();
-        List<Organisation> result = session.createQuery("FROM Organisation O ORDER BY O.name ASC").list();
+        List<Organisation> result = getSession().createQuery("FROM Organisation O ORDER BY O.name ASC").list();
         
         return result;
     }

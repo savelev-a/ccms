@@ -20,9 +20,6 @@ package ru.codemine.ccms.dao;
 
 import java.util.List;
 import org.apache.log4j.Logger;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import ru.codemine.ccms.entity.Employee;
 import ru.codemine.ccms.entity.Shop;
@@ -33,61 +30,14 @@ import ru.codemine.ccms.entity.Shop;
  */
 
 @Repository
-public class ShopDAOImpl implements ShopDAO
+public class ShopDAOImpl extends GenericDAOImpl<Shop, Integer> implements ShopDAO
 {
     private static final Logger log = Logger.getLogger("ShopDAO");
-    
-    @Autowired
-    private SessionFactory sessionFactory;
-
-    @Override
-    public void create(Shop shop)
-    {
-        log.info("Creating new shop: " + shop.getName());
-        Session session = sessionFactory.getCurrentSession();
-        session.save(shop);
-    }
-
-    @Override
-    public void delete(Shop shop)
-    {
-        log.info("Removing shop: " + shop.getName());
-        Session session = sessionFactory.getCurrentSession();
-        session.delete(shop);
-    }
-
-    @Override
-    public void deleteById(Integer id)
-    {
-        log.info("Removing shop by id: " + id.toString());
-        Session session = sessionFactory.getCurrentSession();
-        Shop shop = getById(id);
-        
-        if(shop != null) session.delete(shop);
-    }
-
-    @Override
-    public void update(Shop shop)
-    {
-        log.info("Updating shop: " + shop.getName());
-        Session session = sessionFactory.getCurrentSession();
-        session.update(shop);
-    }
-
-    @Override
-    public Shop getById(Integer id)
-    {
-        Session session = sessionFactory.getCurrentSession();
-        Shop shop = (Shop)session.get(Shop.class, id);
-        
-        return shop;
-    }
 
     @Override
     public Shop getByName(String name)
     {
-        Session session = sessionFactory.getCurrentSession();
-        Shop shop = (Shop)session.createQuery("FROM Shop S WHERE S.name = '" + name + "'").uniqueResult();
+        Shop shop = (Shop)getSession().createQuery("FROM Shop S WHERE S.name = '" + name + "'").uniqueResult();
         
         return shop;
     }
@@ -95,8 +45,7 @@ public class ShopDAOImpl implements ShopDAO
     @Override
     public List<Shop> getByAdmin(Employee admin)
     {
-        Session session = sessionFactory.getCurrentSession();
-        List<Shop> result = session.createQuery("FROM Shop S WHERE S.shopAdmin.id = " + admin.getId()).list();
+        List<Shop> result = getSession().createQuery("FROM Shop S WHERE S.shopAdmin.id = " + admin.getId()).list();
         
         return result;
     }
@@ -104,8 +53,7 @@ public class ShopDAOImpl implements ShopDAO
     @Override
     public List<Shop> getWithCounters()
     {
-        Session session = sessionFactory.getCurrentSession();
-        List<Shop> result = session.createQuery("FROM Shop S WHERE S.countersEnabled = true ORDER BY S.name ASC").list();
+        List<Shop> result = getSession().createQuery("FROM Shop S WHERE S.countersEnabled = true ORDER BY S.name ASC").list();
         
         return result;
     }
@@ -113,8 +61,7 @@ public class ShopDAOImpl implements ShopDAO
     @Override
     public List<Shop> getAllOpen()
     {
-        Session session = sessionFactory.getCurrentSession();
-        List<Shop> result = session.createQuery("FROM Shop S WHERE S.closed = false ORDER BY S.name ASC").list();
+        List<Shop> result = getSession().createQuery("FROM Shop S WHERE S.closed = false ORDER BY S.name ASC").list();
         
         return result;
     }
@@ -122,8 +69,7 @@ public class ShopDAOImpl implements ShopDAO
     @Override
     public List<Shop> getAll()
     {
-        Session session = sessionFactory.getCurrentSession();
-        List<Shop> result = session.createQuery("FROM Shop S ORDER BY S.name ASC").list();
+        List<Shop> result = getSession().createQuery("FROM Shop S ORDER BY S.name ASC").list();
         
         return result;
     }

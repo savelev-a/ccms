@@ -24,17 +24,8 @@ import ru.codemine.ccms.entity.Organisation;
  *
  * @author Alexander Savelev
  */
-public interface OrganisationDAO
+public interface OrganisationDAO extends GenericDAO<Organisation, Integer>
 {
-    public void create(Organisation org);
-    
-    public void delete(Organisation org);
-    public void deleteById(Integer id);
-    
-    public void update(Organisation org);
-    
-    public Organisation getById(Integer id);
     public Organisation getByInn(String inn);
     public List<Organisation> getAll();
-    
 }

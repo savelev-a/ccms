@@ -19,7 +19,6 @@
 package ru.codemine.ccms.dao;
 
 import java.util.List;
-import java.util.Map;
 import org.joda.time.LocalDate;
 import ru.codemine.ccms.entity.Expence;
 import ru.codemine.ccms.entity.ExpenceType;
@@ -29,16 +28,8 @@ import ru.codemine.ccms.entity.Shop;
  *
  * @author Alexander Savelev
  */
-public interface ExpenceDAO 
+public interface ExpenceDAO extends GenericDAO<Expence, Integer>
 {
-    public void create(Expence expence);
-    
-    public void delete(Expence expence);
-    public void deleteById(Integer id);
-    
-    public void update(Expence expence);
-    
-    public Expence getById(Integer id);
     public List<Expence> getByShop(Shop shop, boolean recurrent);
     public List<Expence> getRecurrentExpencesByDate(Shop shop, LocalDate date);
     public List<Expence> getRecurrentExpencesByDate(Shop shop, LocalDate date, ExpenceType type);

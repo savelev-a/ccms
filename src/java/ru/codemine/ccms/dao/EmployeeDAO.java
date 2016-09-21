@@ -24,18 +24,9 @@ import ru.codemine.ccms.entity.Employee;
  *
  * @author Alexander Savelev
  */
-public interface EmployeeDAO
+public interface EmployeeDAO extends GenericDAO<Employee, Integer>
 {
-    public void create(Employee employee);
-    
-    public void delete(Employee employee);
-    public void deleteById(Integer id);
-    
-    public void update(Employee employee);
-    
-    public Employee getById(Integer id);
     public Employee getByUsername(String username);
     public List<Employee> getActive();
     public List<Employee> getAll();
-    
 }

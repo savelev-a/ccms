@@ -40,82 +40,14 @@ import ru.codemine.ccms.entity.Shop;
  */
 
 @Repository
-public class ExpenceDAOImpl implements ExpenceDAO
+public class ExpenceDAOImpl extends GenericDAOImpl<Expence, Integer> implements ExpenceDAO
 {
-    //
-    // Множество методов в данном DAO объясняется не вполне четкими требованиями заказчика
-    //
     private static final Logger log = Logger.getLogger("ExpenceDAO");
-    
-    @Autowired
-    SessionFactory sessionFactory;
-    
-    @Override
-    public void create(Expence expence)
-    {
-        if(expence == null || expence.getShop() == null || expence .getType() == null)
-        {
-            log.warn("Invalid expence to create!");
-            return;
-        }
-        
-        log.info("Adding new expence for shop " + expence.getShop().getName() + " of type " + expence.getType().getDescription());
-        Session session = sessionFactory.getCurrentSession();
-        session.save(expence);
-    }
-
-    @Override
-    public void delete(Expence expence)
-    {
-        if(expence == null || expence.getShop() == null || expence .getType() == null)
-        {
-            log.warn("Invalid expence to delete!");
-            return;
-        }
-        
-        log.info("Removing expence for shop " + expence.getShop().getName() + " of type " + expence.getType().getDescription());
-        Session session = sessionFactory.getCurrentSession();
-        session.delete(expence);
-    }
-
-    @Override
-    public void deleteById(Integer id)
-    {
-        log.info("removing expence by id: " + id);
-        
-        Session session = sessionFactory.getCurrentSession();
-        Expence expence = getById(id);
-        if(expence != null) session.delete(expence);
-    }
-
-    @Override
-    public void update(Expence expence)
-    {
-        if(expence == null || expence.getShop() == null || expence .getType() == null)
-        {
-            log.warn("Invalid expence to update!");
-            return;
-        }
-        
-        log.info("Updating expence for shop " + expence.getShop().getName() + " of type " + expence.getType().getDescription());
-        Session session = sessionFactory.getCurrentSession();
-        session.update(expence);
-    }
-
-    @Override
-    public Expence getById(Integer id)
-    {
-        Session session = sessionFactory.getCurrentSession();
-        Expence expence = (Expence)session.createQuery("FROM Expence e WHERE e.id = " + id).uniqueResult();
-        
-        return expence;
-    }
     
     @Override
     public List<Expence> getByShop(Shop shop, boolean recurrent)
     {
-        Session session = sessionFactory.getCurrentSession();
-        List<Expence> result = session.createQuery(
+        List<Expence> result = getSession().createQuery(
                 "FROM Expence e WHERE e.shop.id = " + shop.getId() + " AND e.recurrent = " + recurrent).list();
         
         return result;
@@ -131,8 +63,7 @@ public class ExpenceDAOImpl implements ExpenceDAO
     @Override
     public List<Expence> getRecurrentExpencesByDate(Shop shop, LocalDate date)
     {
-        Session session = sessionFactory.getCurrentSession();
-        Query query = session.createQuery(
+        Query query = getSession().createQuery(
                 "FROM Expence AS e WHERE e.date in "
                         + "(SELECT MAX(e1.date) FROM Expence AS e1 WHERE e1.type = e.type AND e1.date <= :date AND e1.shop.id = :id) "
                         + "AND e.shop.id = :id AND e.recurrent = true");
@@ -156,8 +87,7 @@ public class ExpenceDAOImpl implements ExpenceDAO
     @Override
     public List<Expence> getRecurrentExpencesByDate(Shop shop, LocalDate date, ExpenceType type)
     {
-        Session session = sessionFactory.getCurrentSession();
-        Query query = session.createQuery(
+        Query query = getSession().createQuery(
                 "FROM Expence AS e WHERE e.date in "
                         + "(SELECT MAX(e1.date) FROM Expence AS e1 WHERE e1.type = e.type AND e1.date <= :date AND e1.shop.id = :idshop) "
                         + "AND e.shop.id = :idshop AND e.type.id = :idtype AND e.recurrent = true");
@@ -182,8 +112,7 @@ public class ExpenceDAOImpl implements ExpenceDAO
     @Override
     public List<Expence> getOneshotExpencesByPeriod(Shop shop, LocalDate start, LocalDate end)
     {
-        Session session = sessionFactory.getCurrentSession();
-        Query query = session.createQuery("FROM Expence e WHERE e.date >= :start AND e.date <= :end AND e.shop.id = :id AND e.recurrent = false");
+        Query query = getSession().createQuery("FROM Expence e WHERE e.date >= :start AND e.date <= :end AND e.shop.id = :id AND e.recurrent = false");
         query.setDate("start", start.toDate());
         query.setDate("end", end.toDate());
         query.setInteger("id", shop.getId());
@@ -232,11 +161,10 @@ public class ExpenceDAOImpl implements ExpenceDAO
         LocalDate end = date.dayOfMonth().withMaximumValue();
         Integer daysCount = end.getDayOfMonth();
         
-        Session session = sessionFactory.getCurrentSession();
         Double recurrentValue = 0.0;
                 
         // Загрузка периодических расходов, попадающих в данный период //
-        Query recurrentQuery = session.createQuery(
+        Query recurrentQuery = getSession().createQuery(
                 "FROM Expence e WHERE e.date >= :start AND e.date <= :end AND e.shop.id = :id AND e.recurrent = true");
         
         recurrentQuery.setDate("start", start.toDate());
@@ -299,11 +227,10 @@ public class ExpenceDAOImpl implements ExpenceDAO
         LocalDate end = date.dayOfMonth().withMaximumValue();
         Integer daysCount = end.getDayOfMonth();
         
-        Session session = sessionFactory.getCurrentSession();
         Double recurrentValue = 0.0;
                 
         // Загрузка периодических расходов данного типа, попадающих в данный период //
-        Query recurrentQuery = session.createQuery(
+        Query recurrentQuery = getSession().createQuery(
                 "FROM Expence e WHERE e.date >= :start AND e.date <= :end AND e.shop.id = :idshop AND e.type.id = :idtype AND e.recurrent = true");
         
         recurrentQuery.setDate("start", start.toDate());
@@ -355,11 +282,9 @@ public class ExpenceDAOImpl implements ExpenceDAO
     {
         LocalDate start = date.withDayOfMonth(1);
         LocalDate end = date.dayOfMonth().withMaximumValue();
-     
-        Session session = sessionFactory.getCurrentSession();
         
         // Вычисление суммы однократных расходов //
-        Query oneshotQuery = session.createQuery(
+        Query oneshotQuery = getSession().createQuery(
                 "SELECT SUM(e.value) FROM Expence e WHERE e.date >= :start AND e.date <= :end AND e.shop.id = :id AND e.recurrent = false");
         
         oneshotQuery.setDate("start", start.toDate());
@@ -378,11 +303,9 @@ public class ExpenceDAOImpl implements ExpenceDAO
     {
         LocalDate start = date.withDayOfMonth(1);
         LocalDate end = date.dayOfMonth().withMaximumValue();
-     
-        Session session = sessionFactory.getCurrentSession();
         
         // Вычисление суммы однократных расходов //
-        Query oneshotQuery = session.createQuery(
+        Query oneshotQuery = getSession().createQuery(
                 "SELECT SUM(e.value) FROM Expence e WHERE e.date >= :start AND e.date <= :end AND e.shop.id = :idshop AND type.id = :idtype AND e.recurrent = false");
         
         oneshotQuery.setDate("start", start.toDate());
@@ -426,8 +349,7 @@ public class ExpenceDAOImpl implements ExpenceDAO
     @Override
     public Double getOneshotValueForDate(Shop shop, LocalDate date, ExpenceType type)
     {
-        Session session = sessionFactory.getCurrentSession();
-        Query query = session.createQuery("FROM Expence e WHERE "
+        Query query = getSession().createQuery("FROM Expence e WHERE "
                 + "e.date = :date "
                 + "AND e.shop.id = :idshop "
                 + "AND e.type.id = :idtype "

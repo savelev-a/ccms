@@ -26,16 +26,8 @@ import ru.codemine.ccms.entity.Shop;
  *
  * @author Alexander Savelev
  */
-public interface ShopDAO 
+public interface ShopDAO extends GenericDAO<Shop, Integer>
 {
-    public void create(Shop shop);
-    
-    public void delete(Shop shop);
-    public void deleteById(Integer id);
-    
-    public void update(Shop shop);
-    
-    public Shop getById(Integer id);
     public Shop getByName(String name);
     public List<Shop> getByAdmin(Employee admin);
     public List<Shop> getWithCounters();

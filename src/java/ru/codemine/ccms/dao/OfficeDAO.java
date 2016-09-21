@@ -25,16 +25,8 @@ import ru.codemine.ccms.entity.Office;
  * @author Alexander Savelev
  */
 
-public interface OfficeDAO
+public interface OfficeDAO extends GenericDAO<Office, Integer>
 {
-    public void create(Office office);
-    
-    public void delete(Office office);
-    public void deleteById(Integer id);
-    
-    public void update(Office office);
-    
-    public Office getById(Integer id);
     public Office getByName(String name);
     public List<Office> getAll();
 }

@@ -31,6 +31,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
@@ -73,29 +74,6 @@ public class Task implements Serializable
         CRITICAL
     }
     
-    public Task()
-    {
-        this.creationTime = DateTime.now();
-        this.status = Status.NEW;
-        this.urgency = Urgency.MEDIUM;
-        this.deadline = DateTime.now().plusDays(3);
-        this.comments = new LinkedHashSet<>();
-        this.title = "";
-        this.text = "";
-    }
-    
-    public Task(Employee creator)
-    {
-        this.creationTime = DateTime.now();
-        this.status = Status.NEW;
-        this.creator = creator;
-        this.urgency = Urgency.MEDIUM;
-        this.deadline = DateTime.now().plusDays(3);
-        this.comments = new LinkedHashSet<>();
-        this.title = "";
-        this.text = "";
-    }
-    
     @Id
     @GeneratedValue(generator = "increment")
     @GenericGenerator(name = "increment", strategy = "increment")
@@ -117,9 +95,11 @@ public class Task implements Serializable
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     private DateTime creationTime;
     
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "performer_id", nullable = true)
-    private Employee performer;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "shop_employees", 
+            joinColumns = @JoinColumn(name = "task_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "performer_id", referencedColumnName = "id"))
+    private Set<Employee> performers;
     
     @Enumerated(EnumType.ORDINAL)
     @Column(name = "status", nullable = false)
@@ -144,7 +124,31 @@ public class Task implements Serializable
     @OrderBy(value = "id ASC")
     private Set<Comment> comments;
 
+        
+    public Task()
+    {
+        this.creationTime = DateTime.now();
+        this.status = Status.NEW;
+        this.urgency = Urgency.MEDIUM;
+        this.deadline = DateTime.now().plusDays(3);
+        this.comments = new LinkedHashSet<>();
+        this.title = "";
+        this.text = "";
+        this.performers = new LinkedHashSet<>();
+    }
     
+    public Task(Employee creator)
+    {
+        this.creationTime = DateTime.now();
+        this.status = Status.NEW;
+        this.creator = creator;
+        this.urgency = Urgency.MEDIUM;
+        this.deadline = DateTime.now().plusDays(3);
+        this.comments = new LinkedHashSet<>();
+        this.title = "";
+        this.text = "";
+        this.performers = new LinkedHashSet<>();
+    }
     
     
     public Integer getId()
@@ -197,14 +201,14 @@ public class Task implements Serializable
         this.creationTime = creationTime;
     }
 
-    public Employee getPerformer()
+    public Set<Employee> getPerformers()
     {
-        return performer;
+        return performers;
     }
 
-    public void setPerformer(Employee performer)
+    public void setPerformers(Set<Employee> performers)
     {
-        this.performer = performer;
+        this.performers = performers;
     }
 
     public Status getStatus()
@@ -267,37 +271,99 @@ public class Task implements Serializable
     
     public boolean hasPerformer()
     {
-        return this.performer != null;
+        return (this.performers != null && !this.performers.isEmpty());
+    }
+    
+    public boolean hasPerformer(Employee performer)
+    {
+        return (performer != null && this.performers.contains(performer));
     }
     
     public void assign(Employee performer)
     {
-        if(performer == null) 
-        {
-            drop();
-            return;
-        }
+        if(performer == null) return;
         
-        this.performer = performer;
-        this.status = Status.ASSIGNED;
+        this.performers.add(performer);
+        if(this.status == Status.NEW || this.status == Status.CLOSED) this.status = Status.ASSIGNED;
 
         Comment comment = new Comment();
-        comment.setTitle("Задача назначена сотруднику " + performer.getFullName());
+        comment.setTitle("Сотрудник добавлен в исполнители");
+        
+        String commText = "Исполнитель: " + performer.getFullName();
+        comment.setText(commText);
+        
+        this.comments.add(comment);
+        
+    }
+    
+    public void assign(Set<Employee> performers)
+    {
+        if(performers == null || performers.isEmpty()) return;
+        
+        for(Employee performer : performers)
+        {
+            this.performers.add(performer);
+        }
+        if(this.status == Status.NEW || this.status == Status.CLOSED) this.status = Status.ASSIGNED;
+
+        Comment comment = new Comment();
+        comment.setTitle("Задача назначена сотрудникам");
+        
+        String commText = "Исполнители: ";
+        for(Employee performer : performers) text += performer.getFullName();
+        comment.setText(commText);
+        
         this.comments.add(comment);
     }
     
     public void drop()
     {
-        if(this.performer != null)
-        {
-            Comment comment = new Comment();
-            comment.setTitle("Сотрудник " + performer.getFullName() + " прекратил выполнение задачи");
-            this.comments.add(comment);
-        }
+        Comment comment = new Comment();
+        comment.setTitle("Задача возвращена в свободные");
+        this.comments.add(comment);
+
         
-        this.performer = null;
+        this.performers.clear();
         this.status = Status.NEW;
         
+    }
+    
+    public void drop(Employee performer)
+    {
+        if(performer == null || !this.performers.contains(performer)) return;
+        
+        Comment comment = new Comment();
+        comment.setTitle("Сотрудник прекратил выполнение задачи");
+        String commText = "Сотрудник: " + performer.getFullName();
+        comment.setText(commText);
+        
+        this.comments.add(comment);
+        
+        this.performers.remove(performer);
+        
+        if(this.performers.isEmpty())
+            drop();
+    }
+    
+    public void drop(Set<Employee> performers)
+    {
+        if(performers == null || performers.isEmpty()) return;
+        
+        Comment comment = new Comment();
+        comment.setTitle("Сотрудники прекратил выполнение задачи");
+        String commText = "Сотрудники: " ;
+        for(Employee preformer : performers)
+            commText += preformer.getFullName();
+        
+        comment.setText(commText);
+        
+        this.comments.add(comment);
+        
+        for(Employee performer : performers)
+            this.performers.remove(performer);
+        
+        if(this.performers.isEmpty())
+            drop();
     }
     
     public void close()

@@ -45,7 +45,7 @@ public class TaskService
     public void create(Task task)
     {
         if(task.hasPerformer())
-            task.assign(task.getPerformer());
+            task.assign(task.getPerformers());
         
         taskDAO.create(task);
     }
@@ -57,7 +57,7 @@ public class TaskService
     
     public void delete(Integer id)
     {
-        taskDAO.delete(id);
+        taskDAO.deleteById(id);
     }
     
     public void update(Task task)

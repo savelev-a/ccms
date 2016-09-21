@@ -20,10 +20,7 @@ package ru.codemine.ccms.dao;
 import java.util.List;
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.joda.time.LocalDate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import ru.codemine.ccms.entity.SalesMeta;
 import ru.codemine.ccms.entity.Shop;
@@ -34,53 +31,16 @@ import ru.codemine.ccms.entity.Shop;
  */
 
 @Repository
-public class SalesDAOImpl implements SalesDAO
+public class SalesDAOImpl extends GenericDAOImpl<SalesMeta, Integer> implements SalesDAO
 {
     private static final Logger log = Logger.getLogger("SalesDAO");
-    
-    @Autowired
-    SessionFactory sessionFactory;
-    
-    @Override
-    public void create(SalesMeta sm)
-    {
-        Session session = sessionFactory.getCurrentSession();
-        
-        session.save(sm);
-    }
-
-    @Override
-    public void delete(SalesMeta sm)
-    {
-        Session session = sessionFactory.getCurrentSession();
-        
-        session.delete(sm);
-    }
-
-    @Override
-    public void deleteById(Integer id)
-    {
-        Session session = sessionFactory.getCurrentSession();
-        
-        SalesMeta sm = getById(id);
-        if(sm != null) session.delete(sm);
-    }
-
-    @Override
-    public void update(SalesMeta sm)
-    {
-        Session session = sessionFactory.getCurrentSession();
-        
-        session.saveOrUpdate(sm);
-    }
     
     @Override
     public boolean updatePlanAll(Double plan, LocalDate startDate, LocalDate endDate)
     {
         if(plan == null || startDate == null || endDate == null || startDate.isAfter(endDate)) return false;
         
-        Session session = sessionFactory.getCurrentSession();
-        Query updateQuery = session.createQuery("UPDATE SalesMeta Sm SET Sm.plan = :plan WHERE Sm.startDate = :startdate AND Sm.endDate = :enddate");
+        Query updateQuery = getSession().createQuery("UPDATE SalesMeta Sm SET Sm.plan = :plan WHERE Sm.startDate = :startdate AND Sm.endDate = :enddate");
         updateQuery.setDate("startdate", startDate.toDate());
         updateQuery.setDate("enddate", endDate.toDate());
         updateQuery.setDouble("plan", plan);
@@ -88,36 +48,19 @@ public class SalesDAOImpl implements SalesDAO
         return (updateQuery.executeUpdate() > 0);
     }
     
-    @Override
-    public SalesMeta getById(Integer id)
-    {
-        Session session = sessionFactory.getCurrentSession();
-        
-        //SalesMeta sm = (SalesMeta)session.get(SalesMeta.class, id);
-        SalesMeta sm = (SalesMeta)session.createQuery("FROM SalesMeta Sm WHERE Sm.id = " + id).uniqueResult();
-        
-        return sm;
-    }
 
     @Override
     public List<SalesMeta> getByShop(Shop shop)
     {
-        Session session = sessionFactory.getCurrentSession();
-        
-        List<SalesMeta> result = session.createQuery("FROM SalesMeta Sm WHERE Sm.shop.id = " + shop.getId()).list();
+        List<SalesMeta> result = getSession().createQuery("FROM SalesMeta Sm WHERE Sm.shop.id = " + shop.getId()).list();
         
         return result;
     }
     
-    
-
-
-
     @Override
     public SalesMeta getByShopAndDate(Shop shop, LocalDate startDate, LocalDate endDate)
     {
-        Session session = sessionFactory.getCurrentSession();
-        Query q = session.createQuery("FROM SalesMeta Sm WHERE Sm.shop.id = :shopid AND Sm.startDate = :startdate AND Sm.endDate = :enddate");
+        Query q = getSession().createQuery("FROM SalesMeta Sm WHERE Sm.shop.id = :shopid AND Sm.startDate = :startdate AND Sm.endDate = :enddate");
         q.setInteger("shopid", shop.getId());
         q.setDate("startdate", startDate.toDate());
         q.setDate("enddate", endDate.toDate());

@@ -27,17 +27,10 @@ import ru.codemine.ccms.entity.Shop;
  * @author Alexander Savelev
  */
 
-public interface SalesDAO
+public interface SalesDAO extends GenericDAO<SalesMeta, Integer>
 {
-    public void create(SalesMeta sm);
-    
-    public void delete(SalesMeta sm);
-    public void deleteById(Integer id);
-    
-    public void update(SalesMeta sm);
     public boolean updatePlanAll(Double plan, LocalDate startDate, LocalDate endDate);
-    
-    public SalesMeta getById(Integer id);
+
     public List<SalesMeta> getByShop(Shop shop);
 
     public SalesMeta getByShopAndDate(Shop shop, LocalDate startDate, LocalDate endDate);
