@@ -74,7 +74,7 @@ public class DominoSalesLoader implements SalesLoader
             try
             {
 
-                log.info("Starting file processing: " + file.getName());
+                log.info("Обработка файла: " + file.getName());
 
                 FileInputStream fs = new FileInputStream(file);
                 HSSFWorkbook workbook = new HSSFWorkbook(fs);
@@ -105,7 +105,7 @@ public class DominoSalesLoader implements SalesLoader
                         {
                             dateFound = true;
                             fileDate = startDate;
-                            log.info("date found! it is: " + fileDate);
+                            log.info("Дата файла: " + fileDate);
                         }
 
                     } 
@@ -122,7 +122,7 @@ public class DominoSalesLoader implements SalesLoader
                             {
                                 colFound = true;
                                 colNumber = headersCell.getColumnIndex();
-                                log.info("headers found! it in col number " + colNumber);
+                                log.info("Колонка значений: " + colNumber);
                             }
                         }
                     } 
@@ -194,20 +194,20 @@ public class DominoSalesLoader implements SalesLoader
                 {
                     if (!dateFound)
                     {
-                        log.warn("No date found in file " + file.getName());
+                        log.warn("Дата не найдена в файле " + file.getName());
                     }
                     if (!colFound)
                     {
-                        log.warn("No column 'total' found in file " + file.getName());
+                        log.warn("Колонка с данными не найдена в файле " + file.getName());
                     }
-                    log.error("cannot process file " + file.getName());
+                    log.error("Невозможно обработать файл " + file.getName());
                 }
 
             }
             catch (Exception e)
             {
                 //e.printStackTrace();
-                log.error("Cannot process files, error is: " + e.getMessage());
+                log.error("Невозможно обработать файл, возникла ошибка: " + e.getMessage());
             }
 
         } // foreach file in path
@@ -243,17 +243,17 @@ public class DominoSalesLoader implements SalesLoader
                     }
                     else
                     {
-                        log.warn("Cannot get sales value for shop " + shop.getName() + ", not fount in table!");
-                        log.warn("Domino name is: " + shop.getDominoName());
+                        log.warn("Нет данных для загрузки по магазину " + shop.getName() + ", он не найден в таблице!");
+                        log.warn("Иия Домино: " + shop.getDominoName());
                     }
                 }
             }
             
-            log.info("Completed auto update sales");
+            log.info("Процесс загрузки выручек завершен");
         }
         else
         {
-            log.info("No new sales found to load");
+            log.info("Не найдено выручек для загрузки");
         }
         
     }

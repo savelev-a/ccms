@@ -41,7 +41,7 @@ public class SalesSheduler
     @Scheduled(fixedDelay = 3600000, initialDelay = 600000)
     public void updateAllSales()
     {
-        log.info("Sheduled sales update process started.");
+        log.info("Начат запланированный процесс загрузки выручек.");
         salesLoader.processSales(shopService.getAllOpen());
     }
 }

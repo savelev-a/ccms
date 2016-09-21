@@ -69,7 +69,7 @@ public class GenericDAOImpl<T, PK extends Serializable> implements GenericDAO<T,
     @Override
     public void update(T t)
     {
-        getSession().update(t);
+        getSession().saveOrUpdate(t);
     }
 
     @Override

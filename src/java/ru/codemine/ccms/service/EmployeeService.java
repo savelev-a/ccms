@@ -135,4 +135,9 @@ public class EmployeeService
         
         return rolesList;
     }
+
+    public void evict(Employee employee)
+    {
+        employeeDAO.evict(employee);
+    }
 }

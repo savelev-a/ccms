@@ -83,7 +83,7 @@ public class EmailAttachmentExtractor
             }
         } catch (Exception e)
         {
-            log.error("Cannot save all attachments, error is: " + e.getMessage());
+            log.error("Невозможно сохранить вложения, возникла ошибка: " + e.getMessage());
         }
 
     }

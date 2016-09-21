@@ -116,11 +116,11 @@ public class KondorClient implements CounterClient
             {
                 if(afterAuth.startsWith("530")) 
                 {
-                    log.warn("Auth failure with kondor, shop name: " + shop.getName());
+                    log.warn("Ошибка авторизации при подключении к счетчику, магазин: " + shop.getName());
                 }
                 else
                 {
-                    log.warn("Invalid PASV responce from kondor, shop name: " + shop.getName());
+                    log.warn("От счетчика пришел неправильный ответ на PASV, магазин: " + shop.getName());
                 }
                     
             }
@@ -129,7 +129,7 @@ public class KondorClient implements CounterClient
         } 
         catch (Exception e)
         {
-            log.error("Cannot download file from kondor, shop name: " + shop.getName() + ", error is: " + e.getMessage());
+            log.error("Невозможно загрузить данные со счетчиков по магазину " + shop.getName() + ", возникла ошибка: " + e.getMessage());
         }
         
         return new File(tmpFileName);
@@ -141,7 +141,7 @@ public class KondorClient implements CounterClient
         File dbfFile = ftpDownload(shop);
         if(!dbfFile.exists())
         {
-            log.error(".dbf file not recieved for shop: " + shop.getName());
+            log.error(".dbf не загружен по магазину: " + shop.getName());
             return null;
         }
         
@@ -179,7 +179,7 @@ public class KondorClient implements CounterClient
         } 
         catch (IOException e)
         {
-            log.error("Cannot remove temp .dbf file " + dbfFile.getPath());
+            log.error("Невозможно удалить временный .dbf файл: " + dbfFile.getPath());
         }
         
         

@@ -39,119 +39,128 @@ public class TaskDAOImpl extends GenericDAOImpl<Task, Integer> implements TaskDA
     @Override
     public List<Task> getByCreator(Employee creator)
     {
-        List<Task> result = getSession().createQuery("FROM Task t WHERE t.creator.id = " + creator.getId()).list();
+        Query query = getSession().createQuery("FROM Task t WHERE t.creator.id = :id");
+        query.setInteger("id", creator.getId());
         
-        return result;
+        return query.list();
     }
 
-    //TODO: stopped here
-    error
     @Override
     public List<Task> getByPerformer(Employee performer)
     {
-        List<Task> result = getSession().createQuery("FROM Task t WHERE t.performer.id = " + performer.getId()).list();
+        Query query = getSession().createQuery("FROM Task t WHERE :performer IN ELEMENTS(t.performers)");
+        query.setParameter("performer", performer);
         
-        return result;
+        return query.list();
     }
 
     @Override
     public List<Task> getByStatus(Task.Status status)
     {
-        List<Task> result = getSession().createQuery("FROM Task t WHERE t.status = '" + status.ordinal() + "'").list();
+        Query query = getSession().createQuery("FROM Task t WHERE t.status = :status");
+        query.setParameter("status", status);
         
-        return result;
+        return query.list();
     }
 
     @Override
     public List<Task> getByCreatorAndStatus(Employee creator, Task.Status status)
     {
-        List<Task> result = getSession().createQuery("FROM Task t WHERE t.creator.id = " + creator.getId() 
-                + " AND t.status = '" + status.ordinal() + "'").list();
+        Query query = getSession().createQuery("FROM Task t WHERE t.creator.id = :id AND t.status = :status");
+        query.setInteger("id", creator.getId());
+        query.setParameter("status", status);
         
-        return result;
+        return query.list();
     }
 
     @Override
     public List<Task> getByPerformerAndStatus(Employee performer, Task.Status status)
     {
-        List<Task> result = getSession().createQuery("FROM Task t WHERE t.performer.id = " + performer.getId() 
-                + " AND t.status = '" + status.ordinal() + "'").list();
+        Query query = getSession().createQuery("FROM Task t WHERE :performer IN ELEMENTS(t.performers) AND t.status = :status");
+        query.setParameter("performer", performer);
+        query.setParameter("status", status);
         
-        return result;
+        return query.list();
     }
     
     @Override
     public List<Task> getByCreatorNotClosed(Employee creator)
     {
-        List<Task> result = getSession().createQuery("FROM Task t WHERE t.creator.id = " + creator.getId() 
-                + " AND t.status != '" + Task.Status.CLOSED.ordinal() + "'").list();
+        Query query = getSession().createQuery("FROM Task t WHERE t.creator.id = :id AND t.status != :closedStatus");
+        query.setInteger("id", creator.getId());
+        query.setParameter("closedStatus", Task.Status.CLOSED);
         
-        return result;
+        return query.list();
     }
     
     @Override
     public List<Task> getByPerformerNotClosed(Employee performer)
     {
-        List<Task> result = getSession().createQuery("FROM Task t WHERE t.performer.id = " + performer.getId() 
-                + " AND t.status != '" + Task.Status.CLOSED.ordinal() + "'").list();
+        Query query = getSession().createQuery("FROM Task t WHERE :performer IN ELEMENTS(t.performers) AND t.status != :statusClosed");
+        query.setParameter("performer", performer);
+        query.setParameter("statusClosed", Task.Status.CLOSED);
         
-        return result;
+        return query.list();
     }
 
     @Override
     public List<Task> getAll()
     {
-        List<Task> result = getSession().createQuery("FROM Task").list();
+        Query query = getSession().createQuery("FROM Task");
         
-        return result;
+        return query.list();
     }
 
     @Override
     public List<Task> gedOverdue()
     {
-        Query query = getSession().createQuery("FROM Task t WHERE t.deadline < :now AND t.status != '" + Task.Status.CLOSED.ordinal() + "'");
+        Query query = getSession().createQuery("FROM Task t WHERE t.deadline < :now AND t.status != :statusClosed");
         query.setTimestamp("now", DateTime.now().toDate());
-        List<Task> result = query.list();
+        query.setParameter("statusClosed", Task.Status.CLOSED);
         
-        return result;
+        return query.list();
     }
 
     @Override
     public List<Task> getOverdueByCreator(Employee creator)
     {
-        Query query = getSession().createQuery("FROM Task t WHERE t.deadline < :now AND t.creator.id = " + creator.getId()
-                + " AND t.status != '" + Task.Status.CLOSED.ordinal() + "'");
+        Query query = getSession().createQuery("FROM Task t WHERE t.deadline < :now AND t.creator.id = :id AND t.status != :statusClosed");
         query.setTimestamp("now", DateTime.now().toDate());
-        List<Task> result = query.list();
+        query.setInteger("id", creator.getId());
+        query.setParameter("statusClosed", Task.Status.CLOSED);
         
-        return result;
+        return query.list();
     }
 
     @Override
     public List<Task> getOverdueByPerformer(Employee performer)
     {
-        Query query = getSession().createQuery("FROM Task t WHERE t.deadline < :now AND t.performer.id = " + performer.getId() 
-                + " AND t.status != '" + Task.Status.CLOSED.ordinal() + "'");
+        Query query = getSession().createQuery("FROM Task t WHERE t.deadline < :now AND :performer IN ELEMENTS(t.performers) AND t.status != :statusClosed");
         query.setTimestamp("now", DateTime.now().toDate());
-        List<Task> result = query.list();
+        query.setParameter("performer", performer);
+        query.setParameter("statusClosed", Task.Status.CLOSED);
         
-        return result;
+        return query.list();
     }
     
     @Override
     public Integer getPerfTaskCount(Employee performer)
     {
-        Long count = (Long)getSession().createQuery(
-                "SELECT COUNT(*) FROM Task t WHERE t.performer.id = " + performer.getId()
-                        + " AND t.status != '" + Task.Status.CLOSED.ordinal() + "'").uniqueResult();
+        Query query = getSession().createQuery("SELECT COUNT(*) FROM Task t WHERE :performer IN ELEMENTS(t.performers) AND t.status != :statusClosed");
+        query.setParameter("performer", performer);
+        query.setParameter("statusClosed", Task.Status.CLOSED);
+        Long count = (Long)query.uniqueResult();
+        
         return count == null ? 0 : count.intValue();
     }
     
     @Override
     public Integer getOpenTaskCount()
     {
-        Long count = (Long)getSession().createQuery(
-                "SELECT COUNT(*) FROM Task t WHERE t.status = '" + Task.Status.NEW.ordinal() + "'").uniqueResult();
+        Query query = getSession().createQuery("SELECT COUNT(*) FROM Task t WHERE t.status = :statusNew");
+        query.setParameter("statusNew", Task.Status.NEW);
+        Long count = (Long)query.uniqueResult();
+        
         return count == null ? 0 : count.intValue();
     }
 

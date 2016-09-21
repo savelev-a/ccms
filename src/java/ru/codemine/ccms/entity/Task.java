@@ -96,7 +96,7 @@ public class Task implements Serializable
     private DateTime creationTime;
     
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "shop_employees", 
+    @JoinTable(name = "task_employees", 
             joinColumns = @JoinColumn(name = "task_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "performer_id", referencedColumnName = "id"))
     private Set<Employee> performers;

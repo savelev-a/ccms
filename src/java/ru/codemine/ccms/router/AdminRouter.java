@@ -147,6 +147,7 @@ public class AdminRouter
         {
             Employee oldEmp = employeeService.getById(employee.getId());
             employee.setPassword(oldEmp.getPassword());
+            employeeService.evict(oldEmp);
         }
         else
         {

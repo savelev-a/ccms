@@ -70,7 +70,7 @@ public class SettingsService
             } 
             catch (IOException ex)
             {
-                log.error("Cannot create directory for storage root! Path: " + storageRootPath + ", error is: " + ex.getMessage());
+                log.error("Невозможно создать директорию для хранения файлов! Путь: " + storageRootPath + ", возникла ошибка: " + ex.getMessage());
             }
         }
         return storageRootPath;
@@ -90,7 +90,7 @@ public class SettingsService
             } 
             catch (IOException ex)
             {
-                log.error("Cannot create directory for emails! Path: " + storageEmailPath + ", error is: " + ex.getMessage());
+                log.error("Невозможно создать директорию для хранения вложений! Путь: " + storageEmailPath + ", возникла ошибка: " + ex.getMessage());
             }
         }
         

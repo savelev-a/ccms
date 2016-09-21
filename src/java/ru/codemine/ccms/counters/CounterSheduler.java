@@ -48,7 +48,7 @@ public class CounterSheduler
     @Scheduled(fixedDelay = 3600000, initialDelay = 300000)
     public void updateAllCounters()
     {
-        log.info("Sheduled counters update process started.");
+        log.info("Начат запланированный процесс сбора проходимости со счетчиков.");
         List<Shop> shoplist = shopService.getWithCounters();
 
         for (Shop shop : shoplist)
@@ -69,6 +69,7 @@ public class CounterSheduler
                 }
             }
         }
+        log.info("Процесс сбора проходимости завершен.");
     }
     
     
