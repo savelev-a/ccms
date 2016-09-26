@@ -118,6 +118,12 @@ public class Task implements Serializable
     private Urgency urgency;
     
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(name = "task_files",
+            joinColumns = @JoinColumn(name = "task_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "file_id", referencedColumnName = "id"))
+    private Set<DataFile> files;
+    
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "task_comm", 
             joinColumns = @JoinColumn(name = "task_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "comm_id", referencedColumnName = "id"))
@@ -135,6 +141,7 @@ public class Task implements Serializable
         this.title = "";
         this.text = "";
         this.performers = new LinkedHashSet<>();
+        this.files = new LinkedHashSet<>();
     }
     
     public Task(Employee creator)
@@ -148,6 +155,7 @@ public class Task implements Serializable
         this.title = "";
         this.text = "";
         this.performers = new LinkedHashSet<>();
+        this.files = new LinkedHashSet<>();
     }
     
     
@@ -260,6 +268,17 @@ public class Task implements Serializable
     {
         this.deadline = deadline;
     }
+
+    public Set<DataFile> getFiles()
+    {
+        return files;
+    }
+
+    public void setFiles(Set<DataFile> files)
+    {
+        this.files = files;
+    }
+    
 
     @Override
     public String toString()

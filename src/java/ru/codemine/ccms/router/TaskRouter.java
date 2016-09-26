@@ -170,5 +170,18 @@ public class TaskRouter
         
         return "pages/tasks/mytasks_closed";
     }
+    
+    @Secured("ROLE_USER")
+    @RequestMapping(value = "/tasks/droptask")
+    public String dropTask(@RequestParam("id") Integer id)
+    {
+        Task task = taskService.getById(id);
+        Employee employee = employeeService.getCurrentUser();
+        
+        task.drop(employee);
+        taskService.update(task);
+        
+        return "redirect:/tasks/mytasks";
+    }
 
 }
