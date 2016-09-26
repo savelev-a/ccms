@@ -1,6 +1,6 @@
 <%-- 
-    Document   : mytasks_created
-    Created on : 13.07.2016, 14:12:56
+    Document   : mytasks_closed
+    Created on : 26.09.2016, 11:46:05
     Author     : Alexander Savelev
 --%>
 
@@ -39,7 +39,7 @@
 
                     <div class="col-md-10">
                         <div class="panel panel-primary panel-primary-dark">
-                            <div class="panel-heading panel-heading-dark" align="center">Мои задачи (созданные)</div>
+                            <div class="panel-heading panel-heading-dark" align="center">Мои задачи (закрытые)</div>
                             <div class="panel-body">
                                 <table id="tasksTable" class="table table-hover table-condensed">
                                     <thead>
@@ -49,11 +49,11 @@
                                             <th>Время создания</th>
                                             <th>Срок выполнения</th>
                                             <th>Приоритет</th>
-                                            <th>Действия</th>
+                                            <th>Время закрытия</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <c:forEach items="${tasksCreatedByMe}" var="task" varStatus="idx">
+                                        <c:forEach items="${closedTasks}" var="task" varStatus="idx">
                                             <tr>
 
                                                 <td>
@@ -76,11 +76,10 @@
                                                 <fmt:formatDate value="${task.creationTime.toDate()}" type="both" pattern="dd.MM.yyyy HH:mm" var="createfmt" />
                                                 <td><c:out value="${createfmt}" /></td>
                                                 <fmt:formatDate value="${task.deadline.toDate()}" type="both" pattern="dd.MM.yyyy HH:mm" var="deadlinefmt" />
-                                                <td><c:out value="${deadlinefmt}" /><br> (<c:out value="${task.deadlineString}" />)</td>
+                                                <td><c:out value="${deadlinefmt}" />
                                                 <td><c:out value="${task.urgencyString}" /></td>
-                                                <td>
-                                                    <a href="#"><span class="glyphicon glyphicon-ok-circle"></span> Закрыть задачу</a>
-                                                </td>
+                                                <fmt:formatDate value="${task.closeTime.toDate()}" type="both" pattern="dd.MM.yyyy HH:mm" var="closefmt" />
+                                                <td><c:out value="${closefmt}" />
                                             </tr>
                                         </c:forEach>
                                     </tbody>

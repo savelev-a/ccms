@@ -22,6 +22,7 @@
         <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/jquery-ui.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/jquery-ui.structure.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/jquery-ui.theme.css" />" >
+        <link rel="stylesheet" href="<c:url value="/res/css/jquery.dataTables.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/styles.css" />" >
         
         <title><c:out value="${title}" /></title>
@@ -49,38 +50,21 @@
                                         <tbody>
                                             <tr>
                                                 <td><b>Краткий заголовок</b></td>
-                                                <td><form:input path="title" class="form-control" /></td>
+                                                <td colspan="4"><form:input path="title" class="form-control" /></td>
                                                 <td><form:errors path="title" cssStyle="color: #ff0000;" /></td>
                                             </tr>
                                             
                                             <tr>
                                                 <td><b>Подробное описание</b></td>
-                                                <td><form:textarea path="text" class="form-control" rows="10" /></td>
+                                                <td colspan="4"><form:textarea path="text" class="form-control" rows="10" /></td>
                                                 <td><form:errors path="text" cssStyle="color: #ff0000;" /></td>
                                             </tr>
                                             
                                             <tr>
                                                 <td><b>Инициатор</b></td>
-                                                <td><c:out value="${newTaskFrm.creator.fullName}" /></td>
+                                                <td colspan="4"><c:out value="${newTaskFrm.creator.fullName}" /></td>
                                                 <form:hidden path="creator.id" />
                                                 <td><form:errors path="creator" cssStyle="color: #ff0000;" /></td>
-                                            </tr>
-                                            
-                                            <tr>
-                                                <td><b>Назначить сотруднику</b></td>
-                                                <td>
-                                                    <form:select path="performer" class="form-control">
-                                                        <form:option value="0">
-                                                            Никому не назначать
-                                                        </form:option>
-                                                        <c:forEach items="${allEmps}" var="emp">
-                                                            <form:option value="${emp.id}">
-                                                                <c:out value="${emp.fullName}" />
-                                                            </form:option>
-                                                        </c:forEach>
-                                                    </form:select>
-                                                </td>
-                                                <td><form:errors path="performer" cssStyle="color: #ff0000;" /></td>
                                             </tr>
                                             
                                             <fmt:formatDate value="${newTaskFrm.deadline.toDate()}" type="both" pattern="dd.MM.yyyy HH:mm" var="deadlinefmt" />
@@ -89,9 +73,7 @@
                                                 <td><b>Выпонить до</b></td>
                                                 <td><form:input path="deadline" class="form-control" id="deadline" value="${deadlinefmt}" /></td>
                                                 <td><form:errors path="deadline" cssStyle="color: #ff0000;" /></td>
-                                            </tr>
                                             
-                                            <tr>
                                                 <td><b>Приоритет</b></td>
                                                 <td>
                                                     <form:select path="urgency" class="form-control">
@@ -103,7 +85,42 @@
                                                 </td>
                                                 <td><form:errors path="urgency" cssStyle="color: #ff0000;" /></td>
                                             </tr>
+                                            
+                                            <tr>
+                                                <td><b>Назначить сотрудникам</b></td>
+                                                <td colspan="4">
+                                                    <table id="empsChooseTab">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>#</th>
+                                                                <th>ФИО</th>
+                                                                <th>Должность</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <c:forEach items="${allEmps}" var="emp" varStatus="idx">
+                                                                <tr>
+                                                                    <td>
+                                                                        <c:choose>
+                                                                            <c:when test="${newTaskFrm.performers.contains(emp)}">
+                                                                                <form:checkbox path="performers" value="${emp.id}" checked="true" />
+                                                                            </c:when>
+                                                                            <c:otherwise>
+                                                                                <form:checkbox path="performers" value="${emp.id}" />
+                                                                            </c:otherwise>
+                                                                        </c:choose>
 
+                                                                    </td>
+                                                                    <td><c:out value="${emp.fullName}" /></td>
+                                                                    <td><c:out value="${emp.position}" /></td>
+                                                                </tr>
+                                                           </c:forEach>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                                <td><form:errors path="performers" cssStyle="color: #ff0000;" /></td>
+                                            </tr>
+                                            
                                         </tbody>
                                     </table>
                                     <input id="save" type="submit" name="save" value="Сохранить" class="btn btn-primary">
@@ -122,6 +139,12 @@
         <script type="text/javascript">
             $("#deadline").datetimepicker({
                 
+            });
+            
+            $("#empsChooseTab").DataTable({
+                "scrollY": "200px",
+                "scrollCollapse": true,
+                "paging": false
             });
         </script>
     </body>

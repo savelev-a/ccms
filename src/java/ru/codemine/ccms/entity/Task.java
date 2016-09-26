@@ -309,8 +309,12 @@ public class Task implements Serializable
         Comment comment = new Comment();
         comment.setTitle("Задача назначена сотрудникам");
         
-        String commText = "Исполнители: ";
-        for(Employee performer : performers) text += performer.getFullName();
+        String commText = "Исполнители: \n";
+        for(Employee performer : performers) 
+        {
+            commText += performer.getFullName();
+            commText += "\n";
+        }
         comment.setText(commText);
         
         this.comments.add(comment);
@@ -351,9 +355,12 @@ public class Task implements Serializable
         
         Comment comment = new Comment();
         comment.setTitle("Сотрудники прекратил выполнение задачи");
-        String commText = "Сотрудники: " ;
+        String commText = "Сотрудники: \n" ;
         for(Employee preformer : performers)
+        {
             commText += preformer.getFullName();
+            commText += "\n";
+        }
         
         comment.setText(commText);
         
@@ -378,7 +385,12 @@ public class Task implements Serializable
     
     public boolean isOverdued()
     {
-        return DateTime.now().isAfter(deadline);
+        return DateTime.now().isAfter(deadline) && status != Status.CLOSED;
+    }
+    
+    public boolean isClosed()
+    {
+        return status == Status.CLOSED;
     }
     
     public String getUrgencyString()

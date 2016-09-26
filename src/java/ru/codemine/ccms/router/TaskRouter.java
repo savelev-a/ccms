@@ -166,9 +166,9 @@ public class TaskRouter
         
         model.addAllAttributes(utils.prepareModel("Свободные задачи - ИнфоПортал", "tasks", "free"));
         model.addAttribute("openTasksCount", taskService.getOpenTaskCount());
-        model.addAttribute("closedtasks", taskService.getByCreatorAndStatus(currentUser, Task.Status.CLOSED));
+        model.addAttribute("closedTasks", taskService.getByCreatorAndStatus(currentUser, Task.Status.CLOSED));
         
-        return "pages/tasks/closed";
+        return "pages/tasks/mytasks_closed";
     }
 
 }

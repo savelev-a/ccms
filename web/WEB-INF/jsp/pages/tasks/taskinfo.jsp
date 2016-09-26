@@ -60,10 +60,12 @@
                                             </td>
                                             <th>Назначена</th>
                                             <td>
-                                                <c:if test="${task.performer == null}">Никому <a href="#">(Взять себе)</a></c:if>
-                                                <a href="<c:url value="/employee?id=${task.performer.id}" />" >
-                                                    <c:out value="${task.performer.fullName}" />
-                                                </a>
+                                                <c:if test="${task.performers.isEmpty()}">Никому <a href="#">(Взять себе)</a></c:if>
+                                                <c:forEach items="${task.performers}" var="performer">
+                                                    <a href="<c:url value="/employee?id=${performer.id}" />" >
+                                                        <c:out value="${performer.fullName}"/><br>
+                                                    </a>
+                                                </c:forEach>
                                             </td>
                                         </tr>
                                         <tr>
@@ -78,9 +80,10 @@
                                             <th>Статус</th>
                                             <td><c:out value="${task.statusString}" /></td>
                                             <c:choose>
-                                                <c:when test="task.closeTime != null">
+                                                <c:when test="${task.closed}">
                                                     <th>Время закрытия</th>
-                                                    <td><c:out value="${task.closeTime}" /></td>
+                                                    <fmt:formatDate value="${task.closeTime.toDate()}" type="both" pattern="dd.MM.yyyy HH:mm" var="closefmt" />
+                                                    <td><c:out value="${closefmt}" /></td>
                                                 </c:when>
                                                 <c:otherwise>
                                                     <th>Осталось времени</th>

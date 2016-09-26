@@ -51,6 +51,7 @@
                                             <th>Время создания</th>
                                             <th>Срок выполнения</th>
                                             <th>Приоритет</th>
+                                            <th>Статус</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -58,7 +59,6 @@
                                             <tr>
                                                 <td><c:out value="${task.id}" /></td>
                                                 <td>
-                                                    ${task.overdued ? "<span class='label label-danger'>Просрочено</span>" : ""}
                                                     <a href="<c:url value="/tasks/taskinfo?id=${task.id}" />" >
                                                         <c:out value="${task.title}" />
                                                     </a>
@@ -69,15 +69,22 @@
                                                     </a>
                                                 </td>
                                                 <td>
-                                                    <a href="<c:url value="/employee?id=${task.performer.id}" />" >
-                                                        <c:out value="${task.performer.fullName}" />
-                                                    </a>
+                                                    <c:choose>
+                                                        <c:when test="${task.performers.isEmpty()}">Никому</c:when>
+                                                        <c:when test="${task.performers.size() == 1}">
+                                                            <c:out value="${task.performers.toArray()[0].fullName}" />
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <c:out value="${task.performers.size()} пользователям" />
+                                                        </c:otherwise>
+                                                    </c:choose>
                                                 </td>
                                                 <fmt:formatDate value="${task.creationTime.toDate()}" type="both" pattern="dd.MM.yyyy HH:mm" var="createfmt" />
                                                 <td><c:out value="${createfmt}" /></td>
                                                 <fmt:formatDate value="${task.deadline.toDate()}" type="both" pattern="dd.MM.yyyy HH:mm" var="deadlinefmt" />
                                                 <td><c:out value="${deadlinefmt}" /><br> (<c:out value="${task.deadlineString}" />)</td>
                                                 <td><c:out value="${task.urgencyString}" /></td>
+                                                <td><c:out value="${task.statusString}" /></td>
                                             </tr>
                                         </c:forEach>
                                     </tbody>
