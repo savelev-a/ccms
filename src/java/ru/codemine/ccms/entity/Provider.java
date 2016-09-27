@@ -187,24 +187,24 @@ public class Provider implements Serializable
         {
             return false;
         }
-        if (getClass() != obj.getClass())
+        if (!(obj instanceof Provider))
         {
             return false;
         }
         final Provider other = (Provider) obj;
-        if (!Objects.equals(this.id, other.id))
+        if (!Objects.equals(this.getId(), other.getId()))
         {
             return false;
         }
-        if (!Objects.equals(this.name, other.name))
+        if (!Objects.equals(this.getName(), other.getName()))
         {
             return false;
         }
-        if (!Objects.equals(this.contract, other.contract))
+        if (!Objects.equals(this.getContract(), other.getContract()))
         {
             return false;
         }
-        if (!Objects.equals(this.ip, other.ip))
+        if (!Objects.equals(this.getIp(), other.getIp()))
         {
             return false;
         }

@@ -18,6 +18,8 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="<c:url value="/res/css/bootstrap.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/bootstrap-theme.css" />" >
+        <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/jquery-ui.css" />" >
+        <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/jquery-ui.theme.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/jquery.dataTables.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/styles.css" />" >
 
@@ -79,7 +81,7 @@
                                                 <td><c:out value="${deadlinefmt}" /><br> (<c:out value="${task.deadlineString}" />)</td>
                                                 <td><c:out value="${task.urgencyString}" /></td>
                                                 <td>
-                                                    <a href="#"><span class="glyphicon glyphicon-ok-circle"></span> Закрыть задачу</a>
+                                                    <a href="#" class="closeTask" id="close${task.id}"><span class="glyphicon glyphicon-ok-circle"></span> Закрыть задачу</a>
                                                 </td>
                                             </tr>
                                         </c:forEach>
@@ -93,12 +95,60 @@
 
             <%@include file="../../modules/footer.jspf" %>
         </div>
+        
+        
+        <div id="msgCloseConfirm" title="Подтвердите действие">
+                <p>
+                    Закрыть данную задачу? 
+                    <br>
+                    Подтвердите что задача выполнена и дальнейших действий не требуется.
+                </p>
+        </div>
 
 
         <script type="text/javascript">
             $(document).ready(function () {
                 $("#tasksTable").DataTable({
                     "order": [[ 3, "asc" ]]
+                });
+                
+                $(".closeTask").click(function () {
+                    $("#msgCloseConfirm").data("idtodrop", this.id);
+                    $("#msgCloseConfirm").dialog("open");
+                });
+
+                $("#msgCloseConfirm").dialog({
+                    autoOpen: false,
+                    modal: true,
+                    dialogClass: "no-close",
+                    width: 400,
+                    buttons: [{
+                            text: "Закрыть",
+                            class: "btn btn-danger",
+                            click: function () {
+                                //$(this).dialog("close");
+                                $.post("<c:url value="/tasks/closetask" />", {"id": $.data(this, "idtodrop").toString().substring(5), "${_csrf.parameterName}": "${_csrf.token}"});
+                                setTimeout(function () {
+                                    location.reload()
+                                }, 300);
+
+                            }
+                        }, {
+                            text: "Отмена",
+                            class: "btn btn-default",
+                            click: function () {
+                                $(this).dialog("close");
+                            }
+                        }],
+                    show: {
+                        effect: "clip",
+                        duration: 200
+                    },
+                    hide: {
+                        effect: "clip",
+                        duration: 200
+                    }
+
                 });
             });
         </script>

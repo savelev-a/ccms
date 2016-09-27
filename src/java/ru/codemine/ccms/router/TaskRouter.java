@@ -18,6 +18,12 @@
 
 package ru.codemine.ccms.router;
 
+import java.io.File;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.util.Random;
+import java.util.UUID;
+import java.util.logging.Level;
 import javax.validation.Valid;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,10 +35,14 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import ru.codemine.ccms.entity.Comment;
+import ru.codemine.ccms.entity.DataFile;
 import ru.codemine.ccms.entity.Employee;
 import ru.codemine.ccms.entity.Task;
+import ru.codemine.ccms.service.DataFileService;
 import ru.codemine.ccms.service.EmployeeService;
+import ru.codemine.ccms.service.SettingsService;
 import ru.codemine.ccms.service.TaskService;
 import ru.codemine.ccms.utils.Utils;
 
@@ -48,6 +58,8 @@ public class TaskRouter
     
     @Autowired private TaskService taskService;
     @Autowired private EmployeeService employeeService;
+    @Autowired private DataFileService dataFileService;
+    @Autowired private SettingsService settingsService;
     @Autowired private Utils utils;
     
     
@@ -172,6 +184,44 @@ public class TaskRouter
     }
     
     @Secured("ROLE_USER")
+    @RequestMapping(value = "/tasks/addfile", method = RequestMethod.POST)
+    public String addFileToTask(@RequestParam("file") MultipartFile file, @RequestParam("id") Integer id)
+    {
+        Task task = taskService.getById(id);
+        Employee employee = employeeService.getCurrentUser();
+        
+        if(file.isEmpty()) return "redirect:/tasks/taskinfo?id=" + task.getId();
+        
+        if(employee.equals(task.getCreator()) || task.getPerformers().contains(employee))
+        {
+            String filename = settingsService.getStorageRootPath() + "T-" + task.getId() + "-" + UUID.randomUUID().toString();
+            String viewname = file.getOriginalFilename();
+            File targetFile = new File(filename);
+            
+            DataFile targetDataFile = new DataFile();
+            targetDataFile.setFilename(filename);
+            targetDataFile.setViewName(viewname);
+            targetDataFile.setTypeByExtension();
+            
+            try
+            {
+                file.transferTo(targetFile);
+            } 
+            catch (IOException | IllegalStateException ex)
+            {
+                log.error("Ошибка при загрузке файла " + viewname + ", причина: " + ex.getLocalizedMessage());
+                return "redirect:/tasks/taskinfo?id=" + task.getId();
+            }
+            
+            dataFileService.create(targetDataFile);
+            task.getFiles().add(targetDataFile);
+            taskService.update(task);
+        }
+        
+        return "redirect:/tasks/taskinfo?id=" + task.getId();
+    }
+    
+    @Secured("ROLE_USER")
     @RequestMapping(value = "/tasks/droptask")
     public String dropTask(@RequestParam("id") Integer id)
     {
@@ -182,6 +232,22 @@ public class TaskRouter
         taskService.update(task);
         
         return "redirect:/tasks/mytasks";
+    }
+    
+    @Secured("ROLE_USER")
+    @RequestMapping(value = "/tasks/closetask")
+    public String closeTask(@RequestParam("id") Integer id)
+    {
+        Task task = taskService.getById(id);
+        Employee employee = employeeService.getCurrentUser();
+        
+        if(employee.equals(task.getCreator()))
+        {
+            task.close();
+            taskService.update(task);
+        }
+        
+        return "redirect:/tasks/mytasks/created";
     }
 
 }

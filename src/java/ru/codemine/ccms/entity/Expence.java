@@ -147,12 +147,12 @@ public class Expence implements Serializable, Comparable<Expence>
         {
             return false;
         }
-        if (getClass() != obj.getClass())
+        if (!(obj instanceof Expence))
         {
             return false;
         }
         final Expence other = (Expence) obj;
-        if (!Objects.equals(this.id, other.id))
+        if (!Objects.equals(this.getId(), other.getId()))
         {
             return false;
         }

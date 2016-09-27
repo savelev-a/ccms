@@ -248,24 +248,24 @@ public class Employee implements Serializable
         {
             return false;
         }
-        if (getClass() != obj.getClass())
+        if (!(obj instanceof Employee))
         {
             return false;
         }
         final Employee other = (Employee) obj;
-        if (!Objects.equals(this.id, other.id))
+        if (!Objects.equals(this.getId(), other.getId()))
         {
             return false;
         }
-        if (!Objects.equals(this.firstName, other.firstName))
+        if (!Objects.equals(this.getFirstName(), other.getFirstName()))
         {
             return false;
         }
-        if (!Objects.equals(this.lastName, other.lastName))
+        if (!Objects.equals(this.getLastName(), other.getLastName()))
         {
             return false;
         }
-        if (!Objects.equals(this.email, other.email))
+        if (!Objects.equals(this.getEmail(), other.getEmail()))
         {
             return false;
         }

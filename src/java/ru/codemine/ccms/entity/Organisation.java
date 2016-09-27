@@ -284,20 +284,20 @@ public class Organisation implements Serializable
         {
             return false;
         }
-        if (getClass() != obj.getClass())
+        if (!(obj instanceof Organisation))
         {
             return false;
         }
         final Organisation other = (Organisation) obj;
-        if (!Objects.equals(this.id, other.id))
+        if (!Objects.equals(this.getId(), other.getId()))
         {
             return false;
         }
-        if (!Objects.equals(this.name, other.name))
+        if (!Objects.equals(this.getName(), other.getName()))
         {
             return false;
         }
-        if (!Objects.equals(this.inn, other.inn))
+        if (!Objects.equals(this.getInn(), other.getInn()))
         {
             return false;
         }

@@ -60,7 +60,7 @@
                                             </td>
                                             <th>Назначена</th>
                                             <td>
-                                                <c:if test="${task.performers.isEmpty()}">Никому <a href="#">(Взять себе)</a></c:if>
+                                                <c:if test="${task.performers.isEmpty()}">Никому <c:if test="${!task.isClosed()}"><a href="#">(Взять себе)</a></c:if></c:if>
                                                 <c:forEach items="${task.performers}" var="performer">
                                                     <a href="<c:url value="/employee?id=${performer.id}" />" >
                                                         <c:out value="${performer.fullName}"/><br>
@@ -82,7 +82,7 @@
                                             <c:choose>
                                                 <c:when test="${task.closed}">
                                                     <th>Время закрытия</th>
-                                                    <fmt:formatDate value="${task.closeTime.toDate()}" type="both" pattern="dd.MM.yyyy HH:mm" var="closefmt" />
+                                                        <fmt:formatDate value="${task.closeTime.toDate()}" type="both" pattern="dd.MM.yyyy HH:mm" var="closefmt" />
                                                     <td><c:out value="${closefmt}" /></td>
                                                 </c:when>
                                                 <c:otherwise>
@@ -92,10 +92,25 @@
                                                     </td>
                                                 </c:otherwise>
                                             </c:choose>
-                                            </tr>
-                                            <tr>
-                                                <th>Важность</th>
-                                                <td><c:out value="${task.urgencyString}" /></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Важность</th>
+                                            <td colspan="4"><c:out value="${task.urgencyString}" /></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Документы задачи</th>
+                                            <td colspan="4">
+                                                <c:if test="${task.files.isEmpty()}">Прикрепленных документов нет<br></c:if>
+                                                <c:forEach items="${task.files}" var="file">
+                                                    <a href="#"><img src="<c:url value="/res/images/${file.iconPath}" />" > <c:out value="${file.viewName}" /></a><br>
+                                                </c:forEach>
+                                                    <br>
+                                                <c:url var="file_upload_url"  value="/tasks/addfile?id=${task.id}&${_csrf.parameterName}=${_csrf.token}" />
+                                                <form:form method="post" commandName="taskFileUpload" enctype="multipart/form-data" action="${file_upload_url}">
+                                                    Загрузить новый документ: <input type="file" name="file" /> 
+                                                    <input type="submit" value="Загрузить" />
+                                                </form:form>
+                                            </td>
                                         </tr>
 
                                         <tr><td> </td></tr>
@@ -116,7 +131,7 @@
                                                                     Системное сообщение
                                                                 </c:otherwise>
                                                             </c:choose>
-                                                            
+
                                                         </div>
                                                         <div class="panel-body">
                                                             <h4><c:out value="${comment.title}" /></h4>
@@ -129,53 +144,40 @@
                                                     </div>
                                                 </c:forEach>
 
+                                                <c:if test="${!task.isClosed()}">
+                                                    <div class="panel panel-info panel-primary-dark">
+                                                        <div class="panel-heading panel-heading-dark" align="center">
+                                                            Новый комментарий
+                                                        </div>
+                                                        <div class="panel-body">
+                                                            <c:url var="comment_post_url"  value="/tasks/addcomment?taskid=${task.id}" />
+                                                            <form:form method="post" commandName="newcomment" action="${comment_post_url}">
+                                                                <table class="table table-condensed table-hover">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td>Заголовок</td>
+                                                                            <td><form:input path="title" class="form-control" /></td>
+                                                                            <td><form:errors path="title" cssStyle="color: #ff0000;" /></td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>Описание</td>
+                                                                            <td><form:textarea path="text" class="form-control" rows="5" /></td>
+                                                                            <td><form:errors path="text" cssStyle="color: #ff0000;" /></td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
 
-                                                <!--<div class="panel panel-info panel-primary-dark">
-                                                    <div class="panel-heading panel-heading-dark" align="center">
-                                                        <a href="#">Савельев Александр</a> написал(а)
+                                                                <fmt:formatDate value="${newcomment.creationTime.toDate()}" type="both" pattern="dd.MM.yyyy HH:mm" var="commenttimefmt" />
+                                                                <form:hidden path="creator.id" />
+                                                                <form:hidden path="creationTime" value="${commenttimefmt}" />
+                                                                <form:errors path="creator" cssStyle="color: #ff0000;" />
+                                                                <form:errors path="creationTime" cssStyle="color: #ff0000;" />
+                                                                <input id="save" type="submit" name="save" value="Сохранить" class="btn btn-primary">
+                                                            </form:form>
+
+                                                        </div>
                                                     </div>
-                                                    <div class="panel-body">
-                                                        <h4>Заголовок комментария</h4>
-                                                        <hr>
-                                                        Текст комментария
-                                                        <br><br>
-                                                        <div align="right"><small>25.05.2015 11:31</small></div>
-                                                    </div>
-                                                </div>-->
-
-                                                <div class="panel panel-info panel-primary-dark">
-                                                    <div class="panel-heading panel-heading-dark" align="center">
-                                                        Новый комментарий
-                                                    </div>
-                                                    <div class="panel-body">
-                                                        <c:url var="comment_post_url"  value="/tasks/addcomment?taskid=${task.id}" />
-                                                        <form:form method="post" commandName="newcomment" action="${comment_post_url}">
-                                                            <table class="table table-condensed table-hover">
-                                                                <tbody>
-                                                                    <tr>
-                                                                        <td>Заголовок</td>
-                                                                        <td><form:input path="title" class="form-control" /></td>
-                                                                        <td><form:errors path="title" cssStyle="color: #ff0000;" /></td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td>Описание</td>
-                                                                        <td><form:textarea path="text" class="form-control" rows="5" /></td>
-                                                                        <td><form:errors path="text" cssStyle="color: #ff0000;" /></td>
-                                                                    </tr>
-                                                                </tbody>
-                                                            </table>
-
-                                                            <fmt:formatDate value="${newcomment.creationTime.toDate()}" type="both" pattern="dd.MM.yyyy HH:mm" var="commenttimefmt" />
-                                                            <form:hidden path="creator.id" />
-                                                            <form:hidden path="creationTime" value="${commenttimefmt}" />
-                                                            <form:errors path="creator" cssStyle="color: #ff0000;" />
-                                                            <form:errors path="creationTime" cssStyle="color: #ff0000;" />
-                                                            <input id="save" type="submit" name="save" value="Сохранить" class="btn btn-primary">
-                                                        </form:form>
-
-                                                    </div>
-                                                </div>
-
+                                                </c:if>
                                             </td>
                                         </tr>
 
@@ -188,17 +190,14 @@
                                     </c:when>
 
                                     <c:when test="${task.statusString == 'Назначена'}" >
-                                        <button class="btn btn-primary" ><span class="glyphicon glyphicon-play-circle"></span> Принять в работу</button>
-                                        <button class="btn btn-primary" ><span class="glyphicon glyphicon-ok-circle"></span> Выполнено</button>
+
                                     </c:when>
 
                                     <c:when test="${task.statusString == 'В работе'}" >
-                                        <button class="btn btn-primary" ><span class="glyphicon glyphicon-time"></span> Приостановить</button>
-                                        <button class="btn btn-primary" ><span class="glyphicon glyphicon-ok-circle"></span> Выполнено</button>
+
                                     </c:when>
                                     <c:when test="${task.statusString == 'Приостановлена'}" >
-                                        <button class="btn btn-primary" ><span class="glyphicon glyphicon-play-circle"></span> Принять в работу</button>
-                                        <button class="btn btn-primary" ><span class="glyphicon glyphicon-ok-circle"></span> Выполнено</button>
+
                                     </c:when>
                                 </c:choose>
 

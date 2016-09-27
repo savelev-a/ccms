@@ -189,16 +189,16 @@ public class Office implements Serializable
         {
             return false;
         }
-        if (getClass() != obj.getClass())
+        if (!(obj instanceof Office))
         {
             return false;
         }
         final Office other = (Office) obj;
-        if (!Objects.equals(this.id, other.id))
+        if (!Objects.equals(this.getId(), other.getId()))
         {
             return false;
         }
-        if (!Objects.equals(this.name, other.name))
+        if (!Objects.equals(this.getName(), other.getName()))
         {
             return false;
         }

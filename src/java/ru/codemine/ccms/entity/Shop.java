@@ -357,20 +357,20 @@ public class Shop implements Serializable
         {
             return false;
         }
-        if (getClass() != obj.getClass())
+        if (!(obj instanceof Shop))
         {
             return false;
         }
         final Shop other = (Shop) obj;
-        if (!Objects.equals(this.id, other.id))
+        if (!Objects.equals(this.getId(), other.getId()))
         {
             return false;
         }
-        if (!Objects.equals(this.name, other.name))
+        if (!Objects.equals(this.getName(), other.getName()))
         {
             return false;
         }
-        if (!Objects.equals(this.email, other.email))
+        if (!Objects.equals(this.getEmail(), other.getEmail()))
         {
             return false;
         }

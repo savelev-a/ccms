@@ -19,6 +19,8 @@
 package ru.codemine.ccms.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -125,12 +127,12 @@ public class DataFile implements Serializable
         {
             return false;
         }
-        if (getClass() != obj.getClass())
+        if (!(obj instanceof DataFile))
         {
             return false;
         }
         final DataFile other = (DataFile) obj;
-        if (!Objects.equals(this.filename, other.filename))
+        if (!Objects.equals(this.getFilename(), other.getFilename()))
         {
             return false;
         }
@@ -144,4 +146,75 @@ public class DataFile implements Serializable
     }
     
     
+    public String getIconPath()
+    {
+        switch(type)
+        {
+            case DOC : return "document.png";
+            case PICTURE : return "picture.png";
+            case XLS : return "spreadsheet.png";
+            case TXT : return "text.png";
+            default : return "file.png";
+        }
+    }
+    
+    public static List<String> getImageExtensions()
+    {
+        List<String> result = new ArrayList<>();
+        result.add("jpg");
+        result.add("png");
+        result.add("gif");
+        result.add("bmp");
+        result.add("tif");
+        result.add("tiff");
+        result.add("jpeg");
+        
+        return result;
+    }
+    
+    public static List<String> getDocumentExtensions()
+    {
+        List<String> result = new ArrayList<>();
+        result.add("doc");
+        result.add("docx");
+        result.add("odt");
+        
+        return result;
+    }
+    
+    public static List<String> getSpreadsheetExtensions()
+    {
+        List<String> result = new ArrayList<>();
+        result.add("xls");
+        result.add("xlsx");
+        result.add("ods");
+        
+        return result;
+    }
+    
+    public static List<String> getTextExtensions()
+    {
+        List<String> result = new ArrayList<>();
+        result.add("txt");
+        result.add("xml");
+        
+        return result;
+    }
+    
+    public void setTypeByExtension()
+    {
+        String[] parts = viewName.split("\\.");
+
+        if(parts.length == 1)
+        {
+            setType(FileType.OTHER);
+            return;
+        }
+        
+        String extension = parts[parts.length - 1];
+        if     (getDocumentExtensions().contains(extension))    setType(FileType.DOC);
+        else if(getImageExtensions().contains(extension))       setType(FileType.PICTURE);
+        else if(getSpreadsheetExtensions().contains(extension)) setType(FileType.XLS);
+        else if(getTextExtensions().contains(extension))        setType(FileType.TXT);
+    }
 }

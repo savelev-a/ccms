@@ -226,12 +226,12 @@ public class ShopHardware implements Serializable
         {
             return false;
         }
-        if (getClass() != obj.getClass())
+        if (!(obj instanceof ShopHardware))
         {
             return false;
         }
         final ShopHardware other = (ShopHardware) obj;
-        if (!Objects.equals(this.id, other.id))
+        if (!Objects.equals(this.getId(), other.getId()))
         {
             return false;
         }
