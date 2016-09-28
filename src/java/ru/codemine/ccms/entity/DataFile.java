@@ -26,11 +26,16 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.Length;
+import org.joda.time.DateTime;
 
 /**
  *
@@ -66,10 +71,30 @@ public class DataFile implements Serializable
     @Enumerated(EnumType.ORDINAL)
     @Column(name = "type", nullable = false)
     private FileType type;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "creator_id",nullable = false)
+    private Employee creator;
+    
+    @Column(name = "creationTime", nullable = false)
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+    private DateTime creationTime;
+    
+    @Column(name = "fileSize", nullable = false)
+    private Long size;
+    
 
     public DataFile()
     {
-        type = FileType.OTHER;
+        this.type = FileType.OTHER;
+        this.creationTime = DateTime.now();
+    }
+    
+    public DataFile(Employee creator)
+    {
+        this.type = FileType.OTHER;
+        this.creationTime = DateTime.now();
+        this.creator = creator;
     }
     
     public Long getId()
@@ -112,6 +137,36 @@ public class DataFile implements Serializable
         this.type = type;
     }
 
+    public Employee getCreator()
+    {
+        return creator;
+    }
+
+    public void setCreator(Employee creator)
+    {
+        this.creator = creator;
+    }
+
+    public DateTime getCreationTime()
+    {
+        return creationTime;
+    }
+
+    public void setCreationTime(DateTime creationTime)
+    {
+        this.creationTime = creationTime;
+    }
+
+    public Long getSize()
+    {
+        return size;
+    }
+
+    public void setSize(Long size)
+    {
+        this.size = size;
+    }
+
     @Override
     public int hashCode()
     {
@@ -145,6 +200,27 @@ public class DataFile implements Serializable
         return "DataFile{" + "id=" + id + ", filename=" + filename + ", viewName=" + viewName + ", type=" + type + '}';
     }
     
+    public String getTypeStr()
+    {
+        switch(type)
+        {
+            case DOC : return "Документ";
+            case PICTURE : return "Изображение";
+            case XLS : return "Электронная таблица";
+            case TXT : return "Текстовый документ";
+            default : return "Файл";
+        }
+    }
+    
+    public String getSizeStr()
+    {
+        if(size < 1024) 
+            return size.toString();
+        if(size < 1024 * 1024) 
+            return String.valueOf((Math.round(size / 1024.0 * 100.0) / 100.0)) + " Кб";
+        
+        return String.valueOf((Math.round(size / 1024.0 / 1024.0 * 100.0) / 100.0)) + " Мб";
+    }
     
     public String getIconPath()
     {

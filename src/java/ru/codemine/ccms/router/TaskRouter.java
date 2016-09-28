@@ -18,13 +18,17 @@
 
 package ru.codemine.ccms.router;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.math.BigInteger;
-import java.util.Random;
 import java.util.UUID;
 import java.util.logging.Level;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -32,6 +36,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -194,13 +199,14 @@ public class TaskRouter
         
         if(employee.equals(task.getCreator()) || task.getPerformers().contains(employee))
         {
-            String filename = settingsService.getStorageRootPath() + "T-" + task.getId() + "-" + UUID.randomUUID().toString();
+            String filename = settingsService.getStorageTasksPath() + UUID.randomUUID().toString();
             String viewname = file.getOriginalFilename();
             File targetFile = new File(filename);
             
-            DataFile targetDataFile = new DataFile();
+            DataFile targetDataFile = new DataFile(employee);
             targetDataFile.setFilename(filename);
             targetDataFile.setViewName(viewname);
+            targetDataFile.setSize(file.getSize());
             targetDataFile.setTypeByExtension();
             
             try
@@ -222,14 +228,45 @@ public class TaskRouter
     }
     
     @Secured("ROLE_USER")
+    @RequestMapping(value = "/tasks/getfile/{urlfilename}", method = RequestMethod.GET)
+    public void getFileFromTask(@RequestParam("taskid") Integer taskid, 
+                                  @RequestParam("fileid") Long fileid, 
+                                  @PathVariable("urlfilename") String urlFileName,
+                                  HttpServletResponse response)
+    {
+        Task task = taskService.getById(taskid);
+        DataFile targetDataFile = dataFileService.getById(fileid);
+        Employee currentUser = employeeService.getCurrentUser();
+        
+        if(     targetDataFile == null 
+                || task == null
+                || !task.isInTask(currentUser)) 
+                return;
+        
+        File targetFile = new File(targetDataFile.getFilename());
+        response.setHeader("Content-Disposition", "attachment;");
+        
+        try
+        {
+            BufferedInputStream bs = new BufferedInputStream(new FileInputStream(targetFile));
+            IOUtils.copy(bs, response.getOutputStream());
+            response.flushBuffer();
+        }
+        catch (IOException ex)
+        {
+            log.error("Ошибка при отдаче файла " + targetDataFile.getViewName() + ", причина: " + ex.getLocalizedMessage());
+        }
+
+    }
+    
+    @Secured("ROLE_USER")
     @RequestMapping(value = "/tasks/droptask")
     public String dropTask(@RequestParam("id") Integer id)
     {
         Task task = taskService.getById(id);
         Employee employee = employeeService.getCurrentUser();
         
-        task.drop(employee);
-        taskService.update(task);
+        taskService.drop(task, employee);
         
         return "redirect:/tasks/mytasks";
     }
@@ -243,8 +280,7 @@ public class TaskRouter
         
         if(employee.equals(task.getCreator()))
         {
-            task.close();
-            taskService.update(task);
+            taskService.close(task);
         }
         
         return "redirect:/tasks/mytasks/created";

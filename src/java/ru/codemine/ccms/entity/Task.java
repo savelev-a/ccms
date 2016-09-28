@@ -258,6 +258,11 @@ public class Task implements Serializable
     {
         this.comments = comments;
     }
+    
+    public void addComment(Comment comment)
+    {
+        comments.add(comment);
+    }
 
     public DateTime getDeadline()
     {
@@ -298,109 +303,11 @@ public class Task implements Serializable
         return (performer != null && this.performers.contains(performer));
     }
     
-    public void assign(Employee performer)
+    public boolean isInTask(Employee employee)
     {
-        if(performer == null) return;
-        
-        this.performers.add(performer);
-        if(this.status == Status.NEW || this.status == Status.CLOSED) this.status = Status.ASSIGNED;
-
-        Comment comment = new Comment();
-        comment.setTitle("Сотрудник добавлен в исполнители");
-        
-        String commText = "Исполнитель: " + performer.getFullName();
-        comment.setText(commText);
-        
-        this.comments.add(comment);
-        
+        return employee != null && (employee.equals(getCreator()) || getPerformers().contains(employee));
     }
     
-    public void assign(Set<Employee> performers)
-    {
-        if(performers == null || performers.isEmpty()) return;
-        
-        for(Employee performer : performers)
-        {
-            this.performers.add(performer);
-        }
-        if(this.status == Status.NEW || this.status == Status.CLOSED) this.status = Status.ASSIGNED;
-
-        Comment comment = new Comment();
-        comment.setTitle("Задача назначена сотрудникам");
-        
-        String commText = "Исполнители: \n";
-        for(Employee performer : performers) 
-        {
-            commText += performer.getFullName();
-            commText += "\n";
-        }
-        comment.setText(commText);
-        
-        this.comments.add(comment);
-    }
-    
-    public void drop()
-    {
-        Comment comment = new Comment();
-        comment.setTitle("Задача возвращена в свободные");
-        this.comments.add(comment);
-
-        
-        this.performers.clear();
-        this.status = Status.NEW;
-        
-    }
-    
-    public void drop(Employee performer)
-    {
-        if(performer == null || !this.performers.contains(performer)) return;
-        
-        Comment comment = new Comment();
-        comment.setTitle("Сотрудник прекратил выполнение задачи");
-        String commText = "Сотрудник: " + performer.getFullName();
-        comment.setText(commText);
-        
-        this.comments.add(comment);
-        
-        this.performers.remove(performer);
-        
-        if(this.performers.isEmpty())
-            drop();
-    }
-    
-    public void drop(Set<Employee> performers)
-    {
-        if(performers == null || performers.isEmpty()) return;
-        
-        Comment comment = new Comment();
-        comment.setTitle("Сотрудники прекратил выполнение задачи");
-        String commText = "Сотрудники: \n" ;
-        for(Employee preformer : performers)
-        {
-            commText += preformer.getFullName();
-            commText += "\n";
-        }
-        
-        comment.setText(commText);
-        
-        this.comments.add(comment);
-        
-        for(Employee performer : performers)
-            this.performers.remove(performer);
-        
-        if(this.performers.isEmpty())
-            drop();
-    }
-    
-    public void close()
-    {
-        this.closeTime = DateTime.now();
-        this.status = Status.CLOSED;
-        
-        Comment comment = new Comment();
-        comment.setTitle("Задача закрыта");
-        this.comments.add(comment);
-    }
     
     public boolean isOverdued()
     {

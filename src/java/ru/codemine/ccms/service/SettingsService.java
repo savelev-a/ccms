@@ -46,6 +46,9 @@ public class SettingsService
     @Value("${storage.rootpath}")
     private String storageRootPath;
     
+    @Value("${storage.taskspath}")
+    private String storageTasksPath;
+    
     @Value("${storage.emailpath}")
     private String storageEmailPath;
     
@@ -74,6 +77,22 @@ public class SettingsService
             }
         }
         return storageRootPath;
+    }
+    
+    public String getStorageTasksPath()
+    {
+        File test = new File(storageTasksPath);
+        if(!test.isDirectory()) {
+            try
+            {
+                Files.createDirectory(test.toPath());
+            } 
+            catch (IOException ex)
+            {
+                log.error("Невозможно создать директорию для хранения файлов задач! Путь: " + storageTasksPath + ", возникла ошибка: " + ex.getMessage());
+            }
+        }
+        return storageTasksPath;
     }
     
     /**

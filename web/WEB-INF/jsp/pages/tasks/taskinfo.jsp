@@ -44,12 +44,17 @@
 
                                     <tbody>
                                         <tr>
-                                            <th>Заголовок задачи</th>
-                                            <td colspan="4"><c:out value="${task.title}" /></td>
-                                        </tr>
-                                        <tr>
                                             <th>Описание</th>
-                                            <td colspan="4" style="white-space: pre"><c:out value="${task.text}" /></td>
+                                            <td colspan="4">
+                                                <div class="panel panel-info panel-primary-dark">
+                                                    <div class="panel-heading panel-heading-dark" align="center">
+                                                        <c:out value="${task.title}" />
+                                                    </div>
+                                                    <div class="panel-body">
+                                                        <div style="white-space: pre"><c:out value="${task.text}" /></div>
+                                                    </div>
+                                                </div>
+                                            </td>
                                         </tr>
                                         <tr>
                                             <th>Инициатор</th>
@@ -102,14 +107,20 @@
                                             <td colspan="4">
                                                 <c:if test="${task.files.isEmpty()}">Прикрепленных документов нет<br></c:if>
                                                 <c:forEach items="${task.files}" var="file">
-                                                    <a href="#"><img src="<c:url value="/res/images/${file.iconPath}" />" > <c:out value="${file.viewName}" /></a><br>
+                                                    <fmt:formatDate value="${file.creationTime.toDate()}" type="both" pattern="dd.MM.yyyy HH:mm" var="filetimefmt" />
+                                                    <a href="<c:url value="/tasks/getfile/${file.viewName}?taskid=${task.id}&fileid=${file.id}" />" data-toggle="tooltip" data-placement="right" title="Автор: ${file.creator.fullName}&#10;Создан: ${filetimefmt}&#10;Размер: ${file.sizeStr}">
+                                                        <img src="<c:url value="/res/images/datafile_types/${file.iconPath}" />" > <c:out value="${file.viewName}" />
+                                                    </a>
+                                                    <br>
                                                 </c:forEach>
                                                     <br>
-                                                <c:url var="file_upload_url"  value="/tasks/addfile?id=${task.id}&${_csrf.parameterName}=${_csrf.token}" />
-                                                <form:form method="post" commandName="taskFileUpload" enctype="multipart/form-data" action="${file_upload_url}">
-                                                    Загрузить новый документ: <input type="file" name="file" /> 
-                                                    <input type="submit" value="Загрузить" />
-                                                </form:form>
+                                                <c:if test="${!task.isClosed()}">
+                                                    <c:url var="file_upload_url"  value="/tasks/addfile?id=${task.id}&${_csrf.parameterName}=${_csrf.token}" />
+                                                    <form:form method="post" commandName="taskFileUpload" enctype="multipart/form-data" action="${file_upload_url}">
+                                                        Загрузить новый документ: <input type="file" name="file" /> 
+                                                        <input type="submit" value="Загрузить" />
+                                                    </form:form>
+                                                </c:if>
                                             </td>
                                         </tr>
 
@@ -123,7 +134,7 @@
                                                         <div class="panel-heading panel-heading-dark" align="center">
                                                             <c:choose>
                                                                 <c:when test="${comment.creator != null}">
-                                                                    <a href="<c:url value="${comment.creator.id}" />">
+                                                                    <a href="<c:url value="/employee?id=${comment.creator.id}" />">
                                                                         <c:out value="${comment.creator.fullName}" />
                                                                     </a> написал(а)
                                                                 </c:when>
@@ -210,5 +221,11 @@
             <%@include file="../../modules/footer.jspf" %>
         </div>
 
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $('[data-toggle="tooltip"]').tooltip();
+            });
+        </script>
+        
     </body>
 </html>
