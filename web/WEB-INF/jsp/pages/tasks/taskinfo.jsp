@@ -20,6 +20,7 @@
         <link rel="stylesheet" href="<c:url value="/res/css/bootstrap-theme.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/jquery-ui.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/jquery-ui.theme.css" />" >
+        <link rel="stylesheet" href="<c:url value="/res/css/jquery.dataTables.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/styles.css" />" >
 
         <title><c:out value="${title}" /></title>
@@ -115,16 +116,61 @@
                                                     </a>
                                                     <br>
                                                 </c:forEach>
-                                                    <br>
-                                                <c:if test="${!task.isClosed()}">
-                                                    <c:url var="file_upload_url"  value="/tasks/addfile?id=${task.id}&${_csrf.parameterName}=${_csrf.token}" />
-                                                    <form:form method="post" commandName="taskFileUpload" enctype="multipart/form-data" action="${file_upload_url}">
-                                                        Загрузить новый документ: <input type="file" name="file" /> 
-                                                        <input type="submit" value="Загрузить" />
-                                                    </form:form>
-                                                </c:if>
                                             </td>
                                         </tr>
+                                        <c:if test="${!task.isClosed()}">
+                                            <tr>
+                                                <th>Действия</th>
+                                                <td colspan="4">
+                                                    <div id="collasible">
+                                                        <h4>Добавить документы</h4>
+                                                        <div>
+                                                            <c:url var="file_upload_url"  value="/tasks/addfile?id=${task.id}&${_csrf.parameterName}=${_csrf.token}" />
+                                                            <form:form method="post" commandName="taskFileUpload" enctype="multipart/form-data" action="${file_upload_url}">
+                                                                Загрузить новый документ: <input type="file" name="file" /> 
+                                                                <input type="submit" value="Загрузить" />
+                                                            </form:form>
+                                                        </div>
+                                                        <h4>Добавить пользователей</h4>
+                                                        <div>
+                                                            <c:url var="performers_post_url"  value="/tasks/addperformers?id=${task.id}" />
+                                                            <form:form method="post" commandName="task" action="${performers_post_url}">
+                                                                <table id="empsChooseTab">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th>#</th>
+                                                                            <th>ФИО</th>
+                                                                            <th>Должность</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <c:forEach items="${allEmps}" var="emp" varStatus="idx">
+                                                                            <tr>
+                                                                                <td>
+                                                                                    <c:choose>
+                                                                                        <c:when test="${task.performers.contains(emp) || emp.equals(task.creator)}">
+                                                                                            <form:checkbox path="performers" value="${emp.id}" checked="true" disabled="true" />
+                                                                                        </c:when>
+                                                                                        <c:otherwise>
+                                                                                            <form:checkbox path="performers" value="${emp.id}" />
+                                                                                        </c:otherwise>
+                                                                                    </c:choose>
+
+                                                                                </td>
+                                                                                <td><c:out value="${emp.fullName}" /></td>
+                                                                                <td><c:out value="${emp.position}" /></td>
+                                                                            </tr>
+                                                                        </c:forEach>
+                                                                    </tbody>
+                                                                </table>
+                                                                <br>
+                                                                <input id="save" type="submit" name="save" value="Добавить в исполнители" class="btn btn-primary">
+                                                            </form:form>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </c:if>
 
                                         <tr><td> </td></tr>
 
@@ -231,28 +277,28 @@
 
             <%@include file="../../modules/footer.jspf" %>
         </div>
-        
+
         <div id="msgCloseConfirm" title="Подтвердите действие">
-                <p>
-                    Закрыть данную задачу? 
-                    <br>
-                    Подтвердите что задача выполнена и дальнейших действий не требуется.
-                </p>
+            <p>
+                Закрыть данную задачу? 
+                <br>
+                Подтвердите что задача выполнена и дальнейших действий не требуется.
+            </p>
         </div>
 
         <script type="text/javascript">
             $(document).ready(function () {
                 $('[data-toggle="tooltip"]').tooltip();
-                
+
                 $(".closeTask").click(function () {
                     $("#msgCloseConfirm").dialog("open");
                 });
-                
+
                 $(".takeTask").click(function () {
                     $.post("<c:url value="/tasks/taketask" />", {"id": ${task.id}, "${_csrf.parameterName}": "${_csrf.token}"});
-                                setTimeout(function () {
-                                    location.reload()
-                                }, 300);
+                    setTimeout(function () {
+                        location.reload()
+                    }, 300);
                 });
 
                 $("#msgCloseConfirm").dialog({
@@ -288,8 +334,22 @@
                     }
 
                 });
+                
+                $("#empsChooseTab").DataTable({
+                    "scrollY": "200px",
+                    "scrollCollapse": true,
+                    "paging": false
+                });
+                
+                $("#collasible").accordion({
+                    collapsible: true,
+                    active: false,
+                    heightStyle: "content"
+                });
+
+                
             });
         </script>
-        
+
     </body>
 </html>

@@ -20,6 +20,7 @@ package ru.codemine.ccms.service;
 
 import java.util.List;
 import java.util.Set;
+import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,7 @@ import ru.codemine.ccms.dao.TaskDAO;
 import ru.codemine.ccms.entity.Comment;
 import ru.codemine.ccms.entity.Employee;
 import ru.codemine.ccms.entity.Task;
+import ru.codemine.ccms.mail.EmailService;
 
 /**
  *
@@ -43,14 +45,14 @@ public class TaskService
     private static final Logger log = Logger.getLogger("TaskService");
     
     @Autowired private TaskDAO taskDAO;
-    @Autowired private EmployeeDAO employeeDAO;
+    @Autowired private EmailService emailService;
     
     public void create(Task task)
     {
+        taskDAO.create(task);
+
         if(task.hasPerformer())
             assign(task, task.getPerformers());
-        
-        taskDAO.create(task);
     }
 
     public void delete(Task task)
@@ -161,6 +163,7 @@ public class TaskService
         
         taskDAO.update(task);
         
+        sendMsgOnAssign(task, performer);
     }
     
     public void assign(Task task, Set<Employee> performers)
@@ -187,6 +190,11 @@ public class TaskService
         task.addComment(comment);
         
         taskDAO.update(task);
+        
+        for(Employee performer : performers)
+        {
+            sendMsgOnAssign(task, performer);
+        }
     }
     
     public void drop(Task task)
@@ -257,6 +265,20 @@ public class TaskService
         task.addComment(comment);
         
         taskDAO.update(task);
+    }
+    
+    private void sendMsgOnAssign(Task task, Employee targetEmployee)
+    {
+        String title = "Вам назначена новая задача";
+        String text  = "Добрый день, " + targetEmployee.getFirstName() + ",\n\n" +
+                       "Вам назначена новая задача на веб-портале компании.\n\n" +
+                       "Заголовок задачи: " + task.getTitle() + "\n" +
+                       "Описание задачи : " + task.getText() + "\n\n" +
+                       "Инициатор задачи " + task.getCreator().getFullName() + " просит вас выполнить ее до " + task.getDeadline().toString("dd.MM.YY HH:mm") + "\n\n" +
+                       "Спасибо за пользование веб-порталом!";
+        
+        emailService.sendSimpleMessage(targetEmployee.getEmail(), title, text);
+
     }
 
 }

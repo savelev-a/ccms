@@ -283,16 +283,24 @@ public class Task implements Serializable
     {
         this.files = files;
     }
-    
 
     @Override
     public String toString()
     {
-        return "Task{" + "id=" + id + ", title=" + title + ", text=" + text + '}';
+        return "Task{" 
+                + "id=" + id 
+                + ", title=" + title 
+                + ", text=" + text 
+                + ", creator=" + creator 
+                + ", creationTime=" + creationTime 
+                + ", status=" + status 
+                + ", deadline=" + deadline 
+                + ", closeTime=" + closeTime 
+                + ", urgency=" + urgency + '}';
     }
-
-
     
+
+
     public boolean hasPerformer()
     {
         return (this.performers != null && !this.performers.isEmpty());

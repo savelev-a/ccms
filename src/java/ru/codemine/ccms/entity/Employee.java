@@ -216,7 +216,7 @@ public class Employee implements Serializable
     
     public String getFullName()
     {
-        String fullName = lastName + " " + firstName;
+        String fullName = getLastName() + " " + getFirstName();
         
         return fullName;
     }

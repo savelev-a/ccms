@@ -24,6 +24,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 import javax.servlet.http.HttpServletResponse;
@@ -45,6 +47,7 @@ import ru.codemine.ccms.entity.Comment;
 import ru.codemine.ccms.entity.DataFile;
 import ru.codemine.ccms.entity.Employee;
 import ru.codemine.ccms.entity.Task;
+import ru.codemine.ccms.exceptions.ResourceNotFoundException;
 import ru.codemine.ccms.service.DataFileService;
 import ru.codemine.ccms.service.EmployeeService;
 import ru.codemine.ccms.service.SettingsService;
@@ -93,6 +96,8 @@ public class TaskRouter
             return "pages/tasks/newtask";
         }
         
+        task.setCreator(employeeService.getCurrentUser());
+        
         taskService.create(task);
         
         return "redirect:/tasks/mytasks/created";
@@ -103,11 +108,15 @@ public class TaskRouter
     public String getTaskinfo(@RequestParam("id") Integer id, ModelMap model)
     {
         Task task = taskService.getById(id);
+        Employee currentUser = employeeService.getCurrentUser();
+        
+        if(!task.isInTask(currentUser)) throw new ResourceNotFoundException();
         
         model.addAllAttributes(utils.prepareModel("Задача - " + task.getTitle() + " - ИнфоПортал", "tasks", ""));
         model.addAttribute("openTasksCount", taskService.getOpenTaskCount());
         model.addAttribute("task", task);
         model.addAttribute("newcomment", new Comment(employeeService.getCurrentUser()));
+        model.addAttribute("allEmps", employeeService.getActive());
         
         return "pages/tasks/taskinfo";
     }
@@ -260,7 +269,7 @@ public class TaskRouter
     }
     
     @Secured("ROLE_USER")
-    @RequestMapping(value = "/tasks/droptask")
+    @RequestMapping(value = "/tasks/droptask", method = RequestMethod.POST)
     public String dropTask(@RequestParam("id") Integer id)
     {
         Task task = taskService.getById(id);
@@ -272,7 +281,7 @@ public class TaskRouter
     }
     
     @Secured("ROLE_USER")
-    @RequestMapping(value = "/tasks/closetask")
+    @RequestMapping(value = "/tasks/closetask", method = RequestMethod.POST)
     public String closeTask(@RequestParam("id") Integer id)
     {
         Task task = taskService.getById(id);
@@ -287,7 +296,7 @@ public class TaskRouter
     }
     
     @Secured("ROLE_USER")
-    @RequestMapping(value = "/tasks/taketask")
+    @RequestMapping(value = "/tasks/taketask", method = RequestMethod.POST)
     public String takeTask(@RequestParam("id") Integer id)
     {
         Task task = taskService.getById(id);
@@ -297,5 +306,18 @@ public class TaskRouter
         
         return "redirect:/tasks/freetasks";
     }
-
+    
+    @Secured("ROLE_USER")
+    @RequestMapping(value = "/tasks/addperformers", method = RequestMethod.POST)
+    public String addPerformersToTask(@RequestParam("id") Integer id, @ModelAttribute(value = "task") Task tmpTask)
+    {
+        Task realTask = taskService.getById(id);
+        Employee currentUser = employeeService.getCurrentUser();
+        Set<Employee> performers = tmpTask.getPerformers();
+        
+        if(realTask.isInTask(currentUser))
+            taskService.assign(realTask, performers);
+        
+        return "redirect:/tasks/taskinfo?id=" + realTask.getId(); 
+    }
 }
