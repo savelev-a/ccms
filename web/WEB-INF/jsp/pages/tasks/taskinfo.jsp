@@ -18,6 +18,8 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="<c:url value="/res/css/bootstrap.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/bootstrap-theme.css" />" >
+        <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/jquery-ui.css" />" >
+        <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/jquery-ui.theme.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/styles.css" />" >
 
         <title><c:out value="${title}" /></title>
@@ -197,18 +199,27 @@
 
                                 <c:choose>
                                     <c:when test="${task.statusString == 'Новая'}" >
-                                        <button class="btn btn-primary" ><span class="glyphicon glyphicon-expand"></span> Взять себе</button>
+                                        <button class="btn btn-primary takeTask" ><span class="glyphicon glyphicon-expand"></span> Взять себе</button>
+                                        <c:if test="${task.creator.equals(currentUser)}">
+                                            <button class="btn btn-primary closeTask" ><span class="glyphicon glyphicon-expand"></span> Закрыть</button>
+                                        </c:if>
                                     </c:when>
 
                                     <c:when test="${task.statusString == 'Назначена'}" >
-
+                                        <c:if test="${task.creator.equals(currentUser)}">
+                                            <button class="btn btn-primary closeTask" ><span class="glyphicon glyphicon-expand"></span> Закрыть</button>
+                                        </c:if>
                                     </c:when>
 
                                     <c:when test="${task.statusString == 'В работе'}" >
-
+                                        <c:if test="${task.creator.equals(currentUser)}">
+                                            <button class="btn btn-primary closeTask" ><span class="glyphicon glyphicon-expand"></span> Закрыть</button>
+                                        </c:if>
                                     </c:when>
                                     <c:when test="${task.statusString == 'Приостановлена'}" >
-
+                                        <c:if test="${task.creator.equals(currentUser)}">
+                                            <button class="btn btn-primary closeTask" ><span class="glyphicon glyphicon-expand"></span> Закрыть</button>
+                                        </c:if>
                                     </c:when>
                                 </c:choose>
 
@@ -220,10 +231,63 @@
 
             <%@include file="../../modules/footer.jspf" %>
         </div>
+        
+        <div id="msgCloseConfirm" title="Подтвердите действие">
+                <p>
+                    Закрыть данную задачу? 
+                    <br>
+                    Подтвердите что задача выполнена и дальнейших действий не требуется.
+                </p>
+        </div>
 
         <script type="text/javascript">
             $(document).ready(function () {
                 $('[data-toggle="tooltip"]').tooltip();
+                
+                $(".closeTask").click(function () {
+                    $("#msgCloseConfirm").dialog("open");
+                });
+                
+                $(".takeTask").click(function () {
+                    $.post("<c:url value="/tasks/taketask" />", {"id": ${task.id}, "${_csrf.parameterName}": "${_csrf.token}"});
+                                setTimeout(function () {
+                                    location.reload()
+                                }, 300);
+                });
+
+                $("#msgCloseConfirm").dialog({
+                    autoOpen: false,
+                    modal: true,
+                    dialogClass: "no-close",
+                    width: 400,
+                    buttons: [{
+                            text: "Закрыть",
+                            class: "btn btn-danger",
+                            click: function () {
+                                //$(this).dialog("close");
+                                $.post("<c:url value="/tasks/closetask" />", {"id": ${task.id}, "${_csrf.parameterName}": "${_csrf.token}"});
+                                setTimeout(function () {
+                                    location.reload()
+                                }, 300);
+
+                            }
+                        }, {
+                            text: "Отмена",
+                            class: "btn btn-default",
+                            click: function () {
+                                $(this).dialog("close");
+                            }
+                        }],
+                    show: {
+                        effect: "clip",
+                        duration: 200
+                    },
+                    hide: {
+                        effect: "clip",
+                        duration: 200
+                    }
+
+                });
             });
         </script>
         

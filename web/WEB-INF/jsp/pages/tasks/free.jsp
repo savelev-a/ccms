@@ -18,6 +18,8 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="<c:url value="/res/css/bootstrap.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/bootstrap-theme.css" />" >
+        <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/jquery-ui.css" />" >
+        <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/jquery-ui.theme.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/jquery.dataTables.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/styles.css" />" >
 
@@ -68,7 +70,7 @@
                                                 <td><c:out value="${deadlinefmt}" /><br>  (<c:out value="${task.deadlineString}" />)</td>
                                                 <td><c:out value="${task.urgencyString}" /></td>
                                                 <td>
-                                                    <a href="#"><span class="glyphicon glyphicon-expand"></span> Взять себе</a>
+                                                    <a href="#" class="takeTask" id="take${task.id}"><span class="glyphicon glyphicon-expand"></span> Взять себе</a>
                                                 </td>
                                             </tr>
                                         </c:forEach>
@@ -89,6 +91,15 @@
                 $("#tasksTable").DataTable({
                     "order": [[ 3, "asc" ]]
                 });
+                
+                $(".takeTask").click(function () {
+                    id = this.id;
+                    $.post("<c:url value="/tasks/taketask" />", {"id": id.toString().substring(4), "${_csrf.parameterName}": "${_csrf.token}"});
+                    setTimeout(function () {
+                        location.reload();
+                    }, 300);
+                });
+                
             });
         </script>
 

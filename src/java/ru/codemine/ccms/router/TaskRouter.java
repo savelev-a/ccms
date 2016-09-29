@@ -285,5 +285,17 @@ public class TaskRouter
         
         return "redirect:/tasks/mytasks/created";
     }
+    
+    @Secured("ROLE_USER")
+    @RequestMapping(value = "/tasks/taketask")
+    public String takeTask(@RequestParam("id") Integer id)
+    {
+        Task task = taskService.getById(id);
+        Employee employee = employeeService.getCurrentUser();
+        
+        taskService.assign(task, employee);
+        
+        return "redirect:/tasks/freetasks";
+    }
 
 }
