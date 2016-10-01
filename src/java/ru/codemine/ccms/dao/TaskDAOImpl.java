@@ -22,6 +22,9 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.joda.time.DateTime;
+import org.joda.time.Duration;
+import org.joda.time.LocalDate;
+import org.joda.time.Period;
 import org.springframework.stereotype.Repository;
 import ru.codemine.ccms.entity.Employee;
 import ru.codemine.ccms.entity.Task;
@@ -162,6 +165,55 @@ public class TaskDAOImpl extends GenericDAOImpl<Task, Integer> implements TaskDA
         Long count = (Long)query.uniqueResult();
         
         return count == null ? 0 : count.intValue();
+    }
+
+    @Override
+    public Integer getClosedTasksByPerformerCount(Employee performer, LocalDate startDate, LocalDate endDate)
+    {
+        Query query = getSession().createQuery("SELECT COUNT(*) FROM Task t WHERE :performer IN ELEMENTS(t.performers) AND t.closeTime >= :startDate AND t.closeTime <= :endDate");
+        query.setParameter("performer", performer);
+        query.setDate("startDate", startDate.toDate());
+        query.setDate("endDate", endDate.toDate());
+        
+        Long count = (Long)query.uniqueResult();
+        
+        return count == null ? 0 : count.intValue();
+    }
+
+    @Override
+    public Integer getOverdueTasksByPerformerCount(Employee performer, LocalDate startDate, LocalDate endDate)
+    {
+        Query query = getSession().createQuery("SELECT COUNT(*) FROM Task t WHERE :performer IN ELEMENTS(t.performers) AND t.closeTime >= :startDate AND t.closeTime <= :endDate AND t.deadline < t.closeTime");
+        query.setParameter("performer", performer);
+        query.setDate("startDate", startDate.toDate());
+        query.setDate("endDate", endDate.toDate());
+        
+        Long count = (Long)query.uniqueResult();
+        
+        return count == null ? 0 : count.intValue();
+    }
+
+    @Override
+    public Period getMidTimeByPerformer(Employee performer, LocalDate startDate, LocalDate endDate)
+    {
+        Query query = getSession().createQuery("FROM Task t WHERE :performer IN ELEMENTS(t.performers) AND t.closeTime >= :startDate AND t.closeTime <= :endDate");
+        query.setParameter("performer", performer);
+        query.setDate("startDate", startDate.toDate());
+        query.setDate("endDate", endDate.toDate());
+        
+        List<Task> tasks = query.list();
+        
+        if(tasks.isEmpty()) return new Period(0);
+        
+        Duration totalDuration = new Duration(0);
+        for(Task task : tasks)
+        {
+            Duration d = new Duration(task.getCreationTime(), task.getCloseTime());
+            totalDuration = totalDuration.plus(d);
+        }
+        Duration resultDuration = totalDuration.dividedBy(tasks.size());
+        
+        return resultDuration.toPeriod();
     }
 
 }

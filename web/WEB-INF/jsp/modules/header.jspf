@@ -67,32 +67,37 @@
                     </li>
                 </sec:authorize>
 
-                <li class="dropdown ${mainMenuActiveItem == "reports" ? "active" : ""}">
-                    <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown">
-                        Отчеты
-                        <span class="caret"></span>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a href="<c:url value="/reports/sales-pass" />" >
-                                <span class="glyphicon glyphicon-list-alt"></span>  Отчет по проходимости и выручке
-                            </a>
-                        </li>
-                        <li>
-                            <a href="<c:url value="/reports/expences" />" >
+                <sec:authorize access="hasRole('ROLE_OFFICE')">
+                    <li class="dropdown ${mainMenuActiveItem == "reports" ? "active" : ""}">
+                        <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown">
+                            Отчеты
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="<c:url value="/reports/sales-pass" />" >
+                                    <span class="glyphicon glyphicon-list-alt"></span>  Отчет по проходимости и выручке
+                                </a>
+                            </li>
+                            <li>
+                                <a href="<c:url value="/reports/expences" />" >
                                     <span class="glyphicon glyphicon-list-alt"></span>  Отчет по расходам
-                            </a>
-                        </li>
-                        <sec:authorize access="hasRole('ROLE_OFFICE')">
+                                </a>
+                            </li>
                             <li>
                                 <a href="<c:url value="/reports/shopproviders" />" >
                                     <span class="glyphicon glyphicon-list-alt"></span>  Отчет по провайдерам в магазинах
                                 </a>
                             </li>
-                        </sec:authorize>
-                    </ul>
-                </li>
-                
+                            <li>
+                                <a href="<c:url value="/reports/tasks" />" >
+                                    <span class="glyphicon glyphicon-list-alt"></span>  Отчеты по задачам
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </sec:authorize>
+
                 <li class="dropdown ${mainMenuActiveItem == "tasks" ? "active" : ""}">
                     <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown">
                         Задачи 
@@ -127,7 +132,7 @@
 
                     </ul>
                 </li>
-                
+
                 <sec:authorize access="hasRole('ROLE_ADMIN')">
                     <li ${mainMenuActiveItem == "admin" ? "class=active" : ""}>
                         <a href="<c:url value="/admin" />">

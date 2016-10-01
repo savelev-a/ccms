@@ -239,3 +239,8 @@ body {
 .badge-right {
     float: right;
 }
+
+.datepicker-z {
+    position: relative;
+    z-index: 100000;
+}

@@ -8,11 +8,11 @@
     <div class="panel panel-primary panel-primary-dark">
         <div class="panel-heading panel-heading-dark" align="center">Опции</div>
         <div class="panel-body">
-            
-                        <a href="javascript:history.back()">
-                            <- назад --
-                        </a> 
+
+            <a href="javascript:history.back()">
+                <- назад --
+            </a> 
 
         </div>
     </div>
-</div> 
+</div>

@@ -20,13 +20,15 @@ package ru.codemine.ccms.service;
 
 import java.util.List;
 import java.util.Set;
-import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.Period;
+import org.joda.time.format.PeriodFormatter;
+import org.joda.time.format.PeriodFormatterBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.codemine.ccms.dao.EmployeeDAO;
 import ru.codemine.ccms.dao.TaskDAO;
 import ru.codemine.ccms.entity.Comment;
 import ru.codemine.ccms.entity.Employee;
@@ -139,6 +141,39 @@ public class TaskService
         }
         
         return 0;
+    }
+    
+    public Integer getClosedTasksByPerformerCount(Employee performer, LocalDate startDate, LocalDate endDate)
+    {
+        return taskDAO.getClosedTasksByPerformerCount(performer, startDate, endDate);
+    }
+    
+    public Integer getOverdueTasksByPerformerCount(Employee performer, LocalDate startDate, LocalDate endDate)
+    {
+        return taskDAO.getOverdueTasksByPerformerCount(performer, startDate, endDate);
+    }
+    
+    public Period getMidTimeByPerformer(Employee performer, LocalDate startDate, LocalDate endDate)
+    {
+        return taskDAO.getMidTimeByPerformer(performer, startDate, endDate);
+    }
+    
+    public String getMidTimeByPerformerStr(Employee performer, LocalDate startDate, LocalDate endDate)
+    {
+        Period p = getMidTimeByPerformer(performer, startDate, endDate);
+        
+        PeriodFormatter formatter = new PeriodFormatterBuilder()
+                .appendDays()
+                .appendSuffix(" день", " дней")
+                .appendSeparator(" ")
+                .appendHours()
+                .appendSuffix(" час", " часов")
+                .appendSeparator(" ")
+                .appendMinutes()
+                .appendSuffix(" минута", " минут")
+                .toFormatter();
+        
+        return formatter.print(p);
     }
     
     public Integer getOpenTaskCount()
@@ -277,7 +312,8 @@ public class TaskService
                        "Инициатор задачи " + task.getCreator().getFullName() + " просит вас выполнить ее до " + task.getDeadline().toString("dd.MM.YY HH:mm") + "\n\n" +
                        "Спасибо за пользование веб-порталом!";
         
-        emailService.sendSimpleMessage(targetEmployee.getEmail(), title, text);
+        //emailService.sendSimpleMessage(targetEmployee.getEmail(), title, text);
+        log.info(text);
 
     }
 

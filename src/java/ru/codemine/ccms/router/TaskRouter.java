@@ -19,19 +19,23 @@
 package ru.codemine.ccms.router;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.logging.Level;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
+import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
@@ -42,6 +46,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import ru.codemine.ccms.entity.Comment;
 import ru.codemine.ccms.entity.DataFile;
@@ -319,5 +324,65 @@ public class TaskRouter
             taskService.assign(realTask, performers);
         
         return "redirect:/tasks/taskinfo?id=" + realTask.getId(); 
+    }
+    
+    @Secured("ROLE_OFFICE")
+    @RequestMapping(value = "/reports/tasks", method = RequestMethod.GET)
+    public String tasksReport(ModelMap model,
+                              @RequestParam(required = false) String dateStartStr,
+                              @RequestParam(required = false) String dateEndStr)
+    {
+        model.addAllAttributes(utils.prepareModel("Отчет по задачам (по пользователям) - ИнфоПортал", "reports", "byUsers"));
+        
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd.MM.YYYY");
+        LocalDate dateStart = dateStartStr == null 
+                ? LocalDate.now().withDayOfMonth(1) 
+                : formatter.parseLocalDate(dateStartStr);
+        LocalDate dateEnd = dateEndStr == null 
+                ? LocalDate.now().dayOfMonth().withMaximumValue() 
+                : formatter.parseLocalDate(dateEndStr);
+        
+        if(dateEnd.isBefore(dateStart)) dateEnd = dateStart;
+        
+        model.addAttribute("dateStartStr", dateStart.toString("dd.MM.YYYY"));
+        model.addAttribute("dateEndStr", dateEnd.toString("dd.MM.YYYY"));
+        
+        return "reports/tasks-byuser";
+    }
+    
+    @Secured("ROLE_OFFICE")
+    @RequestMapping(value = "/reports/tasks/data", method = RequestMethod.GET)
+    public @ResponseBody List<Map<String, Object>> tasksReportData(ModelMap model,
+                              @RequestParam(required = false) String dateStartStr,
+                              @RequestParam(required = false) String dateEndStr)
+    {
+        List<Map<String, Object>> recordsList = new ArrayList<>();
+        List<Employee> allEmps = employeeService.getActive();
+        
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd.MM.YYYY");
+        LocalDate dateStart = dateStartStr == null 
+                ? LocalDate.now().withDayOfMonth(1) 
+                : formatter.parseLocalDate(dateStartStr);
+        LocalDate dateEnd = dateEndStr == null 
+                ? LocalDate.now().dayOfMonth().withMaximumValue() 
+                : formatter.parseLocalDate(dateEndStr);
+        
+        for(Employee employee : allEmps)
+        {
+            Map<String, Object> record = new HashMap<>();
+            
+            Integer tasksClosed = taskService.getClosedTasksByPerformerCount(employee, dateStart, dateEnd);
+            Integer tasksOverdue = taskService.getOverdueTasksByPerformerCount(employee, dateStart, dateEnd);
+            
+            record.put("username", employee.getFullName());
+            record.put("tasksClosed", tasksClosed);
+            record.put("tasksOverdue", tasksOverdue);
+            record.put("overduePercent", tasksClosed == 0 ? 0.0 : tasksOverdue.doubleValue() / tasksClosed * 100);
+            record.put("midTime", taskService.getMidTimeByPerformerStr(employee, dateStart, dateEnd));
+            
+            recordsList.add(record);
+        }
+        
+        return recordsList;
     }
 }

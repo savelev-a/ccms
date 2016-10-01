@@ -19,6 +19,8 @@
 package ru.codemine.ccms.dao;
 
 import java.util.List;
+import org.joda.time.LocalDate;
+import org.joda.time.Period;
 import ru.codemine.ccms.entity.Employee;
 import ru.codemine.ccms.entity.Task;
 
@@ -46,5 +48,7 @@ public interface TaskDAO extends GenericDAO<Task, Integer>
     
     public Integer getPerfTaskCount(Employee performer);
     public Integer getOpenTaskCount();
-
+    public Integer getClosedTasksByPerformerCount(Employee performer, LocalDate startDate, LocalDate endDate);
+    public Integer getOverdueTasksByPerformerCount(Employee performer, LocalDate startDate, LocalDate endDate);
+    public Period getMidTimeByPerformer(Employee performer, LocalDate startDate, LocalDate endDate);
 }
