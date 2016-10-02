@@ -385,4 +385,38 @@ public class TaskRouter
         
         return recordsList;
     }
+    
+    @Secured("ROLE_OFFICE")
+    @RequestMapping(value = "/reports/tasks/details", method = RequestMethod.GET)
+    public @ResponseBody List<Map<String, Object>> tasksReportDetails(ModelMap model,
+                              @RequestParam String dateStartStr,
+                              @RequestParam String dateEndStr,
+                              @RequestParam String userFullName)
+    {
+        List<Map<String, Object>> recordsList = new ArrayList<>();
+        
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd.MM.YYYY");
+        LocalDate dateStart = dateStartStr == null 
+                ? LocalDate.now().withDayOfMonth(1) 
+                : formatter.parseLocalDate(dateStartStr);
+        LocalDate dateEnd = dateEndStr == null 
+                ? LocalDate.now().dayOfMonth().withMaximumValue() 
+                : formatter.parseLocalDate(dateEndStr);
+        
+        List<Employee> employees = employeeService.getByFullName(userFullName);
+        if(employees.size() != 1) return recordsList;
+        
+        Employee employee = employees.get(0);
+        
+        for(Task task : taskService.getByPerformerAndCloseTimeInPeriod(employee, dateStart, dateEnd))
+        {
+            Map<String, Object> record = new HashMap<>();
+            record.put("taskName", task.getTitle());
+            record.put("closeTime", task.getCloseTime().toString("dd.MM.YY HH:mm"));
+            record.put("progressTime", task.getProgressTimeStr());
+            recordsList.add(record);
+        }
+        
+        return recordsList;
+    }
 }

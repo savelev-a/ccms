@@ -56,7 +56,7 @@ public class Task implements Serializable
 {
     
     private static final Logger log = Logger.getLogger("Task");
-    
+
     public enum Status
     {
         NEW,
@@ -382,5 +382,26 @@ public class Task implements Serializable
         return "Просрочено на " + formatter.print(deadlinePeriod);
         
     }
+    
+    public String getProgressTimeStr()
+    {
+        if(!isClosed() || getCloseTime() == null) return "";
+        
+        PeriodFormatter formatter = new PeriodFormatterBuilder()
+                .appendDays()
+                .appendSuffix(" день", " дней")
+                .appendSeparator(" ")
+                .appendHours()
+                .appendSuffix(" час", " часов")
+                .appendSeparator(" ")
+                .appendMinutes()
+                .appendSuffix(" минута", " минут")
+                .toFormatter();
+        
+        Period progressPeriod = new Period(getCreationTime(), getCloseTime());
+        
+        return formatter.print(progressPeriod);
+    }
+    
 
 }

@@ -29,4 +29,6 @@ public interface EmployeeDAO extends GenericDAO<Employee, Integer>
     public Employee getByUsername(String username);
     public List<Employee> getActive();
     public List<Employee> getAll();
+
+    public List<Employee> getByFullName(String fullName);
 }

@@ -57,11 +57,12 @@
                                         , построить 
                                         <a href="<c:url value="/reports/graph/sales-pass" />">графики</a>
                                         и задать <a href="<c:url value="/actions/setPlan" />">план выручек</a>.
-                                        <br><br><!--
-                                        <c:out value="${currentUser.firstName} ${currentUser.middleName}" />, у вас <c:out value="${currentUserActiveTasksCount}" /> активных задач. Нажмите 
-                                        <a href="<c:url value="/tasks/mytasks" />">сюда</a> 
-                                        чтобы просмотреть их. -->
-
+                                        <br><br>
+                                        <c:if test="${currentUserActiveTasksCount > 0}">
+                                            <c:out value="${currentUser.firstName} ${currentUser.middleName}" />, у вас <c:out value="${currentUserActiveTasksCount}" /> активных задач. Нажмите 
+                                            <a href="<c:url value="/tasks/mytasks" />">сюда</a> 
+                                            чтобы просмотреть их. 
+                                        </c:if>
 
                                     </c:when>
                                     <c:otherwise>

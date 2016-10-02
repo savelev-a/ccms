@@ -101,6 +101,12 @@ public class EmployeeService
     }
     
     @Transactional
+    public List<Employee> getByFullName(String fullName)
+    {
+        return employeeDAO.getByFullName(fullName);
+    }
+    
+    @Transactional
     public Employee getCurrentUser()
     {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

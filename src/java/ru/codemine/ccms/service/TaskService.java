@@ -127,6 +127,11 @@ public class TaskService
         return taskDAO.getByPerformerNotClosed(performer);
     }
     
+    public List<Task> getByPerformerAndCloseTimeInPeriod(Employee performer, LocalDate startDate, LocalDate endDate)
+    {
+        return taskDAO.getByPerformerAndCloseTimeInPeriod(performer, startDate, endDate);
+    }
+    
     public List<Task> getAll()
     {
         return taskDAO.getAll();
@@ -312,8 +317,8 @@ public class TaskService
                        "Инициатор задачи " + task.getCreator().getFullName() + " просит вас выполнить ее до " + task.getDeadline().toString("dd.MM.YY HH:mm") + "\n\n" +
                        "Спасибо за пользование веб-порталом!";
         
-        //emailService.sendSimpleMessage(targetEmployee.getEmail(), title, text);
-        log.info(text);
+        emailService.sendSimpleMessage(targetEmployee.getEmail(), title, text);
+        //log.info(text);
 
     }
 

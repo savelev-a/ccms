@@ -113,6 +113,28 @@
                         }},
                     {name: 'midTime', index: 'midTime', width: 180, sorttype: "text", align: "right"}
                 ],
+                subGrid: true,
+                subGridRowExpanded: function(subgrid_id, row_id) {
+                    var subgrid_table_id = subgrid_id + "_t";
+                    var userfullname = jQuery("#reportTable").jqGrid('getCell', row_id, 'username');
+                    var subgrid_width = jQuery("#reportTable").width() - 25;
+                    
+                    $("#"+subgrid_id).html("<table id='"+subgrid_table_id+"' class='scroll'></table>");
+                    jQuery("#"+subgrid_table_id).jqGrid({
+                        url: "<c:url value="/reports/tasks/details?dateStartStr=${dateStartStr}&dateEndStr=${dateEndStr}&userFullName=" />" + userfullname,
+                        datatype: "json",
+                        height: "100%",
+                        shrinkToFit: false,
+                        width: subgrid_width,
+                        colNames: ['Задача', 'Время закрытия', 'Затраченное время'],
+                        colModel: [
+                            {name: 'taskName', index: 'taskname', width: 470, sorttype: "text", classes: "jqcol-bold jqcol-font-bold"},
+                            {name: 'closeTime', index: 'closeTime', width: 200, sorttype: "text", align: "right"},
+                            {name: 'progressTime', index: 'progressTime', width: 200, sorttype: "text", align: "right"}
+                        ]
+                    })
+                },
+
                 footerrow: true,
                 loadComplete: function () {
                     var sumClosed = grid.jqGrid('getCol', 'tasksClosed', false, 'sum');
@@ -120,6 +142,7 @@
 
                     grid.jqGrid('footerData','set', {'username': 'Итого: ', 'tasksClosed': sumClosed, 'tasksOverdue': sumOverdue, 'overduePercent': sumOverdue/sumClosed * 100});
                 }
+                        
             });
             
             $("#dateStartField").datepicker();

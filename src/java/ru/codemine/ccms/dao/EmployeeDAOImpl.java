@@ -17,8 +17,10 @@
  */
 package ru.codemine.ccms.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.log4j.Logger;
+import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
 import ru.codemine.ccms.entity.Employee;
 
@@ -54,6 +56,19 @@ public class EmployeeDAOImpl extends GenericDAOImpl<Employee, Integer> implement
         List<Employee> result = getSession().createQuery("FROM Employee E ORDER BY E.lastName ASC").list();
         
         return result;
+    }
+
+    @Override
+    public List<Employee> getByFullName(String fullName)
+    {
+        String[] parts = fullName.split(" ");
+        if(parts.length != 2) return new ArrayList<>();
+        
+        Query query = getSession().createQuery("FROM Employee e WHERE e. firstName = :firstName AND e.lastName = :lastName");
+        query.setString("firstName", parts[1]);
+        query.setString("lastName", parts[0]);
+        
+        return query.list();
     }
     
 }

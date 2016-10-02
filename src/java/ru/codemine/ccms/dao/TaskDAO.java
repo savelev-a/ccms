@@ -51,4 +51,6 @@ public interface TaskDAO extends GenericDAO<Task, Integer>
     public Integer getClosedTasksByPerformerCount(Employee performer, LocalDate startDate, LocalDate endDate);
     public Integer getOverdueTasksByPerformerCount(Employee performer, LocalDate startDate, LocalDate endDate);
     public Period getMidTimeByPerformer(Employee performer, LocalDate startDate, LocalDate endDate);
+
+    public List<Task> getByPerformerAndCloseTimeInPeriod(Employee performer, LocalDate startDate, LocalDate endDate);
 }

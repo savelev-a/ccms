@@ -196,12 +196,8 @@ public class TaskDAOImpl extends GenericDAOImpl<Task, Integer> implements TaskDA
     @Override
     public Period getMidTimeByPerformer(Employee performer, LocalDate startDate, LocalDate endDate)
     {
-        Query query = getSession().createQuery("FROM Task t WHERE :performer IN ELEMENTS(t.performers) AND t.closeTime >= :startDate AND t.closeTime <= :endDate");
-        query.setParameter("performer", performer);
-        query.setDate("startDate", startDate.toDate());
-        query.setDate("endDate", endDate.toDate());
         
-        List<Task> tasks = query.list();
+        List<Task> tasks = getByPerformerAndCloseTimeInPeriod(performer, startDate, endDate);
         
         if(tasks.isEmpty()) return new Period(0);
         
@@ -214,6 +210,17 @@ public class TaskDAOImpl extends GenericDAOImpl<Task, Integer> implements TaskDA
         Duration resultDuration = totalDuration.dividedBy(tasks.size());
         
         return resultDuration.toPeriod();
+    }
+
+    @Override
+    public List<Task> getByPerformerAndCloseTimeInPeriod(Employee performer, LocalDate startDate, LocalDate endDate)
+    {
+        Query query = getSession().createQuery("FROM Task t WHERE :performer IN ELEMENTS(t.performers) AND t.closeTime >= :startDate AND t.closeTime <= :endDate");
+        query.setParameter("performer", performer);
+        query.setDate("startDate", startDate.toDate());
+        query.setDate("endDate", endDate.toDate());
+        
+        return query.list();
     }
 
 }
