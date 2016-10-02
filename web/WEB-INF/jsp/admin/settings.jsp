@@ -49,6 +49,11 @@
                                                 <td><form:input path="companyName" class="form-control" /> </td>
                                                 <td><form:errors path="companyName" cssStyle="color: #ff0000;" /></td>
                                             </tr>
+                                            <tr>
+                                                <td><b>Адрес портала</b></td>
+                                                <td><form:input path="rootUrl" class="form-control" /> </td>
+                                                <td><form:errors path="rootUrl" cssStyle="color: #ff0000;" /></td>
+                                            </tr>
                                             <tr><td colspan="3"> </td></tr>
                                             <tr>
                                                 <th colspan="3" class="th-header-center">Счетчики посетителей Кондор-7</th>

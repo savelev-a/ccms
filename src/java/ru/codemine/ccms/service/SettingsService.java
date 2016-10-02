@@ -58,6 +58,7 @@ public class SettingsService
     private static final String CK_SALES_LOADER_URL = "CK_SalesLoaderUrl";
     private static final String CK_SALES_LOADER_EMAIL = "CK_SalesLoaderEmail";
     private static final String CK_SALES_LOADER_EMAIL_PASS = "CK_SalesLoaderEmailPass";
+    private static final String CK_ROOT_URL = "CK_RootUrl";
 
     /**
      * Возвращает путь для сохранения файлов
@@ -114,6 +115,15 @@ public class SettingsService
         }
         
         return storageEmailPath;
+    }
+    
+    @Transactional
+    public String getRootURL()
+    {
+        Settings settings = settingsDAO.getByKey(CK_ROOT_URL);
+        String name = (settings == null ? "" : settings.getValue());
+        
+        return name;
     }
     
     /**
@@ -255,6 +265,7 @@ public class SettingsService
         Settings salesLoaderEmail = settingsDAO.getByKey(CK_SALES_LOADER_EMAIL);
         Settings salesLoaderEmailPass = settingsDAO.getByKey(CK_SALES_LOADER_EMAIL_PASS);
         Settings salesLoaderUrl = settingsDAO.getByKey(CK_SALES_LOADER_URL);
+        Settings rootUrl = settingsDAO.getByKey(CK_ROOT_URL);
         
         settingsForm.setCompanyName(companyName == null ? "" : companyName.getValue());
         settingsForm.setCountersKondorFtpLogin(kondorFtpLogin == null ? "" : kondorFtpLogin.getValue());
@@ -262,6 +273,7 @@ public class SettingsService
         settingsForm.setSalesLoaderEmail(salesLoaderEmail == null ? "user@example.com" : salesLoaderEmail.getValue());
         settingsForm.setSalesLoaderEmailPass(salesLoaderEmailPass == null ? "" : salesLoaderEmailPass.getValue());
         settingsForm.setSalesLoaderUrl(salesLoaderUrl == null ? "" : salesLoaderUrl.getValue());
+        settingsForm.setRootUrl(rootUrl == null ? "" : rootUrl.getValue());
         
         return settingsForm;
     }
@@ -278,6 +290,7 @@ public class SettingsService
     {
         if(form == null 
                 || form.getCompanyName() == null 
+                || form.getRootUrl() == null
                 || form.getCountersKondorFtpLogin() == null 
                 || form.getCountersKondorFtpPassword() == null
                 || form.getSalesLoaderEmail() == null
@@ -291,6 +304,7 @@ public class SettingsService
         settingsDAO.update(new Settings(CK_SALES_LOADER_EMAIL, form.getSalesLoaderEmail()));
         settingsDAO.update(new Settings(CK_SALES_LOADER_EMAIL_PASS, form.getSalesLoaderEmailPass()));
         settingsDAO.update(new Settings(CK_SALES_LOADER_URL, form.getSalesLoaderUrl()));
+        settingsDAO.update(new Settings(CK_ROOT_URL, form.getRootUrl()));
     }
 
 }

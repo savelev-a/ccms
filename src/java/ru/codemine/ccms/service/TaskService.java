@@ -48,6 +48,7 @@ public class TaskService
     
     @Autowired private TaskDAO taskDAO;
     @Autowired private EmailService emailService;
+    @Autowired private SettingsService settingsService;
     
     public void create(Task task)
     {
@@ -307,19 +308,36 @@ public class TaskService
         taskDAO.update(task);
     }
     
-    private void sendMsgOnAssign(Task task, Employee targetEmployee)
+    public void sendMsgOnAssign(Task task, Employee targetEmployee)
     {
         String title = "Вам назначена новая задача";
-        String text  = "Добрый день, " + targetEmployee.getFirstName() + ",\n\n" +
-                       "Вам назначена новая задача на веб-портале компании.\n\n" +
-                       "Заголовок задачи: " + task.getTitle() + "\n" +
-                       "Описание задачи : " + task.getText() + "\n\n" +
-                       "Инициатор задачи " + task.getCreator().getFullName() + " просит вас выполнить ее до " + task.getDeadline().toString("dd.MM.YY HH:mm") + "\n\n" +
+        String text  = "Добрый день, " + targetEmployee.getFirstName() + ",<br>" +
+                       "Вам назначена новая задача на веб-портале компании.<br><br>" +
+                       "Заголовок задачи: <a href=\"" + settingsService.getRootURL() + "/tasks/taskinfo?id=" + task.getId() + "\">" + task.getTitle() + "</a><br>" +
+                       "Описание задачи : " + task.getText() + "<br><br>" +
+                       "Инициатор задачи " + task.getCreator().getFullName() + " просит вас выполнить ее до " + task.getDeadline().toString("dd.MM.YY HH:mm") + "<br>" +
+                       "Чтобы просмотреть задачу пройдите по вышеуказанной ссылке.<br><br>" +
                        "Спасибо за пользование веб-порталом!";
         
         emailService.sendSimpleMessage(targetEmployee.getEmail(), title, text);
         //log.info(text);
 
+    }
+    
+    public void sendMsgOnAddComment(Task task, Comment comment)
+    {
+        log.info("in service: " + comment);
+        String title = "К созданной вами задаче добавлен новый комментарий";
+        String text  = "Добрый день, " + task.getCreator().getFirstName() + ",<br>" +
+                       "К вашей задаче на портале добавлен новый комментарий.<br><br>" +
+                       "Пользователь <b>" + comment.getCreator().getFullName() + "</b> написал комментарий к задаче <b>" + task.getTitle() + "</b>:<br><br>" +
+                       "Заголовок комментария: <a href=\"" + settingsService.getRootURL() + "/tasks/taskinfo?id=" + task.getId() + "\">" + comment.getTitle() + "</a><br>" +
+                       "Текст комментария : " + comment.getText() + "<br><br>" +
+                       "Чтобы просмотреть комментарий пройдите по вышеуказанной ссылке.<br><br>" +
+                       "Спасибо за пользование веб-порталом!";
+        
+        emailService.sendSimpleMessage(task.getCreator().getEmail(), title, text);
+        //log.info(text);
     }
 
 }

@@ -30,6 +30,9 @@ public class SettingsForm
     @Length(max = 255)
     private String companyName;
     
+    @Length(max = 255)
+    private String rootUrl;
+    
     @Length(max = 64)
     private String countersKondorFtpLogin;
     
@@ -104,6 +107,16 @@ public class SettingsForm
     public void setSalesLoaderUrl(String salesLoaderUrl)
     {
         this.salesLoaderUrl = salesLoaderUrl;
+    }
+
+    public String getRootUrl()
+    {
+        return rootUrl;
+    }
+
+    public void setRootUrl(String rootUrl)
+    {
+        this.rootUrl = rootUrl;
     }
     
     

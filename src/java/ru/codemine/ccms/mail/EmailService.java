@@ -60,11 +60,11 @@ public class EmailService
             
             Session session = Session.getInstance(props, new EmailAuthenticator(username, password));
             
-            Message message = new MimeMessage(session);
+            MimeMessage message = new MimeMessage(session);
             message.setFrom(new InternetAddress(username));
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(address));
             message.setSubject(subject);
-            message.setText(content);
+            message.setText(content, "utf-8", "html");
             Transport.send(message);
         } 
         catch (MessagingException ex)

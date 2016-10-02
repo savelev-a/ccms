@@ -145,8 +145,10 @@ public class TaskRouter
             return "pages/tasks/taskinfo";
         }
         
+        comment.setCreator(employeeService.getCurrentUser());
         task.getComments().add(comment);
         taskService.update(task);
+        taskService.sendMsgOnAddComment(task, comment);
         
         return "redirect:/tasks/taskinfo?id=" + task.getId();
     }

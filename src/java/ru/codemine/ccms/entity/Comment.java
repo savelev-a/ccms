@@ -135,6 +135,12 @@ public class Comment implements Serializable, Comparable<Comment>
         
         return 1;
     }
+
+    @Override
+    public String toString()
+    {
+        return "Comment{" + "id=" + id + ", title=" + title + ", text=" + text + ", creator=" + creator + ", creationTime=" + creationTime + '}';
+    }
     
 
 }
