@@ -61,16 +61,6 @@ public class ExpenceTypeService
         return expenceTypeDAO.getById(id);
     }
     
-    public List<ExpenceType> getAllOneshot()
-    {
-        return expenceTypeDAO.getAllOneshot();
-    }
-    
-    public List<ExpenceType> getAllRecurrent()
-    {
-        return expenceTypeDAO.getAllRecurrent();
-    }
-    
     public List<ExpenceType> getAll()
     {
         return expenceTypeDAO.getAll();

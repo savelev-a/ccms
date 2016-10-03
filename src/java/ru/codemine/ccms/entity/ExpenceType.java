@@ -46,8 +46,6 @@ public class ExpenceType implements Serializable
     @Length(max = 128, message = "Слишком длинное значение")
     private String description;
     
-    @Column(name = "recurrent", nullable = false)
-    private boolean recurrent;
 
     public Integer getId()
     {
@@ -69,20 +67,11 @@ public class ExpenceType implements Serializable
         this.description = description;
     }
 
-    public boolean isRecurrent()
-    {
-        return recurrent;
-    }
-
-    public void setRecurrent(boolean recurrent)
-    {
-        this.recurrent = recurrent;
-    }
 
     @Override
     public String toString()
     {
-        return "ExpenceType{" + "id=" + id + ", description=" + description + ", recurrent=" + recurrent + '}';
+        return "ExpenceType{" + "id=" + id + ", description=" + description +  '}';
     }
     
     

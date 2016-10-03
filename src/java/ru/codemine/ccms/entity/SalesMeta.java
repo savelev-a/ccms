@@ -18,10 +18,14 @@
 package ru.codemine.ccms.entity;
 
 import java.io.Serializable;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -30,6 +34,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.validation.constraints.Digits;
@@ -83,12 +88,69 @@ public class SalesMeta implements Serializable
     @Column(name = "plan", nullable = false)
     private Double plan;
     
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(name = "expences", joinColumns = @JoinColumn(name = "id_salesmeta"))
+    @Column(name = "exp_value", nullable = false)
+    @MapKeyJoinColumn(name = "id_type", referencedColumnName = "id")
+    private Map<ExpenceType, Double> expences;
+    
+    @Digits(integer = 10, fraction = 2)
+    @Range(min = 0)
+    @NotNull
+    @Column(name = "pass_total", nullable = false)
+    private Integer passabilityTotal;
+    
+    @Digits(integer = 10, fraction = 2)
+    @Range(min = 0)
+    @NotNull
+    @Column(name = "cqcount_total", nullable = false)
+    private Integer chequeCountTotal;
+    
+    @Digits(integer = 10, fraction = 2)
+    @Range(min = 0)
+    @NotNull
+    @Column(name = "value_total", nullable = false)
+    private Double valueTotal;
+    
+    @Digits(integer = 10, fraction = 2)
+    @Range(min = 0)
+    @NotNull
+    @Column(name = "cashback_total", nullable = false)
+    private Double cashbackTotal;
+    
+    @Digits(integer = 10, fraction = 2)
+    @Range(min = 0)
+    @NotNull
+    @Column(name = "sales_total", nullable = false)
+    private Double salesTotal;
+    
+    @Digits(integer = 10, fraction = 2)
+    @Range(min = 0)
+    @NotNull
+    @Column(name = "expences_total", nullable = false)
+    private Double expencesTotal;
+    
     @Length(max = 255)
     @Column(name = "description", nullable = false, length = 255)
     private String description;
 
     
-    public SalesMeta(){}
+    public SalesMeta()
+    {
+        this.plan = 0.0;
+        this.description = "";
+        this.startDate = LocalDate.now().withDayOfMonth(1);
+        this.endDate = LocalDate.now().dayOfMonth().withMaximumValue();
+        this.passabilityTotal = 0;
+        this.chequeCountTotal = 0;
+        this.valueTotal = 0.0;
+        this.cashbackTotal = 0.0;
+        this.salesTotal = 0.0;
+        this.expencesTotal = 0.0;
+        
+        this.expences = new LinkedHashMap<>();
+        this.sales = new TreeSet<>();
+    }
     
     public SalesMeta(Shop shop)
     {
@@ -97,6 +159,12 @@ public class SalesMeta implements Serializable
         this.startDate = LocalDate.now().withDayOfMonth(1);
         this.endDate = LocalDate.now().dayOfMonth().withMaximumValue();
         this.plan = 0.0;
+        this.passabilityTotal = 0;
+        this.chequeCountTotal = 0;
+        this.valueTotal = 0.0;
+        this.cashbackTotal = 0.0;
+        this.salesTotal = 0.0;
+        this.expencesTotal = 0.0;
         
         this.sales = new TreeSet<>();
         for(int i = 1; i <= LocalDate.now().dayOfMonth().getMaximumValue(); i++)
@@ -112,6 +180,12 @@ public class SalesMeta implements Serializable
         this.startDate = startDate;
         this.endDate = endDate;
         this.plan = 0.0;
+        this.passabilityTotal = 0;
+        this.chequeCountTotal = 0;
+        this.valueTotal = 0.0;
+        this.cashbackTotal = 0.0;
+        this.salesTotal = 0.0;
+        this.expencesTotal = 0.0;
         
         this.sales = new TreeSet<>();
         for(int i = 1; i <= startDate.dayOfMonth().getMaximumValue(); i++)
@@ -168,6 +242,7 @@ public class SalesMeta implements Serializable
     public void setSales(Set<Sales> sales)
     {
         this.sales = sales;
+        recalculateTotals();
     }
 
     public Double getPlan()
@@ -189,123 +264,116 @@ public class SalesMeta implements Serializable
     {
         this.description = description;
     }
+
+    public Map<ExpenceType, Double> getExpences()
+    {
+        return expences;
+    }
+
+    public void setExpences(Map<ExpenceType, Double> expences)
+    {
+        this.expences = expences;
+        recalculateTotals();
+    }
+
+    public Integer getPassabilityTotal()
+    {
+        return passabilityTotal;
+    }
+
+    public void setPassabilityTotal(Integer passabilityTotal)
+    {
+        this.passabilityTotal = passabilityTotal;
+    }
+
+    public Integer getChequeCountTotal()
+    {
+        return chequeCountTotal;
+    }
+
+    public void setChequeCountTotal(Integer chequeCountTotal)
+    {
+        this.chequeCountTotal = chequeCountTotal;
+    }
+
+    public Double getValueTotal()
+    {
+        return valueTotal;
+    }
+
+    public void setValueTotal(Double valueTotal)
+    {
+        this.valueTotal = valueTotal;
+    }
+
+    public Double getCashbackTotal()
+    {
+        return cashbackTotal;
+    }
+
+    public void setCashbackTotal(Double cashbackTotal)
+    {
+        this.cashbackTotal = cashbackTotal;
+    }
+
+    public Double getSalesTotal()
+    {
+        return salesTotal;
+    }
+
+    public void setSalesTotal(Double salesTotal)
+    {
+        this.salesTotal = salesTotal;
+    }
+
+    public Double getExpencesTotal()
+    {
+        return expencesTotal;
+    }
+
+    public void setExpencesTotal(Double expencesTotal)
+    {
+        this.expencesTotal = expencesTotal;
+    }
     
     
     //
     // Вычисляемые поля
     //
     
-    /**
-     * Возвращает проходимость за период (заполненную позьзователем)
-     * @return
-     */
-    public Integer getPassabilityTotals()
+    public void recalculateTotals()
     {
-        Integer totals = 0;
+        passabilityTotal = 0;
+        chequeCountTotal = 0;
+        valueTotal = 0.0;
+        cashbackTotal = 0.0;
+        salesTotal = 0.0;
+        expencesTotal = 0.0;
+        
         for(Sales s : sales)
         {
-            totals += s.getPassability();
+            passabilityTotal += s.getPassability();
+            chequeCountTotal += s.getChequeCount();
+            valueTotal += s.getValue();
+            cashbackTotal += s.getCashback();
+            salesTotal += s.getDayTotal();
         }
         
-        return totals;
-    }
-    
-    /**
-     * Возвращает количество чеков за период
-     * @return
-     */
-    public Integer getChequeTotals()
-    {
-        Integer totals = 0;
-        for(Sales s : sales)
+        for(Map.Entry<ExpenceType, Double> entry : expences.entrySet())
         {
-            totals += s.getChequeCount();
-        }
-        
-        return totals;
-    }
-
-    /**
-     * Возвращает общий итог продаж за период без учета возвратов
-     * @return
-     */
-    public Double getValueTotals() //без возвратов
-    {
-        Double totals = 0.0;
-        for(Sales s : sales)
-        {
-            totals += s.getValue();
-        }
-        
-        return totals;
-    }
-    
-    /**
-     * Возвращает сумму возвратов за период
-     * @return
-     */
-    public Double getCashbackTotals()
-    {
-        Double totals = 0.0;
-        for(Sales s : sales)
-        {
-            totals += s.getCashback();
+            expencesTotal += entry.getValue();
         }
 
-        return totals;
     }
     
-    /**
-     * Возвращает общий итог продаж за период с учетом возвратов
-     * @return
-     */
-    public Double getPeriodTotals() //с возвратами
-    {
-        Double totals = 0.0;
-        for(Sales s : sales)
-        {
-            totals += s.getDayTotal();
-        }
-        
-        return totals;
-    }
-    
-    /**
-     * Возвращает средний чек за период 
-     * @return
-     */
     public Double getPeriodMidPrice()
     {
-        return getPeriodTotals() / getChequeTotals();
+        return getChequeCountTotal().equals(0.0) ? 0.0 : getSalesTotal() / getChequeCountTotal();
     }
     
-    /**
-     * Возвращает процент выполнения плана за период
-     * @return
-     */
     public Double getPlanCoverage()
     {
-        return getValueTotals() / getPlan() * 100;
-    }
-    
-    public Sales getByDate(LocalDate date)
-    {
-        Sales result = null;
-        if(date.isAfter(startDate.minusDays(1)) && date.isBefore(endDate.plusDays(1)))
-        {
-            //log.info("SalesMeta: date in my period");
-            for(Sales s : sales)
-            {
-                //log.info("i have sale: " + s.getId());
-                if(s.getDate().equals(date))
-                {
-                    //log.info("got it! id=" + s.getId());
-                    result = s;
-                }
-            }
-        }
-        
-        return result;
+        return getPlan().equals(0.0) ? 0.0 : getValueTotal() / getPlan() * 100;
     }
     
 }

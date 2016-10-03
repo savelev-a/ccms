@@ -27,8 +27,5 @@ import ru.codemine.ccms.entity.ExpenceType;
  */
 public interface ExpenceTypeDAO extends GenericDAO<ExpenceType, Integer>
 {
-    public List<ExpenceType> getAllOneshot();
-    public List<ExpenceType> getAllRecurrent();
-    
     public List<ExpenceType> getAll();
 }

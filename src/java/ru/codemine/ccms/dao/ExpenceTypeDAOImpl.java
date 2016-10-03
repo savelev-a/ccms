@@ -34,22 +34,6 @@ public class ExpenceTypeDAOImpl extends GenericDAOImpl<ExpenceType, Integer> imp
     private static final Logger log = Logger.getLogger("ExpenceTypeDAO");
 
     @Override
-    public List<ExpenceType> getAllOneshot()
-    {
-        List<ExpenceType> result = getSession().createQuery("FROM ExpenceType e WHERE e.recurrent = false").list();
-        
-        return result;
-    }
-
-    @Override
-    public List<ExpenceType> getAllRecurrent()
-    {
-        List<ExpenceType> result = getSession().createQuery("FROM ExpenceType e WHERE e.recurrent = true").list();
-        
-        return result;
-    }
-
-    @Override
     public List<ExpenceType> getAll()
     {
         List<ExpenceType> result = getSession().createQuery("FROM ExpenceType e").list();

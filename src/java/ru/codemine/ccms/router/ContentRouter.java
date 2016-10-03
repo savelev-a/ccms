@@ -44,7 +44,7 @@ import ru.codemine.ccms.utils.Utils;
  * @author Alexander Savelev
  */
 @Controller
-public class DefaultRouter
+public class ContentRouter
 {
 
     private static final Logger log = Logger.getLogger("DefaultRouter");
