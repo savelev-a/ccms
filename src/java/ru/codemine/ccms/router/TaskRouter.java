@@ -197,7 +197,7 @@ public class TaskRouter
     {
         Employee currentUser = employeeService.getCurrentUser();
         
-        model.addAllAttributes(utils.prepareModel("Свободные задачи - ИнфоПортал", "tasks", "free"));
+        model.addAllAttributes(utils.prepareModel("Свободные задачи - ИнфоПортал", "tasks", "closed"));
         model.addAttribute("openTasksCount", taskService.getOpenTaskCount());
         model.addAttribute("closedTasks", taskService.getByCreatorAndStatus(currentUser, Task.Status.CLOSED));
         
