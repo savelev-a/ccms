@@ -166,6 +166,7 @@ public class SalesMeta implements Serializable
         this.salesTotal = 0.0;
         this.expencesTotal = 0.0;
         
+        this.expences = new LinkedHashMap<>();
         this.sales = new TreeSet<>();
         for(int i = 1; i <= LocalDate.now().dayOfMonth().getMaximumValue(); i++)
         {
@@ -187,6 +188,7 @@ public class SalesMeta implements Serializable
         this.salesTotal = 0.0;
         this.expencesTotal = 0.0;
         
+        this.expences = new LinkedHashMap<>();
         this.sales = new TreeSet<>();
         for(int i = 1; i <= startDate.dayOfMonth().getMaximumValue(); i++)
         {
@@ -368,12 +370,22 @@ public class SalesMeta implements Serializable
     
     public Double getPeriodMidPrice()
     {
-        return getChequeCountTotal().equals(0.0) ? 0.0 : getSalesTotal() / getChequeCountTotal();
+        return getChequeCountTotal().equals(0) ? 0.0 : getSalesTotal() / getChequeCountTotal();
     }
     
     public Double getPlanCoverage()
     {
         return getPlan().equals(0.0) ? 0.0 : getValueTotal() / getPlan() * 100;
+    }
+
+    public Sales getByDate(LocalDate date)
+    {
+        for(Sales s : sales)
+        {
+            if(s.getDate().equals(date)) return s;
+        }
+        
+        return null;
     }
     
 }

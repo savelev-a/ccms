@@ -101,7 +101,7 @@
                             <div class="panel-body">
                                 <table width="100%">
                                     <fmt:formatNumber value="${salesMeta.plan}" maxFractionDigits="2" var="rp_plan" />
-                                    <fmt:formatNumber value="${salesMeta.plan == 0 ? 0 : salesMeta.planCoverage}" maxFractionDigits="2" var="rp_plancover" />
+                                    <fmt:formatNumber value="${salesMeta.planCoverage}" maxFractionDigits="2" var="rp_plancover" />
                                     <tr>
                                         <td>План: </td>
                                         <td align="right"><b>&nbsp;${fn:replace(rp_plan, ",", " ")}</b></td>
@@ -118,12 +118,12 @@
                             <div class="panel-heading panel-heading-dark" align="center">Итого:</div>
                             <div class="panel-body">
                                 <table width="100%">
-                                    <fmt:formatNumber value="${salesMeta.passabilityTotals}" maxFractionDigits="0" var="rp_pass" />
-                                    <fmt:formatNumber value="${salesMeta.chequeTotals}" maxFractionDigits="0" var="rp_cheq" />
-                                    <fmt:formatNumber value="${salesMeta.valueTotals}" maxFractionDigits="2" var="rp_value" />
-                                    <fmt:formatNumber value="${salesMeta.cashbackTotals}" maxFractionDigits="2" var="rp_cashback" />
-                                    <fmt:formatNumber value="${salesMeta.periodTotals}" maxFractionDigits="2" var="rp_total" />
-                                    <fmt:formatNumber value="${salesMeta.chequeTotals == 0 ? 0 : salesMeta.periodMidPrice}" maxFractionDigits="2" var="rp_mdpr" />
+                                    <fmt:formatNumber value="${salesMeta.passabilityTotal}" maxFractionDigits="0" var="rp_pass" />
+                                    <fmt:formatNumber value="${salesMeta.chequeCountTotal}" maxFractionDigits="0" var="rp_cheq" />
+                                    <fmt:formatNumber value="${salesMeta.valueTotal}" maxFractionDigits="2" var="rp_value" />
+                                    <fmt:formatNumber value="${salesMeta.cashbackTotal}" maxFractionDigits="2" var="rp_cashback" />
+                                    <fmt:formatNumber value="${salesMeta.salesTotal}" maxFractionDigits="2" var="rp_total" />
+                                    <fmt:formatNumber value="${salesMeta.periodMidPrice}" maxFractionDigits="2" var="rp_mdpr" />
                                     <tr>
                                         <td>Проходимость: </td>
                                         <td align="right"><b>&nbsp;${fn:replace(rp_pass, ",", " ")}</b></td>
@@ -148,12 +148,6 @@
                                         <td>Средний чек: </td>
                                         <td align="right"><b>&nbsp;${fn:replace(rp_mdpr, ",", " ")}</b></td>
                                     </tr>
-                                    <!--<tr>
-                                        <td>Продажи/прох.: </td>
-                                        <td align="right"><b>&nbsp;<c:out value="${
-                                           salesMeta.passabilityTotals == 0 ? 0 : salesMeta.chequeTotals / salesMeta.passabilityTotals * 100
-                                           }" /> %</b></td>
-                                </tr>-->
                                 </table>
                             </div>
                         </div>
@@ -186,7 +180,7 @@
                         value: <c:out value='${sales.value}' />,
                         cashback: <c:out value='${sales.cashback}' />,
                         daytotal: <c:out value='${sales.dayTotal}' />,
-                        midPrice: <c:out value='${sales.chequeCount == 0 ? 0 : sales.midPrice}' />,
+                        midPrice: <c:out value='${sales.midPrice}' />,
                     },
                 </c:forEach>
             ];

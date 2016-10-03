@@ -36,38 +36,46 @@ public class SalesDAOImpl extends GenericDAOImpl<SalesMeta, Integer> implements 
     private static final Logger log = Logger.getLogger("SalesDAO");
     
     @Override
-    public boolean updatePlanAll(Double plan, LocalDate startDate, LocalDate endDate)
+    public void updatePlanAll(Double plan, LocalDate startDate, LocalDate endDate)
     {
-        if(plan == null || startDate == null || endDate == null || startDate.isAfter(endDate)) return false;
+        if(plan == null || startDate == null || endDate == null || startDate.isAfter(endDate)) return;
         
         Query updateQuery = getSession().createQuery("UPDATE SalesMeta Sm SET Sm.plan = :plan WHERE Sm.startDate = :startdate AND Sm.endDate = :enddate");
         updateQuery.setDate("startdate", startDate.toDate());
         updateQuery.setDate("enddate", endDate.toDate());
         updateQuery.setDouble("plan", plan);
         
-        return (updateQuery.executeUpdate() > 0);
+        updateQuery.executeUpdate();
     }
     
 
     @Override
     public List<SalesMeta> getByShop(Shop shop)
     {
-        List<SalesMeta> result = getSession().createQuery("FROM SalesMeta Sm WHERE Sm.shop.id = " + shop.getId()).list();
+        Query query = getSession().createQuery("FROM SalesMeta Sm WHERE Sm.shop.id = :id");
+        query.setInteger("id", shop.getId());
         
-        return result;
+        return query.list();
     }
     
     @Override
     public SalesMeta getByShopAndDate(Shop shop, LocalDate startDate, LocalDate endDate)
     {
-        Query q = getSession().createQuery("FROM SalesMeta Sm WHERE Sm.shop.id = :shopid AND Sm.startDate = :startdate AND Sm.endDate = :enddate");
-        q.setInteger("shopid", shop.getId());
-        q.setDate("startdate", startDate.toDate());
-        q.setDate("enddate", endDate.toDate());
+        Query query = getSession().createQuery("FROM SalesMeta Sm WHERE Sm.shop.id = :shopid AND Sm.startDate = :startdate AND Sm.endDate = :enddate");
+        query.setInteger("shopid", shop.getId());
+        query.setDate("startdate", startDate.toDate());
+        query.setDate("enddate", endDate.toDate());
         
-        SalesMeta sm = (SalesMeta)q.uniqueResult();
-        
-        return sm;
+        return (SalesMeta)query.uniqueResult();
     }
     
+    public List<SalesMeta> getByPeriod(Shop shop, LocalDate startDate, LocalDate endDate)
+    {
+        Query query = getSession().createQuery("FROM SalesMeta Sm WHERE Sm.shop.id = :shopid AND Sm.startDate >= :startdate AND Sm.endDate <= :enddate");
+        query.setInteger("shopid", shop.getId());
+        query.setDate("startdate", startDate.toDate());
+        query.setDate("enddate", endDate.toDate());
+        
+        return query.list();
+    }
 }

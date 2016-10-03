@@ -113,7 +113,7 @@ public class Utils
         modelMap.put("yearList", getYearStrings());
         modelMap.put("selectedMonth", dateMonth == null ? LocalDate.now().toString("MMMM") : dateMonth);
         modelMap.put("selectedYear", dateYear == null? LocalDate.now().toString("YYYY") : dateYear);
-        
+    
         return modelMap;
     }
     

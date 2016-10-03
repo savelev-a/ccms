@@ -26,7 +26,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
@@ -189,7 +188,7 @@ public class Sales implements Serializable, Comparable<Sales>
      */
     public Double getMidPrice()
     {
-        return getDayTotal() / chequeCount;
+        return getChequeCount().equals(0) ? 0.0 : getDayTotal() / getChequeCount();
     }
     
     /**

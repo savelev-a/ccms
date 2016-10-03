@@ -42,6 +42,7 @@ public class SalesService
     
     public void create(SalesMeta sm)
     {
+        sm.recalculateTotals();
         salesDAO.create(sm);
     }
     
@@ -57,12 +58,13 @@ public class SalesService
     
     public void update(SalesMeta sm)
     {
+        sm.recalculateTotals();
         salesDAO.update(sm);
     }
     
-    public boolean updatePlanAll(Double plan, LocalDate startDate, LocalDate endDate)
+    public void updatePlanAll(Double plan, LocalDate startDate, LocalDate endDate)
     {
-        return salesDAO.updatePlanAll(plan, startDate, endDate);
+        salesDAO.updatePlanAll(plan, startDate, endDate);
     }
     
     

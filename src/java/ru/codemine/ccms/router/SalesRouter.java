@@ -127,14 +127,8 @@ public class SalesRouter
             for(SalesForm sf : salesForms)
             {
                 Sales sales = salesMeta.getByDate(formatter.parseLocalDate(sf.getDate()));
-                if(salesMeta.getShop().isCountersEnabled())
-                {
-                    sales.setPassability(0);
-                }
-                else
-                {
-                    sales.setPassability(sf.getPassability());
-                }
+                
+                sales.setPassability(sf.getPassability());
                 sales.setChequeCount(sf.getChequeCount());
                 sales.setValue(sf.getValue());
                 sales.setCashback(sf.getCashback());
@@ -156,14 +150,7 @@ public class SalesRouter
             {
                 Sales sales = new Sales(shop, formatter.parseLocalDate(sf.getDate()));
 
-                if(shop.isCountersEnabled())
-                {
-                    sales.setPassability(0);
-                }
-                else
-                {
-                    sales.setPassability(sf.getPassability());
-                }
+                sales.setPassability(sf.getPassability());
                 sales.setChequeCount(sf.getChequeCount());
                 sales.setValue(sf.getValue());
                 sales.setCashback(sf.getCashback());
