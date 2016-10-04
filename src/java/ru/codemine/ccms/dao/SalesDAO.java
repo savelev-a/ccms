@@ -33,6 +33,16 @@ public interface SalesDAO extends GenericDAO<SalesMeta, Integer>
 
     public List<SalesMeta> getByShop(Shop shop);
 
-    public SalesMeta getByShopAndDate(Shop shop, LocalDate startDate, LocalDate endDate);
+    public SalesMeta getByShopAndDate(  Shop shop, LocalDate startDate, LocalDate endDate);
+    public List<SalesMeta> getByPeriod( Shop shop, LocalDate startDate, LocalDate endDate);
+
+    public Integer getPassabilityValueByPeriod( Shop shop, LocalDate startDate, LocalDate endDate);
+    public Integer getCqcountValueByPeriod(     Shop shop, LocalDate startDate, LocalDate endDate);
+    public Double getValueByPeriod(             Shop shop, LocalDate startDate, LocalDate endDate);
+    public Double getCashbackValueByPeriod(     Shop shop, LocalDate startDate, LocalDate endDate);
+    public Double getSalesValueByPeriod(        Shop shop, LocalDate startDate, LocalDate endDate);
+    public Double getMidPriceValueByPeriod(     Shop shop, LocalDate startDate, LocalDate endDate);
+    public Double getPlan(                      Shop shop, LocalDate startDate, LocalDate endDate);
+    public Double getPlanCoverage(              Shop shop, LocalDate startDate, LocalDate endDate);
     
 }

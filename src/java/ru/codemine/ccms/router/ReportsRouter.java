@@ -53,503 +53,405 @@ import ru.codemine.ccms.utils.Utils;
 @Controller
 public class ReportsRouter //TODO this class NEEDS refactoring
 {
-
-    private static final Logger log = Logger.getLogger("ReportsRouter");
-
-    @Autowired private ShopService shopService;
-    @Autowired private CounterService counterService;
-    @Autowired private SalesService salesService;
-    @Autowired private SalesLoader salesLoader;
-    @Autowired private ExpenceService expenceService;
-    @Autowired private ExpenceTypeService expenceTypeService;
-    @Autowired private Utils utils;
-
-    @Secured("ROLE_OFFICE")
-    @RequestMapping(value = "/reports/sales-pass", method = RequestMethod.GET)
-    public String getSalesPassReport(
-            @RequestParam(required = false) String dateMonth,
-            @RequestParam(required = false) String dateYear, 
-            @RequestParam(required = false) String mode,
-            ModelMap model)
-    {
-
-        model.addAllAttributes(utils.prepareModel("Отчет по проходимости и продажам - ИнфоПортал", 
-                "reports", "general", 
-                dateMonth, dateYear));
-        
-        LocalDate selectedDate;
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd MMMM YYYY");
-        if (dateMonth != null && dateYear != null) 
-        {
-            selectedDate = formatter.parseLocalDate("01 " + dateMonth + " " + dateYear);
-        } else 
-        {
-            selectedDate = LocalDate.now().withDayOfMonth(1);
-        }
-        
-        List<String> subgridColNames = new ArrayList<>();
-        subgridColNames.add("Сведения");
-        for(int i = 1; i <= selectedDate.dayOfMonth().withMaximumValue().getDayOfMonth(); i++)
-        {
-            subgridColNames.add(String.valueOf(i) + selectedDate.toString(".MM.YY"));
-        }
-        subgridColNames.add("Итого");
-        
-        model.addAttribute("subgridColNames", subgridColNames);
-        
-        return "print".equals(mode) ? "printforms/reports/salesAllFrm" : "reports/sales-pass";
-    }
-
-    @Secured("ROLE_OFFICE")
-    @RequestMapping(value = "/reports/graph/sales-pass", method = RequestMethod.GET)
-    public String getSalesPassGraph(
-            @RequestParam(required = false) String dateMonth,
-            @RequestParam(required = false) String dateYear,
-            @RequestParam(required = false) Integer shopid,
-            ModelMap model)
-    {
-        model.addAllAttributes(utils.prepareModel("Графики проходимости и продаж - ИнфоПортал", 
-                "reports", "graph", 
-                dateMonth, dateYear));
-        
-        List<Shop> shopList = shopService.getAllOpen();
-        List<String> graphDataDayTotal = new ArrayList<>();
-        List<String> graphDataPassability = new ArrayList<>();
-        List<String> graphDataDayTotalStack = new ArrayList<>();
-        List<String> graphDataPlan = new ArrayList<>();
-
-        Shop shop;
-
-        if (shopid == null)
-        {
-            shop = shopList.get(0);
-        } else
-        {
-            shop = shopService.getById(shopid);
-        }
-
-        model.addAttribute("shop", shop);
-        model.addAttribute("shopList", shopList);
-
-        LocalDate selectedStartDate;
-        LocalDate selectedEndDate;
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd MMMM YYYY");
-        if (dateMonth != null && dateYear != null) //Период задан пользователем
-        {
-            selectedStartDate = formatter.parseLocalDate("01 " + dateMonth + " " + dateYear);
-            selectedEndDate = selectedStartDate.dayOfMonth().withMaximumValue();
-        } else //Период - текущий месяц, по умолчанию
-        {
-            selectedStartDate = LocalDate.now().withDayOfMonth(1);
-            selectedEndDate = selectedStartDate.dayOfMonth().withMaximumValue();
-        }
-
-        SalesMeta salesMeta = salesService.getByShopAndDate(shop, selectedStartDate, selectedEndDate);
-        Double dayTotalStack = 0.0;
-        for (Sales sales : salesMeta.getSales())
-        {
-            if (shop.isCountersEnabled())
-            {
-                Counter counter = counterService.getByShopAndDate(shop, sales.getDate().toDateTime(LocalTime.MIDNIGHT));
-                sales.setPassability(counter == null ? 0 : counter.getIn());
-            }
-
-            dayTotalStack += sales.getDayTotal();
-
-            graphDataDayTotal.add(sales.getGraphDataDayTotal());
-            graphDataPassability.add(sales.getGraphDataPassability());
-            //move below lines to SalesMeta?
-            graphDataDayTotalStack.add("[\"" + sales.getDate().toString("dd.MM.yyyy") + "\", " + dayTotalStack + "]");
-            graphDataPlan.add("[\"" + sales.getDate().toString("dd.MM.yyyy") + "\", " + salesMeta.getPlan() + "]");
-        }
-
-        model.addAttribute("salesMeta", salesMeta);
-        model.addAttribute("graphDataDayTotal", graphDataDayTotal);
-        model.addAttribute("graphDataPassability", graphDataPassability);
-        model.addAttribute("graphDataDayTotalStack", graphDataDayTotalStack);
-        model.addAttribute("graphDataPlan", graphDataPlan);
-
-        return "reports/sales-pass-graph";
-    }
-
-    @Secured("ROLE_ADMIN")
-    @RequestMapping(value = "/forceSalesAutoload", method = RequestMethod.POST)
-    public String forceSalesAutoload(ModelMap model)
-    {
-        salesLoader.processSales(shopService.getAllOpen());
-        return "redirect:/reports/sales-pass";
-    }
-    
-    
-    @Secured("ROLE_OFFICE")
-    @RequestMapping(value = "/reports/sales-pass/data")
-    public @ResponseBody List<Map<String, Object>> getSalesPassDataJson(
-            @RequestParam(required = false) String dateMonth,
-            @RequestParam(required = false) String dateYear,ModelMap model)
-    {
-        List<Map<String, Object>> resultList = new ArrayList<>();
-        
-        LocalDate selectedStartDate;
-        LocalDate selectedEndDate;
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd MMMM YYYY");
-        if (dateMonth != null && dateYear != null) //Период задан пользователем
-        {
-            selectedStartDate = formatter.parseLocalDate("01 " + dateMonth + " " + dateYear);
-            selectedEndDate = selectedStartDate.dayOfMonth().withMaximumValue();
-        } else //Период - текущий месяц, по умолчанию
-        {
-            selectedStartDate = LocalDate.now().withDayOfMonth(1);
-            selectedEndDate = selectedStartDate.dayOfMonth().withMaximumValue();
-        }
-
-        List<Shop> shopList = shopService.getAllOpen();
-        
-        //Map<Shop, SalesMeta> shopSalesMap = utils.getShopSalesMap(dateMonth, dateYear);
-        
-        for(Shop shop : shopList)
-        {
-            Map<String, Object> data = new HashMap();
-            SalesMeta sm = salesService.getByShopAndDate(shop, selectedStartDate, selectedEndDate);
-            if (shop.isCountersEnabled())
-            {
-                for (Sales sales : sm.getSales())
-                {
-                    Counter counter = counterService.getByShopAndDate(shop, sales.getDate().toDateTime(LocalTime.MIDNIGHT));
-                    sales.setPassability(counter == null ? 0 : counter.getIn());
-                }
-            }
-            
-            data.put( "shopname",      shop.getName());
-            data.put( "passability",   sm.getPassabilityTotals());
-            data.put( "cheque",        sm.getChequeTotals());
-            data.put( "value",         sm.getValueTotals());
-            data.put( "cashback",      sm.getCashbackTotals());
-            data.put( "periodtotal",   sm.getPeriodTotals());
-            data.put( "midPrice",      sm.getChequeTotals() == 0 ? 0 : sm.getPeriodMidPrice());
-            data.put( "plan",          sm.getPlan());
-            data.put( "plancoverage",  sm.getPlan() == 0 ? 0 : sm.getPlanCoverage());
-            
-            resultList.add(data);
-        }
-        
-        
-        return resultList;
-    }
-    
-    @Secured("ROLE_OFFICE")
-    @RequestMapping(value = "/reports/sales-pass/details")
-    public @ResponseBody List<Map<String, Object>> getSalesPassDetailsJson(
-            @RequestParam String dateMonth,
-            @RequestParam String dateYear,
-            @RequestParam String shopname,
-            ModelMap model)
-    {
-        List<Map<String, Object>> resultList = new ArrayList<>();
-        
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd MMMM YYYY");
-        LocalDate startDate = formatter.parseLocalDate("01 " + dateMonth + " " + dateYear);
-        
-        Integer daysCount = startDate.dayOfMonth().withMaximumValue().getDayOfMonth();
-        
-        Shop shop = shopService.getByName(shopname);
-        SalesMeta salesMeta = salesService.getByShopAndDate(shop, startDate, startDate.dayOfMonth().withMaximumValue());
-        
-        List<String> recordNames = new ArrayList<>();
-        recordNames.add("Проходимость");
-        recordNames.add("Кол-во покупок");
-        recordNames.add("Отчет ККМ");
-        recordNames.add("Возвраты");
-        recordNames.add("Выручка");
-        recordNames.add("Средний чек");
-        
-        Integer counterTotals = 0;
-        
-        for(int row = 1; row <= recordNames.size(); row++)
-        {
-            Map<String, Object> record = new HashMap();
-            record.put("info", recordNames.get(row - 1));
-            
-            for(int cell = 1; cell <= daysCount; cell++)
-            {
-                String cellname = "c" + String.valueOf(cell);
-                Sales sale = salesMeta.getByDate(startDate.withDayOfMonth(cell));
-                switch(row)
-                {
-                    case 1:                         //Проходимость
-                        if(shop.isCountersEnabled())
-                        {
-                            Counter counter = counterService.getByShopAndDate(shop, startDate.withDayOfMonth(cell).toDateTime(LocalTime.MIDNIGHT));
-                            Integer counterValue = counter == null ? 0 : counter.getIn();
-                            record.put(cellname, counterValue);
-                            counterTotals += counterValue;
-                            if (cell == daysCount) record.put("totals", counterTotals); 
-                        }
-                        else
-                        {
-                            record.put(cellname, sale.getPassability());
-                            counterTotals += sale.getPassability();
-                            if (cell == daysCount) record.put("totals", counterTotals); 
-                        }
-                        break;
-                    case 2:                         //Кол-во покупок
-                        record.put(cellname, sale.getChequeCount());
-                        if (cell == daysCount) record.put("totals", salesMeta.getChequeTotals());
-                        break;
-                    case 3:                         //Отчет ККМ
-                        record.put(cellname, sale.getValue());
-                        if (cell == daysCount) record.put("totals", salesMeta.getValueTotals());
-                        break;
-                    case 4:                         //Возвраты
-                        record.put(cellname, sale.getCashback());
-                        if (cell == daysCount) record.put("totals", salesMeta.getCashbackTotals());
-                        break;
-                    case 5:                         //Выручка
-                        record.put(cellname, sale.getDayTotal());
-                        if (cell == daysCount) record.put("totals", salesMeta.getPeriodTotals());
-                        break;
-                    case 6:                         //Средний чек
-                        Integer chequeCount = sale.getChequeCount();
-                        Double midPrice = chequeCount == 0 ? 0 : sale.getMidPrice();
-                        record.put(cellname, midPrice);
-                        if (cell == daysCount) record.put("totals", salesMeta.getPeriodMidPrice());
-                        break;
-                }
-            }
-            
-            
-            
-            resultList.add(record);
-        }
-        
-        return resultList;
-    }
-    
-    
-    @Secured("ROLE_OFFICE")
-    @RequestMapping(value = "/reports/shopproviders", method = RequestMethod.GET)
-    public String getShopProvidersReport(ModelMap model)
-    {
-        model.addAllAttributes(utils.prepareModel("Отчет по провайдерам - ИнфоПортал", "reports", ""));
-        model.addAttribute("allshops", shopService.getAll());
-        
-        return "reports/shopprov";
-    }
-    
-    @Secured("ROLE_OFFICE")
-    @RequestMapping(value = "/reports/expences", method = RequestMethod.GET)
-    public String getExpencesReport(ModelMap model,
-            @RequestParam(required = false) String dateMonth,
-            @RequestParam(required = false) String dateYear, 
-            @RequestParam(required = false) String mode)
-    {
-        model.addAllAttributes(utils.prepareModel("Отчет по расходам - ИнфоПортал", "reports", "all", dateMonth, dateYear));
-        model.addAttribute("allshops", shopService.getAll());
-        
-        LocalDate selectedDate;
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd MMMM YYYY");
-        if (dateMonth != null && dateYear != null) 
-        {
-            selectedDate = formatter.parseLocalDate("01 " + dateMonth + " " + dateYear);
-        } else 
-        {
-            selectedDate = LocalDate.now().withDayOfMonth(1);
-        }
-        
-        List<String> subgridColNames = new ArrayList<>();
-        subgridColNames.add("Тип расходов");
-        for(int i = 1; i <= selectedDate.dayOfMonth().withMaximumValue().getDayOfMonth(); i++)
-        {
-            subgridColNames.add(String.valueOf(i) + selectedDate.toString(".MM.YY"));
-        }
-        subgridColNames.add("Итого");
-        
-        model.addAttribute("subgridColNames", subgridColNames);
-        
-        return "reports/expences";
-    }
-    
-    
-    @Secured("ROLE_OFFICE")
-    @RequestMapping(value = "/reports/expences/data")
-    public @ResponseBody List<Map<String, Object>> getExpencesDataJson(
-            @RequestParam(required = false) String dateMonth,
-            @RequestParam(required = false) String dateYear,ModelMap model)
-    {
-        List<Map<String, Object>> resultList = new ArrayList<>();
-        
-        LocalDate selectedStartDate;
-        LocalDate selectedEndDate;
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd MMMM YYYY");
-        if (dateMonth != null && dateYear != null) //Период задан пользователем
-        {
-            selectedStartDate = formatter.parseLocalDate("01 " + dateMonth + " " + dateYear);
-            selectedEndDate = selectedStartDate.dayOfMonth().withMaximumValue();
-        } else //Период - текущий месяц, по умолчанию
-        {
-            selectedStartDate = LocalDate.now().withDayOfMonth(1);
-            selectedEndDate = selectedStartDate.dayOfMonth().withMaximumValue();
-        }
-
-        List<Shop> shopList = shopService.getAllOpen();
-        
-        for(Shop shop : shopList)
-        {
-            Map<String, Object> data = new HashMap();
-            
-            SalesMeta sm = salesService.getByShopAndDate(shop, selectedStartDate, selectedEndDate);
-                       
-            data.put( "shopname",       shop.getName());
-            data.put( "sales",          sm.getPeriodTotals());
-            data.put( "expencesRec",    expenceService.getRecurrentExpencesValueForMonth(shop, selectedEndDate));
-            data.put( "expencesOne",    expenceService.getOneshotExpencesValueForMonth(shop, selectedEndDate));
-            data.put( "expencesTotal",  expenceService.getExpencesValueForMonth(shop, selectedEndDate));
-            data.put( "cleanSales",     sm.getPeriodTotals() - expenceService.getExpencesValueForMonth(shop, selectedEndDate));
-            data.put( "plan",           sm.getPlan());  
-            data.put( "plancoverage",   sm.getPlan() == 0 ? 0 : sm.getPlanCoverage());
-           
-            resultList.add(data);
-        }
-        
-        
-        return resultList;
-    }
-    
-    @Secured("ROLE_OFFICE")
-    @RequestMapping(value = "/reports/expences/details")
-    public @ResponseBody List<Map<String, Object>> getExpensesDetailsJson(
-            @RequestParam String dateMonth,
-            @RequestParam String dateYear,
-            @RequestParam String shopname,
-            ModelMap model)
-    {
-        List<Map<String, Object>> resultList = new ArrayList<>();
-        
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd MMMM YYYY");
-        LocalDate startDate = formatter.parseLocalDate("01 " + dateMonth + " " + dateYear);
-        
-        Integer daysCount = startDate.dayOfMonth().withMaximumValue().getDayOfMonth();
-        
-        Shop shop = shopService.getByName(shopname);
-        SalesMeta salesMeta = salesService.getByShopAndDate(shop, startDate, startDate.dayOfMonth().withMaximumValue());
-        
-        List<String> recordNames = new ArrayList<>();
-        List<ExpenceType> expenceTypes = expenceTypeService.getAll();
-        for(ExpenceType et : expenceTypes)
-        {
-            recordNames.add(et.getDescription());
-        }
-        recordNames.add("Итого расходов");
-        recordNames.add("Выручка");
-        recordNames.add("Чистая прибыль");
-        
-        for(int row = 1; row <= recordNames.size(); row++)
-        {
-            Map<String, Object> record = new HashMap();
-            record.put("info", recordNames.get(row - 1));
-            
-            // Среднее значение периодических расходов по типу
-            Double expencesByTypeVal = (row < recordNames.size() - 2) 
-                    ? expenceService.getExpencesMidValueForMonth(shop, startDate, expenceTypes.get(row - 1))
-                    : 0.0;
-            
-            for(int cell = 1; cell <= daysCount; cell++)
-            {
-                LocalDate date = startDate.withDayOfMonth(cell);
-                String cellname = "c" + String.valueOf(cell);
-                Sales sale = salesMeta.getByDate(date);
-                
-                if(row < recordNames.size() - 2)                        //Строки с типами расходов
-                {
-                    record.put(cellname, expencesByTypeVal); 
-                    if (cell == daysCount) record.put("totals", expenceService.getExpencesValueForMonth(shop, startDate, expenceTypes.get(row - 1)));
-                }
-                else if(row == recordNames.size() - 2)                  //Строка Итого расходов
-                {
-                    Double total = 0.0;
-                    for(int i = 0; i < expenceTypes.size(); i++)
-                    {
-                        Map<String, Object> r = resultList.get(i);
-                        Double val = (Double)r.get(cellname);
-                        if(val != null) total += val;
-                    }
-                    record.put(cellname, total);
-                    if (cell == daysCount) record.put("totals", expenceService.getExpencesValueForMonth(shop, startDate));
-                }
-                else if(row == recordNames.size() - 1)                  //Строка Выручка
-                {
-                    record.put(cellname, sale.getDayTotal());
-                    if (cell == daysCount) record.put("totals", salesMeta.getPeriodTotals());
-                }
-                else if(row == recordNames.size())                      // Строка Чистая прибыль
-                {
-                    Double salesVal = (Double)resultList.get(row - 2).get(cellname);
-                    Double expVal = (Double)resultList.get(row - 3).get(cellname);
-                    if(salesVal == null) salesVal = 0.0;
-                    if(expVal == null) expVal = 0.0;
-                    Double cleanVal = salesVal - expVal;
-                    
-                    record.put(cellname, cleanVal);
-                    if (cell == daysCount) record.put("totals", salesMeta.getPeriodTotals() - expenceService.getExpencesValueForMonth(shop, startDate));
-                }
-            }
-            
-                
-            resultList.add(record);
-        }
-        
-        return resultList;
-    }
-    
-    @Secured("ROLE_OFFICE")
-    @RequestMapping(value = "/reports/graph/expences", method = RequestMethod.GET)
-    public String getExpencesGraph(
-            @RequestParam(required = false) Integer shopid, 
-            @RequestParam(required = false) String dateYear,
-            ModelMap model)
-    {
-        model.addAllAttributes(utils.prepareModel("Графики выручки и расходов (годовой) - ИнфоПортал", 
-                "reports", "graph", 
-                null, dateYear));
-        
-        List<Shop> shopList = shopService.getAllOpen();
-        
-        List<String> graphDataSalesTotal = new ArrayList<>();
-        List<String> graphDataExpencesTotal = new ArrayList<>();
-
-        Shop shop;
-
-        if (shopid == null)
-        {
-            shop = shopList.get(0);
-        } else
-        {
-            shop = shopService.getById(shopid);
-        }
-
-        model.addAttribute("shop", shop);
-        model.addAttribute("shopList", shopList);
-        
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd.MM.YYYY");
-        if(dateYear == null) dateYear = LocalDate.now().toString("YYYY");
-        for(int i = 1; i <= 12; i++)
-        {
-            LocalDate monthStartDate = formatter.parseLocalDate("01." + (i > 9 ? i : ("0" + i)) + "." + dateYear);
-            LocalDate monthEndDate = monthStartDate.dayOfMonth().withMaximumValue();
-            
-            SalesMeta salesMeta = salesService.getByShopAndDate(shop, monthStartDate, monthEndDate);
-            Double salesTotal = salesMeta.getPeriodTotals();
-            
-            Double expenceTotal = expenceService.getExpencesValueForMonth(shop, monthStartDate);
-            
-            graphDataSalesTotal.add("[\"" + monthStartDate.toString("MMMM") + "\", " + salesTotal + "]");
-            graphDataExpencesTotal.add("[\"" + monthStartDate.toString("MMMM") + "\", " + expenceTotal + "]");
-        }
-        
-        model.addAttribute("graphDataSalesTotal", graphDataSalesTotal);
-        model.addAttribute("graphDataExpencesTotal", graphDataExpencesTotal);
-
-        return "reports/expences-graph";
-    }
-    
+//
+//    private static final Logger log = Logger.getLogger("ReportsRouter");
+//
+//    @Autowired private ShopService shopService;
+//    @Autowired private CounterService counterService;
+//    @Autowired private SalesService salesService;
+//    @Autowired private SalesLoader salesLoader;
+//    @Autowired private ExpenceService expenceService;
+//    @Autowired private ExpenceTypeService expenceTypeService;
+//    @Autowired private Utils utils;
+//
+//    @Secured("ROLE_OFFICE")
+//    @RequestMapping(value = "/reports/graph/sales-pass", method = RequestMethod.GET)
+//    public String getSalesPassGraph(
+//            @RequestParam(required = false) String dateMonth,
+//            @RequestParam(required = false) String dateYear,
+//            @RequestParam(required = false) Integer shopid,
+//            ModelMap model)
+//    {
+//        model.addAllAttributes(utils.prepareModel("Графики проходимости и продаж - ИнфоПортал", 
+//                "reports", "graph", 
+//                dateMonth, dateYear));
+//        
+//        List<Shop> shopList = shopService.getAllOpen();
+//        List<String> graphDataDayTotal = new ArrayList<>();
+//        List<String> graphDataPassability = new ArrayList<>();
+//        List<String> graphDataDayTotalStack = new ArrayList<>();
+//        List<String> graphDataPlan = new ArrayList<>();
+//
+//        Shop shop;
+//
+//        if (shopid == null)
+//        {
+//            shop = shopList.get(0);
+//        } else
+//        {
+//            shop = shopService.getById(shopid);
+//        }
+//
+//        model.addAttribute("shop", shop);
+//        model.addAttribute("shopList", shopList);
+//
+//        LocalDate selectedStartDate;
+//        LocalDate selectedEndDate;
+//        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd MMMM YYYY");
+//        if (dateMonth != null && dateYear != null) //Период задан пользователем
+//        {
+//            selectedStartDate = formatter.parseLocalDate("01 " + dateMonth + " " + dateYear);
+//            selectedEndDate = selectedStartDate.dayOfMonth().withMaximumValue();
+//        } else //Период - текущий месяц, по умолчанию
+//        {
+//            selectedStartDate = LocalDate.now().withDayOfMonth(1);
+//            selectedEndDate = selectedStartDate.dayOfMonth().withMaximumValue();
+//        }
+//
+//        SalesMeta salesMeta = salesService.getByShopAndDate(shop, selectedStartDate, selectedEndDate);
+//        Double dayTotalStack = 0.0;
+//        for (Sales sales : salesMeta.getSales())
+//        {
+//            if (shop.isCountersEnabled())
+//            {
+//                Counter counter = counterService.getByShopAndDate(shop, sales.getDate().toDateTime(LocalTime.MIDNIGHT));
+//                sales.setPassability(counter == null ? 0 : counter.getIn());
+//            }
+//
+//            dayTotalStack += sales.getDayTotal();
+//
+//            graphDataDayTotal.add(sales.getGraphDataDayTotal());
+//            graphDataPassability.add(sales.getGraphDataPassability());
+//            //move below lines to SalesMeta?
+//            graphDataDayTotalStack.add("[\"" + sales.getDate().toString("dd.MM.yyyy") + "\", " + dayTotalStack + "]");
+//            graphDataPlan.add("[\"" + sales.getDate().toString("dd.MM.yyyy") + "\", " + salesMeta.getPlan() + "]");
+//        }
+//
+//        model.addAttribute("salesMeta", salesMeta);
+//        model.addAttribute("graphDataDayTotal", graphDataDayTotal);
+//        model.addAttribute("graphDataPassability", graphDataPassability);
+//        model.addAttribute("graphDataDayTotalStack", graphDataDayTotalStack);
+//        model.addAttribute("graphDataPlan", graphDataPlan);
+//
+//        return "reports/sales-pass-graph";
+//    }
+//
+//    
+//    
+//    @Secured("ROLE_OFFICE")
+//    @RequestMapping(value = "/reports/sales-pass/details")
+//    public @ResponseBody List<Map<String, Object>> getSalesPassDetailsJson(
+//            @RequestParam String dateMonth,
+//            @RequestParam String dateYear,
+//            @RequestParam String shopname,
+//            ModelMap model)
+//    {
+//        List<Map<String, Object>> resultList = new ArrayList<>();
+//        
+//        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd MMMM YYYY");
+//        LocalDate startDate = formatter.parseLocalDate("01 " + dateMonth + " " + dateYear);
+//        
+//        Integer daysCount = startDate.dayOfMonth().withMaximumValue().getDayOfMonth();
+//        
+//        Shop shop = shopService.getByName(shopname);
+//        SalesMeta salesMeta = salesService.getByShopAndDate(shop, startDate, startDate.dayOfMonth().withMaximumValue());
+//        
+//        List<String> recordNames = new ArrayList<>();
+//        recordNames.add("Проходимость");
+//        recordNames.add("Кол-во покупок");
+//        recordNames.add("Отчет ККМ");
+//        recordNames.add("Возвраты");
+//        recordNames.add("Выручка");
+//        recordNames.add("Средний чек");
+//        
+//        Integer counterTotals = 0;
+//        
+//        for(int row = 1; row <= recordNames.size(); row++)
+//        {
+//            Map<String, Object> record = new HashMap();
+//            record.put("info", recordNames.get(row - 1));
+//            
+//            for(int cell = 1; cell <= daysCount; cell++)
+//            {
+//                String cellname = "c" + String.valueOf(cell);
+//                Sales sale = salesMeta.getByDate(startDate.withDayOfMonth(cell));
+//                switch(row)
+//                {
+//                    case 1:                         //Проходимость
+//                        if(shop.isCountersEnabled())
+//                        {
+//                            Counter counter = counterService.getByShopAndDate(shop, startDate.withDayOfMonth(cell).toDateTime(LocalTime.MIDNIGHT));
+//                            Integer counterValue = counter == null ? 0 : counter.getIn();
+//                            record.put(cellname, counterValue);
+//                            counterTotals += counterValue;
+//                            if (cell == daysCount) record.put("totals", counterTotals); 
+//                        }
+//                        else
+//                        {
+//                            record.put(cellname, sale.getPassability());
+//                            counterTotals += sale.getPassability();
+//                            if (cell == daysCount) record.put("totals", counterTotals); 
+//                        }
+//                        break;
+//                    case 2:                         //Кол-во покупок
+//                        record.put(cellname, sale.getChequeCount());
+//                        if (cell == daysCount) record.put("totals", salesMeta.getChequeTotals());
+//                        break;
+//                    case 3:                         //Отчет ККМ
+//                        record.put(cellname, sale.getValue());
+//                        if (cell == daysCount) record.put("totals", salesMeta.getValueTotals());
+//                        break;
+//                    case 4:                         //Возвраты
+//                        record.put(cellname, sale.getCashback());
+//                        if (cell == daysCount) record.put("totals", salesMeta.getCashbackTotals());
+//                        break;
+//                    case 5:                         //Выручка
+//                        record.put(cellname, sale.getDayTotal());
+//                        if (cell == daysCount) record.put("totals", salesMeta.getPeriodTotals());
+//                        break;
+//                    case 6:                         //Средний чек
+//                        Integer chequeCount = sale.getChequeCount();
+//                        Double midPrice = chequeCount == 0 ? 0 : sale.getMidPrice();
+//                        record.put(cellname, midPrice);
+//                        if (cell == daysCount) record.put("totals", salesMeta.getPeriodMidPrice());
+//                        break;
+//                }
+//            }
+//            
+//            
+//            
+//            resultList.add(record);
+//        }
+//        
+//        return resultList;
+//    }
+//    
+//    
+//    @Secured("ROLE_OFFICE")
+//    @RequestMapping(value = "/reports/shopproviders", method = RequestMethod.GET)
+//    public String getShopProvidersReport(ModelMap model)
+//    {
+//        model.addAllAttributes(utils.prepareModel("Отчет по провайдерам - ИнфоПортал", "reports", ""));
+//        model.addAttribute("allshops", shopService.getAll());
+//        
+//        return "reports/shopprov";
+//    }
+//    
+//    @Secured("ROLE_OFFICE")
+//    @RequestMapping(value = "/reports/expences", method = RequestMethod.GET)
+//    public String getExpencesReport(ModelMap model,
+//            @RequestParam(required = false) String dateMonth,
+//            @RequestParam(required = false) String dateYear, 
+//            @RequestParam(required = false) String mode)
+//    {
+//        model.addAllAttributes(utils.prepareModel("Отчет по расходам - ИнфоПортал", "reports", "all", dateMonth, dateYear));
+//        model.addAttribute("allshops", shopService.getAll());
+//        
+//        LocalDate selectedDate;
+//        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd MMMM YYYY");
+//        if (dateMonth != null && dateYear != null) 
+//        {
+//            selectedDate = formatter.parseLocalDate("01 " + dateMonth + " " + dateYear);
+//        } else 
+//        {
+//            selectedDate = LocalDate.now().withDayOfMonth(1);
+//        }
+//        
+//        List<String> subgridColNames = new ArrayList<>();
+//        subgridColNames.add("Тип расходов");
+//        for(int i = 1; i <= selectedDate.dayOfMonth().withMaximumValue().getDayOfMonth(); i++)
+//        {
+//            subgridColNames.add(String.valueOf(i) + selectedDate.toString(".MM.YY"));
+//        }
+//        subgridColNames.add("Итого");
+//        
+//        model.addAttribute("subgridColNames", subgridColNames);
+//        
+//        return "reports/expences";
+//    }
+//    
+//    
+//    @Secured("ROLE_OFFICE")
+//    @RequestMapping(value = "/reports/expences/data")
+//    public @ResponseBody List<Map<String, Object>> getExpencesDataJson(
+//            @RequestParam(required = false) String dateMonth,
+//            @RequestParam(required = false) String dateYear,ModelMap model)
+//    {
+//        List<Map<String, Object>> resultList = new ArrayList<>();
+//        
+//        LocalDate selectedStartDate;
+//        LocalDate selectedEndDate;
+//        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd MMMM YYYY");
+//        if (dateMonth != null && dateYear != null) //Период задан пользователем
+//        {
+//            selectedStartDate = formatter.parseLocalDate("01 " + dateMonth + " " + dateYear);
+//            selectedEndDate = selectedStartDate.dayOfMonth().withMaximumValue();
+//        } else //Период - текущий месяц, по умолчанию
+//        {
+//            selectedStartDate = LocalDate.now().withDayOfMonth(1);
+//            selectedEndDate = selectedStartDate.dayOfMonth().withMaximumValue();
+//        }
+//
+//        List<Shop> shopList = shopService.getAllOpen();
+//        
+//        for(Shop shop : shopList)
+//        {
+//            Map<String, Object> data = new HashMap();
+//            
+//            SalesMeta sm = salesService.getByShopAndDate(shop, selectedStartDate, selectedEndDate);
+//                       
+//            data.put( "shopname",       shop.getName());
+//            data.put( "sales",          sm.getPeriodTotals());
+//            data.put( "expencesRec",    expenceService.getRecurrentExpencesValueForMonth(shop, selectedEndDate));
+//            data.put( "expencesOne",    expenceService.getOneshotExpencesValueForMonth(shop, selectedEndDate));
+//            data.put( "expencesTotal",  expenceService.getExpencesValueForMonth(shop, selectedEndDate));
+//            data.put( "cleanSales",     sm.getPeriodTotals() - expenceService.getExpencesValueForMonth(shop, selectedEndDate));
+//            data.put( "plan",           sm.getPlan());  
+//            data.put( "plancoverage",   sm.getPlan() == 0 ? 0 : sm.getPlanCoverage());
+//           
+//            resultList.add(data);
+//        }
+//        
+//        
+//        return resultList;
+//    }
+//    
+//    @Secured("ROLE_OFFICE")
+//    @RequestMapping(value = "/reports/expences/details")
+//    public @ResponseBody List<Map<String, Object>> getExpensesDetailsJson(
+//            @RequestParam String dateMonth,
+//            @RequestParam String dateYear,
+//            @RequestParam String shopname,
+//            ModelMap model)
+//    {
+//        List<Map<String, Object>> resultList = new ArrayList<>();
+//        
+//        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd MMMM YYYY");
+//        LocalDate startDate = formatter.parseLocalDate("01 " + dateMonth + " " + dateYear);
+//        
+//        Integer daysCount = startDate.dayOfMonth().withMaximumValue().getDayOfMonth();
+//        
+//        Shop shop = shopService.getByName(shopname);
+//        SalesMeta salesMeta = salesService.getByShopAndDate(shop, startDate, startDate.dayOfMonth().withMaximumValue());
+//        
+//        List<String> recordNames = new ArrayList<>();
+//        List<ExpenceType> expenceTypes = expenceTypeService.getAll();
+//        for(ExpenceType et : expenceTypes)
+//        {
+//            recordNames.add(et.getDescription());
+//        }
+//        recordNames.add("Итого расходов");
+//        recordNames.add("Выручка");
+//        recordNames.add("Чистая прибыль");
+//        
+//        for(int row = 1; row <= recordNames.size(); row++)
+//        {
+//            Map<String, Object> record = new HashMap();
+//            record.put("info", recordNames.get(row - 1));
+//            
+//            // Среднее значение периодических расходов по типу
+//            Double expencesByTypeVal = (row < recordNames.size() - 2) 
+//                    ? expenceService.getExpencesMidValueForMonth(shop, startDate, expenceTypes.get(row - 1))
+//                    : 0.0;
+//            
+//            for(int cell = 1; cell <= daysCount; cell++)
+//            {
+//                LocalDate date = startDate.withDayOfMonth(cell);
+//                String cellname = "c" + String.valueOf(cell);
+//                Sales sale = salesMeta.getByDate(date);
+//                
+//                if(row < recordNames.size() - 2)                        //Строки с типами расходов
+//                {
+//                    record.put(cellname, expencesByTypeVal); 
+//                    if (cell == daysCount) record.put("totals", expenceService.getExpencesValueForMonth(shop, startDate, expenceTypes.get(row - 1)));
+//                }
+//                else if(row == recordNames.size() - 2)                  //Строка Итого расходов
+//                {
+//                    Double total = 0.0;
+//                    for(int i = 0; i < expenceTypes.size(); i++)
+//                    {
+//                        Map<String, Object> r = resultList.get(i);
+//                        Double val = (Double)r.get(cellname);
+//                        if(val != null) total += val;
+//                    }
+//                    record.put(cellname, total);
+//                    if (cell == daysCount) record.put("totals", expenceService.getExpencesValueForMonth(shop, startDate));
+//                }
+//                else if(row == recordNames.size() - 1)                  //Строка Выручка
+//                {
+//                    record.put(cellname, sale.getDayTotal());
+//                    if (cell == daysCount) record.put("totals", salesMeta.getPeriodTotals());
+//                }
+//                else if(row == recordNames.size())                      // Строка Чистая прибыль
+//                {
+//                    Double salesVal = (Double)resultList.get(row - 2).get(cellname);
+//                    Double expVal = (Double)resultList.get(row - 3).get(cellname);
+//                    if(salesVal == null) salesVal = 0.0;
+//                    if(expVal == null) expVal = 0.0;
+//                    Double cleanVal = salesVal - expVal;
+//                    
+//                    record.put(cellname, cleanVal);
+//                    if (cell == daysCount) record.put("totals", salesMeta.getPeriodTotals() - expenceService.getExpencesValueForMonth(shop, startDate));
+//                }
+//            }
+//            
+//                
+//            resultList.add(record);
+//        }
+//        
+//        return resultList;
+//    }
+//    
+//    @Secured("ROLE_OFFICE")
+//    @RequestMapping(value = "/reports/graph/expences", method = RequestMethod.GET)
+//    public String getExpencesGraph(
+//            @RequestParam(required = false) Integer shopid, 
+//            @RequestParam(required = false) String dateYear,
+//            ModelMap model)
+//    {
+//        model.addAllAttributes(utils.prepareModel("Графики выручки и расходов (годовой) - ИнфоПортал", 
+//                "reports", "graph", 
+//                null, dateYear));
+//        
+//        List<Shop> shopList = shopService.getAllOpen();
+//        
+//        List<String> graphDataSalesTotal = new ArrayList<>();
+//        List<String> graphDataExpencesTotal = new ArrayList<>();
+//
+//        Shop shop;
+//
+//        if (shopid == null)
+//        {
+//            shop = shopList.get(0);
+//        } else
+//        {
+//            shop = shopService.getById(shopid);
+//        }
+//
+//        model.addAttribute("shop", shop);
+//        model.addAttribute("shopList", shopList);
+//        
+//        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd.MM.YYYY");
+//        if(dateYear == null) dateYear = LocalDate.now().toString("YYYY");
+//        for(int i = 1; i <= 12; i++)
+//        {
+//            LocalDate monthStartDate = formatter.parseLocalDate("01." + (i > 9 ? i : ("0" + i)) + "." + dateYear);
+//            LocalDate monthEndDate = monthStartDate.dayOfMonth().withMaximumValue();
+//            
+//            SalesMeta salesMeta = salesService.getByShopAndDate(shop, monthStartDate, monthEndDate);
+//            Double salesTotal = salesMeta.getPeriodTotals();
+//            
+//            Double expenceTotal = expenceService.getExpencesValueForMonth(shop, monthStartDate);
+//            
+//            graphDataSalesTotal.add("[\"" + monthStartDate.toString("MMMM") + "\", " + salesTotal + "]");
+//            graphDataExpencesTotal.add("[\"" + monthStartDate.toString("MMMM") + "\", " + expenceTotal + "]");
+//        }
+//        
+//        model.addAttribute("graphDataSalesTotal", graphDataSalesTotal);
+//        model.addAttribute("graphDataExpencesTotal", graphDataExpencesTotal);
+//
+//        return "reports/expences-graph";
+//    }
+//    
 
 }

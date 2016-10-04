@@ -70,7 +70,7 @@
                                                 <td><form:errors path="countersKondorFtpPassword" cssStyle="color: #ff0000;" /></td>
                                             </tr>
                                             <tr>
-                                                <th colspan="3" class="th-header-center">Автоматическая загрузка выручки (Email)</th>
+                                                <th colspan="3" class="th-header-center">Настройки Email-адреса портала</th>
                                             </tr>
 
                                             <tr>

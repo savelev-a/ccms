@@ -17,7 +17,10 @@
  */
 package ru.codemine.ccms.router;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import org.apache.log4j.Logger;
@@ -40,6 +43,7 @@ import ru.codemine.ccms.entity.SalesMeta;
 import ru.codemine.ccms.entity.Shop;
 import ru.codemine.ccms.exceptions.ResourceNotFoundException;
 import ru.codemine.ccms.forms.SalesForm;
+import ru.codemine.ccms.sales.SalesLoader;
 import ru.codemine.ccms.service.CounterService;
 import ru.codemine.ccms.service.SalesService;
 import ru.codemine.ccms.service.ShopService;
@@ -58,6 +62,7 @@ public class SalesRouter
     @Autowired private SalesService salesService;
     @Autowired private ShopService shopService;
     @Autowired private CounterService counterService;
+    @Autowired private SalesLoader salesLoader;
     @Autowired private Utils utils;
     
     @Secured("ROLE_USER")
@@ -175,5 +180,93 @@ public class SalesRouter
         }
         
         return resultStr;
+    }
+    
+    @Secured("ROLE_OFFICE")
+    @RequestMapping(value = "/reports/sales-pass", method = RequestMethod.GET)
+    public String getSalesPassReport(
+            @RequestParam(required = false) String dateStartStr,
+            @RequestParam(required = false) String dateEndStr, 
+            @RequestParam(required = false) String mode,
+            ModelMap model)
+    {
+
+        model.addAllAttributes(utils.prepareModel("Отчет по проходимости и продажам - ИнфоПортал", 
+                "reports", "general"));
+        
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd.MM.YYYY");
+        LocalDate dateStart = dateStartStr == null 
+                ? LocalDate.now().withDayOfMonth(1) 
+                : formatter.parseLocalDate(dateStartStr).withDayOfMonth(1);
+        LocalDate dateEnd = dateEndStr == null 
+                ? LocalDate.now().dayOfMonth().withMaximumValue() 
+                : formatter.parseLocalDate(dateEndStr).dayOfMonth().withMaximumValue();
+        
+        if(dateEnd.isBefore(dateStart)) dateEnd = dateStart.dayOfMonth().withMaximumValue();
+        
+        model.addAttribute("dateStartStr", dateStart.toString("dd.MM.YYYY"));
+        model.addAttribute("dateEndStr", dateEnd.toString("dd.MM.YYYY"));
+        
+        List<String> subgridColNames = new ArrayList<>();
+        subgridColNames.add("Сведения");
+        for(int i = 1; i <= dateEnd.getDayOfMonth(); i++)
+        {
+            subgridColNames.add(String.valueOf(i) + dateStart.toString(".MM.YY"));
+        }
+        subgridColNames.add("Итого");
+        
+        model.addAttribute("subgridColNames", subgridColNames);
+        
+        return "print".equals(mode) ? "printforms/reports/salesAllFrm" : "reports/sales-pass";
+    }
+    
+    @Secured("ROLE_OFFICE")
+    @RequestMapping(value = "/reports/sales-pass/data")
+    public @ResponseBody List<Map<String, Object>> getSalesPassReportData(
+            @RequestParam(required = false) String dateStartStr,
+            @RequestParam(required = false) String dateEndStr,
+            ModelMap model)
+    {
+        List<Map<String, Object>> recordsList = new ArrayList<>();
+        
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd.MM.YYYY");
+        LocalDate dateStart = dateStartStr == null 
+                ? LocalDate.now().withDayOfMonth(1) 
+                : formatter.parseLocalDate(dateStartStr).withDayOfMonth(1);
+        LocalDate dateEnd = dateEndStr == null 
+                ? LocalDate.now().dayOfMonth().withMaximumValue() 
+                : formatter.parseLocalDate(dateEndStr).dayOfMonth().withMaximumValue();
+        
+        if(dateEnd.isBefore(dateStart)) dateEnd = dateStart.dayOfMonth().withMaximumValue();
+
+        List<Shop> shopList = shopService.getAllOpen();
+        
+        for(Shop shop : shopList)
+        {
+            Map<String, Object> record = new HashMap();
+            
+            record.put( "shopname",      shop.getName());
+            record.put( "passability",   salesService.getPassabilityValueByPeriod(shop, dateStart, dateEnd));
+            record.put( "cheque",        salesService.getCqcountValueByPeriod(shop, dateStart, dateEnd));
+            record.put( "value",         salesService.getValueByPeriod(shop, dateStart, dateEnd));
+            record.put( "cashback",      salesService.getCashbackValueByPeriod(shop, dateStart, dateEnd));
+            record.put( "periodtotal",   salesService.getSalesValueByPeriod(shop, dateStart, dateEnd));
+            record.put( "midPrice",      salesService.getMidPriceValueByPeriod(shop, dateStart, dateEnd));
+            record.put( "plan",          salesService.getPlan(shop, dateStart, dateEnd));
+            record.put( "plancoverage",  salesService.getPlanCoverage(shop, dateStart, dateEnd));
+            
+            recordsList.add(record);
+        }
+        
+        
+        return recordsList;
+    }
+    
+    @Secured("ROLE_ADMIN")
+    @RequestMapping(value = "/forceSalesAutoload", method = RequestMethod.POST)
+    public String forceSalesAutoload(ModelMap model)
+    {
+        salesLoader.processSales(shopService.getAllOpen());
+        return "redirect:/reports/sales-pass";
     }
 }

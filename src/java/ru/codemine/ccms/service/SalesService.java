@@ -40,6 +40,8 @@ public class SalesService
     
     @Autowired private SalesDAO salesDAO;
     
+    @Autowired private CounterService counterService;
+    
     public void create(SalesMeta sm)
     {
         sm.recalculateTotals();
@@ -93,6 +95,56 @@ public class SalesService
         }
         
         return sm;
+    }
+    
+    public List<SalesMeta> getByPeriod(Shop shop, LocalDate startDate, LocalDate endDate)
+    {
+        return salesDAO.getByPeriod(shop, startDate, endDate);
+    }
+
+    public Integer getPassabilityValueByPeriod(Shop shop, LocalDate startDate, LocalDate endDate)
+    {
+        if(shop.isCountersEnabled())
+        {
+            return counterService.getPassabilityValueByPeriod(shop, startDate, endDate);
+        }
+        
+        return salesDAO.getPassabilityValueByPeriod(shop, startDate, endDate);
+    }
+
+    public Integer getCqcountValueByPeriod(Shop shop, LocalDate startDate, LocalDate endDate)
+    {
+        return salesDAO.getCqcountValueByPeriod(shop, startDate, endDate);
+    }
+
+    public Double getValueByPeriod(Shop shop, LocalDate startDate, LocalDate endDate)
+    {
+        return salesDAO.getValueByPeriod(shop, startDate, endDate);
+    }
+
+    public Double getCashbackValueByPeriod(Shop shop, LocalDate startDate, LocalDate endDate)
+    {
+        return salesDAO.getCashbackValueByPeriod(shop, startDate, endDate);
+    }
+
+    public Double getSalesValueByPeriod(Shop shop, LocalDate startDate, LocalDate endDate)
+    {
+        return salesDAO.getSalesValueByPeriod(shop, startDate, endDate);
+    }
+
+    public Double getMidPriceValueByPeriod(Shop shop, LocalDate startDate, LocalDate endDate)
+    {
+        return salesDAO.getMidPriceValueByPeriod(shop, startDate, endDate);
+    }
+
+    public Double getPlan(Shop shop, LocalDate startDate, LocalDate endDate)
+    {
+        return salesDAO.getPlan(shop, startDate, endDate);
+    }
+
+    public Double getPlanCoverage(Shop shop, LocalDate startDate, LocalDate endDate)
+    {
+        return salesDAO.getPlanCoverage(shop, startDate, endDate);
     }
     
 }

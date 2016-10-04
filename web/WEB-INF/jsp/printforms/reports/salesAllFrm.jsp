@@ -32,8 +32,8 @@
 
                     <div class="col-md-12">
                         <div class="panel panel-primary panel-primary-dark">
-                            <div class="panel-heading panel-heading-dark" align="center">Отчет по выручке и проходимости за 
-                                <u><c:out value="${selectedMonth}" /> <c:out value="${selectedYear}" /></u></div>
+                            <div class="panel-heading panel-heading-dark" align="center">Отчет по выручке и проходимости за период 
+                                <u>с <c:out value="${dateStartStr}" /> по <c:out value="${dateEndStr}" /></u></div>
                             <div class="panel-body">
                                 <div style="width: 100%; height: 100%;">
                                     <table id="reportTable">
@@ -67,7 +67,7 @@
         $(function () {
 
             $("#reportTable").jqGrid({
-                url: "<c:url value="/reports/sales-pass/data?dateMonth=${selectedMonth}&dateYear=${selectedYear}" />",
+                url: "<c:url value="/reports/sales-pass/data?dateStartStr=${dateStartStr}&dateEndStr=${dateEndStr}" />",
                 datatype: "json",
                 loadonce: true,
                 height: "100%",

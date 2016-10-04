@@ -15,6 +15,9 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="<c:url value="/res/css/bootstrap.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/bootstrap-theme.css" />" >
+        <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/jquery-ui.css" />" >
+        <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/jquery-ui.theme.css" />" >
+        <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/ui.jqgrid.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/styles.css" />" >
         <title><c:out value="${title}" /></title>
     </head>
@@ -34,31 +37,19 @@
 
                     <div class="col-md-10">
                         <div class="panel panel-primary panel-primary-dark">
-                            <div class="panel-heading panel-heading-dark" align="center">Общая таблица проходимости и выручек по магазинам: 
-                                <u><c:out value="${selectedMonth}" /> <c:out value="${selectedYear}" /></u>
+                            <div class="panel-heading panel-heading-dark" align="center">Общая таблица проходимости и выручек по магазинам за период 
+                                <u>с <c:out value="${dateStartStr}" /> по <c:out value="${dateEndStr}" /></u>
                             </div>
                             <div class="panel-body">
 
-                                <!-- Выбор периода -->
+                                 <!-- Выбор периода -->
                                 <div class="form-inline" align="right">
                                     <form name="dateChooseForm" action="<c:url value="/reports/sales-pass" />" method="GET">
-                                        Показать данные за: 
-                                        <select name="dateMonth" class="form-control" >
-                                            <c:forEach items="${monthList}" var="month" >
-                                                <option ${month == selectedMonth ? "selected" : ""} value="${month}">
-                                                    <c:out value="${month}" />
-                                                </option>
-                                            </c:forEach>
-                                        </select>
-                                        <select name="dateYear" class="form-control" >
-                                            <c:forEach items="${yearList}" var="year" >
-                                                <option ${year == selectedYear ? "selected" : ""} value="${year}">
-                                                    <c:out value="${year}" />
-                                                </option>
-                                            </c:forEach>
-                                        </select>&nbsp;
-
-                                        <input type="hidden" name="shopid" value="${shop.id}" />
+                                        Показать данные за период с  
+                                        <input type="text" name="dateStartStr" id="dateStartField" value="${dateStartStr}" class="form-control datepicker-z">
+                                        по
+                                        <input type="text" name="dateEndStr" id="dateEndField" value="${dateEndStr}" class="form-control datepicker-z"> 
+                                        &nbsp;
                                         <input type="submit" value="Загрузить" class="btn btn-primary">
                                     </form>
                                     <br>
@@ -72,7 +63,7 @@
                                 </div>
                                 <br><br>
                                 <span class="glyphicon glyphicon-print"></span>
-                                <a href="<c:url value='/reports/sales-pass?dateMonth=${selectedMonth}&dateYear=${selectedYear}&mode=print' /> " target="_blank">Распечатать</a>
+                                <a href="<c:url value='/reports/sales-pass?dateStartStr=${dateStartStr}&dateEndStr=${dateEndStr}&mode=print' /> " target="_blank">Распечатать</a>
                                 <sec:authorize access="hasRole('ROLE_ADMIN')">
                                     <br><br>
                                     <form action="<c:url value='/forceSalesAutoload' />" method="POST">
@@ -89,19 +80,18 @@
         </div>
 
 
-    <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/jquery-ui.css" />" >
-    <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/jquery-ui.theme.css" />" >
-    <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/ui.jqgrid.css" />" >
+    
 
     <script type="text/javascript" src="<c:url value="/res/js/grid.locale-ru.js" />"></script>
     <script type="text/javascript" src="<c:url value="/res/js/jquery.jqGrid.min.js" />"></script>
+    <script type="text/javascript" src="<c:url value="/res/js/datepicker-ru.js" />"></script>
 
 
     <script type="text/javascript">
         $(function () {
 
             $("#reportTable").jqGrid({
-                url: "<c:url value="/reports/sales-pass/data?dateMonth=${selectedMonth}&dateYear=${selectedYear}" />",
+                url: "<c:url value="/reports/sales-pass/data?dateStartStr=${dateStartStr}&dateEndStr=${dateEndStr}" />",
                 datatype: "json",
                 loadonce: true,
                 height: "350px",
@@ -148,7 +138,7 @@
                     
                     $("#"+subgrid_id).html("<table id='"+subgrid_table_id+"' class='scroll'></table>");
                     jQuery("#"+subgrid_table_id).jqGrid({
-                        url: "<c:url value="/reports/sales-pass/details?dateMonth=${selectedMonth}&dateYear=${selectedYear}&shopname=" />" + shopname,
+                        url: "<c:url value="/reports/sales-pass/details?dateStartStr=${dateStartStr}&dateEndStr=${dateEndStr}&shopname=" />" + shopname,
                         datatype: "json",
                         height: "100%",
                         //autowidth: true,
@@ -177,6 +167,9 @@
                 }
                 
             });
+            
+            $("#dateStartField").datepicker();
+            $("#dateEndField").datepicker();
         });
     </script>
 

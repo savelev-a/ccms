@@ -20,6 +20,7 @@ package ru.codemine.ccms.dao;
 
 import java.util.List;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import ru.codemine.ccms.entity.Counter;
 import ru.codemine.ccms.entity.Shop;
 
@@ -35,4 +36,6 @@ public interface CounterDAO
     public Counter getByShopAndDate(Shop shop, DateTime date);
     public Integer getSumIn(DateTime date);
     public Integer getSumOut(DateTime date);
+    
+    public Integer getPassabilityValueByPeriod(Shop shop, LocalDate dateStart, LocalDate dateEnd);
 }

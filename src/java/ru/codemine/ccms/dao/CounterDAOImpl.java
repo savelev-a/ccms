@@ -24,6 +24,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import ru.codemine.ccms.entity.Counter;
@@ -127,6 +128,20 @@ public class CounterDAOImpl implements CounterDAO
         }
         
         return result;
+    }
+
+    @Override
+    public Integer getPassabilityValueByPeriod(Shop shop, LocalDate dateStart, LocalDate dateEnd)
+    {
+        Session session = sessionFactory.getCurrentSession();
+        Query query = session.createQuery("SELECT SUM(c.in) FROM Counter c WHERE c.shop.id = :id AND c.date >= :dateStart AND c.date <= :dateEnd");
+        query.setInteger("id", shop.getId());
+        query.setDate("dateStart", dateStart.toDate());
+        query.setDate("dateEnd", dateEnd.toDate());
+        
+        Long result = (Long)query.uniqueResult();
+        
+        return result == null ? 0 : result.intValue();
     }
 
 }

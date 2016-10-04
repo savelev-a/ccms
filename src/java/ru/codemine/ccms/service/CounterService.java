@@ -21,11 +21,13 @@ package ru.codemine.ccms.service;
 import java.util.List;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.codemine.ccms.dao.CounterDAO;
 import ru.codemine.ccms.entity.Counter;
+import ru.codemine.ccms.entity.SalesMeta;
 import ru.codemine.ccms.entity.Shop;
 
 /**
@@ -65,6 +67,12 @@ public class CounterService
     public Integer getSumOut(DateTime date)
     {
         return counterDAO.getSumOut(date);
+    }
+    
+    
+    public Integer getPassabilityValueByPeriod(Shop shop, LocalDate dateStart, LocalDate dateEnd)
+    {
+        return counterDAO.getPassabilityValueByPeriod(shop, dateStart, dateEnd);
     }
 
 }

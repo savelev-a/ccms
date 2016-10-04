@@ -69,6 +69,7 @@ public class SalesDAOImpl extends GenericDAOImpl<SalesMeta, Integer> implements 
         return (SalesMeta)query.uniqueResult();
     }
     
+    @Override
     public List<SalesMeta> getByPeriod(Shop shop, LocalDate startDate, LocalDate endDate)
     {
         Query query = getSession().createQuery("FROM SalesMeta Sm WHERE Sm.shop.id = :shopid AND Sm.startDate >= :startdate AND Sm.endDate <= :enddate");
@@ -77,5 +78,101 @@ public class SalesDAOImpl extends GenericDAOImpl<SalesMeta, Integer> implements 
         query.setDate("enddate", endDate.toDate());
         
         return query.list();
+    }
+
+    @Override
+    public Integer getPassabilityValueByPeriod(Shop shop, LocalDate startDate, LocalDate endDate)
+    {
+        Query query = getSession().createQuery("SELECT SUM(Sm.passabilityTotal) FROM SalesMeta Sm WHERE Sm.shop.id = :shopid AND Sm.startDate >= :startdate AND Sm.endDate <= :enddate");
+        query.setInteger("shopid", shop.getId());
+        query.setDate("startdate", startDate.toDate());
+        query.setDate("enddate", endDate.toDate());
+        
+        Long result = (Long)query.uniqueResult();
+        
+        return result == null ? 0 : result.intValue();
+    }
+
+    @Override
+    public Integer getCqcountValueByPeriod(Shop shop, LocalDate startDate, LocalDate endDate)
+    {
+        Query query = getSession().createQuery("SELECT SUM(Sm.chequeCountTotal) FROM SalesMeta Sm WHERE Sm.shop.id = :shopid AND Sm.startDate >= :startdate AND Sm.endDate <= :enddate");
+        query.setInteger("shopid", shop.getId());
+        query.setDate("startdate", startDate.toDate());
+        query.setDate("enddate", endDate.toDate());
+        
+        Long result = (Long)query.uniqueResult();
+        
+        return result == null ? 0 : result.intValue();
+    }
+
+    @Override
+    public Double getValueByPeriod(Shop shop, LocalDate startDate, LocalDate endDate)
+    {
+        Query query = getSession().createQuery("SELECT SUM(Sm.valueTotal) FROM SalesMeta Sm WHERE Sm.shop.id = :shopid AND Sm.startDate >= :startdate AND Sm.endDate <= :enddate");
+        query.setInteger("shopid", shop.getId());
+        query.setDate("startdate", startDate.toDate());
+        query.setDate("enddate", endDate.toDate());
+        
+        Double result = (Double)query.uniqueResult();
+        
+        return result == null ? 0.0 : result;
+    }
+
+    @Override
+    public Double getCashbackValueByPeriod(Shop shop, LocalDate startDate, LocalDate endDate)
+    {
+        Query query = getSession().createQuery("SELECT SUM(Sm.cashbackTotal) FROM SalesMeta Sm WHERE Sm.shop.id = :shopid AND Sm.startDate >= :startdate AND Sm.endDate <= :enddate");
+        query.setInteger("shopid", shop.getId());
+        query.setDate("startdate", startDate.toDate());
+        query.setDate("enddate", endDate.toDate());
+        
+        Double result = (Double)query.uniqueResult();
+        
+        return result == null ? 0.0 : result;
+    }
+
+    @Override
+    public Double getSalesValueByPeriod(Shop shop, LocalDate startDate, LocalDate endDate)
+    {
+        Query query = getSession().createQuery("SELECT SUM(Sm.salesTotal) FROM SalesMeta Sm WHERE Sm.shop.id = :shopid AND Sm.startDate >= :startdate AND Sm.endDate <= :enddate");
+        query.setInteger("shopid", shop.getId());
+        query.setDate("startdate", startDate.toDate());
+        query.setDate("enddate", endDate.toDate());
+        
+        Double result = (Double)query.uniqueResult();
+        
+        return result == null ? 0.0 : result;
+    }
+
+    @Override
+    public Double getMidPriceValueByPeriod(Shop shop, LocalDate startDate, LocalDate endDate)
+    {
+        Double v = getValueByPeriod(shop, startDate, endDate);
+        Integer cq = getCqcountValueByPeriod(shop, startDate, endDate);
+        
+        return cq.equals(0) ? 0.0 : v / cq;
+    }
+
+    @Override
+    public Double getPlan(Shop shop, LocalDate startDate, LocalDate endDate)
+    {
+        Query query = getSession().createQuery("SELECT SUM(Sm.plan) FROM SalesMeta Sm WHERE Sm.shop.id = :shopid AND Sm.startDate >= :startdate AND Sm.endDate <= :enddate");
+        query.setInteger("shopid", shop.getId());
+        query.setDate("startdate", startDate.toDate());
+        query.setDate("enddate", endDate.toDate());
+        
+        Double result = (Double)query.uniqueResult();
+        
+        return result == null ? 0.0 : result;
+    }
+
+    @Override
+    public Double getPlanCoverage(Shop shop, LocalDate startDate, LocalDate endDate)
+    {
+        Double plan = getPlan(shop, startDate, endDate);
+        Double sale = getSalesValueByPeriod(shop, startDate, endDate);
+        
+        return plan.equals(0.0) ? 0.0 : sale / plan * 100;
     }
 }
