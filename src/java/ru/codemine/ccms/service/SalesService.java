@@ -17,6 +17,7 @@
  */
 package ru.codemine.ccms.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.log4j.Logger;
 import org.joda.time.LocalDate;
@@ -24,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.codemine.ccms.dao.SalesDAO;
+import ru.codemine.ccms.entity.Sales;
 import ru.codemine.ccms.entity.SalesMeta;
 import ru.codemine.ccms.entity.Shop;
 
@@ -145,6 +147,15 @@ public class SalesService
     public Double getPlanCoverage(Shop shop, LocalDate startDate, LocalDate endDate)
     {
         return salesDAO.getPlanCoverage(shop, startDate, endDate);
+    }
+
+    public List<Sales> getAllSalesFromMetaList(List<SalesMeta> smList)
+    {
+        List<Sales> result = new ArrayList<>();
+        for(SalesMeta sm : smList)
+            result.addAll(sm.getSales());
+        
+        return result;
     }
     
 }

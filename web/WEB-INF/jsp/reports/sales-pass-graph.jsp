@@ -15,6 +15,8 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="<c:url value="/res/css/bootstrap.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/bootstrap-theme.css" />" >
+        <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/jquery-ui.css" />" >
+        <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/jquery-ui.theme.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/styles.css" />" >
         <title><c:out value="${title}" /></title>
     </head>
@@ -35,8 +37,8 @@
                     <div class="col-md-10">
                         <div class="panel panel-primary panel-primary-dark">
                             <div class="panel-heading panel-heading-dark" align="center">Графики проходимости и выручек по магазину: 
-                                <u><c:out value="${shop.name}" /></u> за 
-                                <u><c:out value="${selectedMonth}" /> <c:out value="${selectedYear}" /></u>
+                                <u><c:out value="${shop.name}" /></u> за период 
+                                <u>с <c:out value="${dateStartStr}" /> по <c:out value="${dateEndStr}" /></u>
                             </div>
                             <div class="panel-body">
 
@@ -51,23 +53,11 @@
                                                 </option>
                                             </c:forEach>
                                         </select>
-                                        Показать данные за: 
-                                        <select name="dateMonth" class="form-control" >
-                                            <c:forEach items="${monthList}" var="month" >
-                                                <option ${month == selectedMonth ? "selected" : ""} value="${month}">
-                                                    <c:out value="${month}" />
-                                                </option>
-                                            </c:forEach>
-                                        </select>
-                                        <select name="dateYear" class="form-control" >
-                                            <c:forEach items="${yearList}" var="year" >
-                                                <option ${year == selectedYear ? "selected" : ""} value="${year}">
-                                                    <c:out value="${year}" />
-                                                </option>
-                                            </c:forEach>
-                                        </select>&nbsp;
-
-                                        <input type="hidden" name="graph" value="true">
+                                        Показать данные за период с  
+                                        <input type="text" name="dateStartStr" id="dateStartField" value="${dateStartStr}" class="form-control datepicker-z">
+                                        по
+                                        <input type="text" name="dateEndStr" id="dateEndField" value="${dateEndStr}" class="form-control datepicker-z"> 
+                                        &nbsp;
                                         <input type="submit" value="Загрузить" class="btn btn-primary">
                                     </form>
                                     <br>
@@ -75,12 +65,6 @@
 
                                 <h3 align="center">Проходимость и продажи</h3>
                                 <div id="placeholder-sales" class="graph-placeholder">
-
-                                </div>
-                                <br><hr>
-                                
-                                <h3 align="center">Выручка с накоплением</h3>
-                                <div id="placeholder-sales-plan" class="graph-placeholder">
 
                                 </div>
 
@@ -97,6 +81,7 @@
         <script type="text/javascript" src="<c:url value="/res/js/jquery.flot.categories.min.js" />"></script>
         <script type="text/javascript" src="<c:url value="/res/js/jquery.flot.crosshair.min.js" />"></script>
         <script type="text/javascript" src="<c:url value="/res/js/jquery.flot.tickrotor.js" />"></script>
+        <script type="text/javascript" src="<c:url value="/res/js/datepicker-ru.js" />"></script>
         <script type="text/javascript">
             $(function () {
 
@@ -115,23 +100,6 @@
 
                     }
                 ];
-                
-                var sales_plan_data = [
-                    {data: ${graphDataDayTotalStack}, label: "Выручка с накоплением",
-                        lines: {
-                            show: true,
-                            fill: true
-                        }
-                    },
-                    {data: ${graphDataPlan}, label: "План", 
-                        lines: {
-                            show: true,
-                            fill: false
-                        }
-
-                    }
-                ];
-                
 
                 var plot_conf = {
                     grid: {
@@ -146,24 +114,8 @@
                         position: "right"
                     }]
                 };
-                
-                var plot_conf_plan = {
-                    grid: {
-                        hoverable: true
-                    },
-                    crosshair: {mode: "x"},
-                    xaxes: [{
-                        mode: "categories",
-                        rotateTicks: 45
-                    }],
-                    yaxes: [{ min: 0 }, {
-                        alignTicksWithAxis: 1,
-                        position: "right"
-                    }]
-                };
 
                 $.plot("#placeholder-sales", sales_data, plot_conf);
-                $.plot("#placeholder-sales-plan", sales_plan_data, plot_conf_plan);
 
                 $("<div id='tooltip'></div>").css({
                     position: "absolute",
@@ -184,16 +136,10 @@
                         $("#tooltip").hide();
                     }
                 });
-                $("#placeholder-sales-plan").bind("plothover", function (event, pos, item) {
-                    if (item) {
-                        var v = item.datapoint[1];
-                        $("#tooltip").html(item.series.label + ": " + v)
-                                .css({top: item.pageY + 5, left: item.pageX + 5})
-                                .fadeIn(200);
-                    } else {
-                        $("#tooltip").hide();
-                    }
-                });
+                
+                
+                $("#dateStartField").datepicker();
+                $("#dateEndField").datepicker();
             });
         </script>
 

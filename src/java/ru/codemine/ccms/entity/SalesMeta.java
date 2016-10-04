@@ -94,39 +94,21 @@ public class SalesMeta implements Serializable
     @MapKeyJoinColumn(name = "id_type", referencedColumnName = "id")
     private Map<ExpenceType, Double> expences;
     
-    @Digits(integer = 10, fraction = 2)
-    @Range(min = 0)
-    @NotNull
     @Column(name = "pass_total", nullable = false)
     private Integer passabilityTotal;
     
-    @Digits(integer = 10, fraction = 2)
-    @Range(min = 0)
-    @NotNull
     @Column(name = "cqcount_total", nullable = false)
     private Integer chequeCountTotal;
     
-    @Digits(integer = 10, fraction = 2)
-    @Range(min = 0)
-    @NotNull
     @Column(name = "value_total", nullable = false)
     private Double valueTotal;
     
-    @Digits(integer = 10, fraction = 2)
-    @Range(min = 0)
-    @NotNull
     @Column(name = "cashback_total", nullable = false)
     private Double cashbackTotal;
     
-    @Digits(integer = 10, fraction = 2)
-    @Range(min = 0)
-    @NotNull
     @Column(name = "sales_total", nullable = false)
     private Double salesTotal;
     
-    @Digits(integer = 10, fraction = 2)
-    @Range(min = 0)
-    @NotNull
     @Column(name = "expences_total", nullable = false)
     private Double expencesTotal;
     
