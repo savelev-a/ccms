@@ -17,32 +17,13 @@
  */
 package ru.codemine.ccms.router;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.apache.log4j.Logger;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import ru.codemine.ccms.entity.Counter;
-import ru.codemine.ccms.entity.ExpenceType;
-import ru.codemine.ccms.entity.Sales;
-import ru.codemine.ccms.entity.SalesMeta;
-import ru.codemine.ccms.entity.Shop;
-import ru.codemine.ccms.sales.SalesLoader;
-import ru.codemine.ccms.service.CounterService;
-import ru.codemine.ccms.service.ExpenceTypeService;
-import ru.codemine.ccms.service.SalesService;
 import ru.codemine.ccms.service.ShopService;
 import ru.codemine.ccms.utils.Utils;
 
@@ -51,16 +32,12 @@ import ru.codemine.ccms.utils.Utils;
  * @author Alexander Savelev
  */
 @Controller
-public class ReportsRouter //TODO this class NEEDS refactoring
+public class ReportsRouter 
 {
 
     private static final Logger log = Logger.getLogger("ReportsRouter");
 
     @Autowired private ShopService shopService;
-    @Autowired private CounterService counterService;
-    @Autowired private SalesService salesService;
-    @Autowired private SalesLoader salesLoader;
-    @Autowired private ExpenceTypeService expenceTypeService;
     @Autowired private Utils utils;
 
     

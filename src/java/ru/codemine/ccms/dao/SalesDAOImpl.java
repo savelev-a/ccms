@@ -36,16 +36,16 @@ public class SalesDAOImpl extends GenericDAOImpl<SalesMeta, Integer> implements 
     private static final Logger log = Logger.getLogger("SalesDAO");
     
     @Override
-    public void updatePlanAll(Double plan, LocalDate startDate, LocalDate endDate)
+    public boolean updatePlanAll(Double plan, LocalDate startDate, LocalDate endDate)
     {
-        if(plan == null || startDate == null || endDate == null || startDate.isAfter(endDate)) return;
+        if(plan == null || startDate == null || endDate == null || startDate.isAfter(endDate)) return false;
         
         Query updateQuery = getSession().createQuery("UPDATE SalesMeta Sm SET Sm.plan = :plan WHERE Sm.startDate = :startdate AND Sm.endDate = :enddate");
         updateQuery.setDate("startdate", startDate.toDate());
         updateQuery.setDate("enddate", endDate.toDate());
         updateQuery.setDouble("plan", plan);
         
-        updateQuery.executeUpdate();
+        return updateQuery.executeUpdate() > 0;
     }
     
 

@@ -66,9 +66,9 @@ public class SalesService
         salesDAO.update(sm);
     }
     
-    public void updatePlanAll(Double plan, LocalDate startDate, LocalDate endDate)
+    public boolean updatePlanAll(Double plan, LocalDate startDate, LocalDate endDate)
     {
-        salesDAO.updatePlanAll(plan, startDate, endDate);
+         return salesDAO.updatePlanAll(plan, startDate, endDate);
     }
     
     

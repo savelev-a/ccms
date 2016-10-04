@@ -44,8 +44,10 @@ import ru.codemine.ccms.entity.SalesMeta;
 import ru.codemine.ccms.entity.Shop;
 import ru.codemine.ccms.exceptions.ResourceNotFoundException;
 import ru.codemine.ccms.forms.SalesForm;
+import ru.codemine.ccms.forms.SalesPlanForm;
 import ru.codemine.ccms.sales.SalesLoader;
 import ru.codemine.ccms.service.CounterService;
+import ru.codemine.ccms.service.OrganisationService;
 import ru.codemine.ccms.service.SalesService;
 import ru.codemine.ccms.service.ShopService;
 import ru.codemine.ccms.utils.Utils;
@@ -62,6 +64,7 @@ public class SalesRouter
     
     @Autowired private SalesService salesService;
     @Autowired private ShopService shopService;
+    @Autowired private OrganisationService organisationService;
     @Autowired private CounterService counterService;
     @Autowired private SalesLoader salesLoader;
     @Autowired private Utils utils;
@@ -488,5 +491,145 @@ public class SalesRouter
     {
         salesLoader.processSales(shopService.getAllOpen());
         return "redirect:/reports/sales-pass";
+    }
+    
+    
+    //      //
+    // План //
+    //      //
+    
+    @Secured("ROLE_OFFICE")
+    @RequestMapping(value = "/actions/setPlan", method = RequestMethod.GET)
+    public String getPlanSetupPage(
+            @RequestParam(required = false) String dateMonth,
+            @RequestParam(required = false) String dateYear,
+            ModelMap model)
+    {
+        model.addAllAttributes(utils.prepareModel("Установить план продаж - ИнфоПортал", 
+                "reports", "plan", 
+                dateMonth, dateYear));
+        
+        model.addAttribute("organisationList", organisationService.getAll());
+        model.addAttribute("salesMap", utils.getShopSalesMap(dateMonth, dateYear));
+
+        return "actions/setPlan";
+    }
+
+    @Secured("ROLE_OFFICE")
+    @RequestMapping(value = "/actions/setPlanAll", method = RequestMethod.POST)
+    public String setPlanAll(
+            @RequestParam String dateMonth,
+            @RequestParam String dateYear,
+            @RequestParam String value,
+            ModelMap model)
+    {
+        String status;
+        Double plan = 0.0;
+        try
+        {
+            plan = Double.valueOf(value.replace(",", "."));
+
+            DateTimeFormatter formatter = DateTimeFormat.forPattern("dd MMMM YYYY");
+            LocalDate startDate = formatter.parseLocalDate("01 " + dateMonth + " " + dateYear);
+            LocalDate endDate = formatter.parseLocalDate("01 " + dateMonth + " " + dateYear).dayOfMonth().withMaximumValue();
+            List<Shop> shopList = shopService.getAllOpen();
+            for(Shop shop: shopList)
+            {
+                SalesMeta sm = salesService.getByShopAndDate(shop, startDate, endDate);
+                if(sm.getId() == null) salesService.update(sm);
+            }
+            
+            
+            if (salesService.updatePlanAll(plan, startDate, endDate))
+            {
+                status = "ok";
+            }
+            else
+            {
+                status = "error-server";
+            }
+
+            
+        } catch (NumberFormatException e)
+        {
+            status = "error-all";
+        }
+
+        model.addAttribute("dateMonth", dateMonth);
+        model.addAttribute("dateYear", dateYear);
+        model.addAttribute("status", status);
+
+        return "redirect:/actions/setPlan";
+    }
+    
+    @Secured("ROLE_OFFICE")
+    @RequestMapping(value = "/actions/setPlanByOrg", method = RequestMethod.POST)
+    public String setPlanByOrg(
+            @RequestParam String dateMonth,
+            @RequestParam String dateYear,
+            @RequestParam Integer orgId,
+            @RequestParam String value,
+            ModelMap model)
+    {
+        String status;
+        Double plan = 0.0;
+        try
+        {
+            plan = Double.valueOf(value.replace(",", "."));
+
+            DateTimeFormatter formatter = DateTimeFormat.forPattern("dd MMMM YYYY");
+            LocalDate startDate = formatter.parseLocalDate("01 " + dateMonth + " " + dateYear);
+            LocalDate endDate = formatter.parseLocalDate("01 " + dateMonth + " " + dateYear).dayOfMonth().withMaximumValue();
+            Set<Shop> shopList = organisationService.getById(orgId).getShops();
+            for(Shop shop: shopList)
+            {
+                SalesMeta sm = salesService.getByShopAndDate(shop, startDate, endDate);
+                sm.setPlan(plan);
+                salesService.update(sm);
+                
+            }
+            status = "ok";
+        } 
+        catch (NumberFormatException e)
+        {
+            status = "error-org";
+        }
+
+        model.addAttribute("dateMonth", dateMonth);
+        model.addAttribute("dateYear", dateYear);
+        model.addAttribute("status", status);
+
+        return "redirect:/actions/setPlan";
+        
+    }
+    
+    @Secured("ROLE_OFFICE")
+    @RequestMapping(value = "/actions/setPlanCustom", method = RequestMethod.POST)
+    public @ResponseBody String setPlanCustom(
+            @RequestParam String dateMonth,
+            @RequestParam String dateYear,
+            @RequestBody List<SalesPlanForm> salesPlanForms)
+    {
+        String resultStr;
+
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd MMMM YYYY");
+        LocalDate selectedStartDate = formatter.parseLocalDate("01 " + dateMonth + " " + dateYear);
+        LocalDate selectedEndDate = selectedStartDate.dayOfMonth().withMaximumValue();
+        
+        for(SalesPlanForm spf : salesPlanForms)
+        {
+            Shop shop = shopService.getByName(spf.getShopname());
+            SalesMeta salesMeta = salesService.getByShopAndDate(shop, selectedStartDate, selectedEndDate);
+            if(!salesMeta.getPlan().equals(spf.getPlan()))
+            {
+                salesMeta.setPlan(spf.getPlan());
+                salesService.update(salesMeta);
+            }
+        }
+        
+        resultStr = "{\"result\": \"success\"}";
+        
+        return resultStr;
+        
     }
 }

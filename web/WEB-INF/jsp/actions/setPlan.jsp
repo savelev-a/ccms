@@ -221,16 +221,16 @@
         $(function () {
             var data = [<c:forEach items="${salesMap}" var="entry">{
                     shopname: "<c:out value='${entry.key.name}' />",
-                    passability: <c:out value='${entry.value.passabilityTotals}' default="0" />,
-                    cheque: <c:out value='${entry.value.chequeTotals}' default="0" />,
-                    periodtotal: <c:out value='${entry.value.valueTotals}' default="0.0" />,
+                    passability: <c:out value='${entry.value.passabilityTotal}' default="0" />,
+                    cheque: <c:out value='${entry.value.chequeCountTotal}' default="0" />,
+                    periodtotal: <c:out value='${entry.value.valueTotal}' default="0.0" />,
                     plan: <c:out value='${entry.value.plan}' default="0.0" />,
                     plancoverage: <c:out value='${entry.value.plan == 0 ? 0 : entry.value.planCoverage}' default="0.0" />
                 }, </c:forEach>];
 
             $("#planTable").jqGrid({
                 datatype: "local",
-                height: "100%",
+                height: "307px",
                 width: null,
                 shrinkToFit: false,
                 caption: "",
@@ -276,6 +276,7 @@
                 jQuery("#planTable").jqGrid('addRowData', i + 1, data[i]);
 
             $("#saveTable").click(function () {
+            $("#planTable").jqGrid("editCell", 0, 0, false);
                 var localGridData = jQuery("#planTable").jqGrid('getGridParam', 'data');
                 sendData(localGridData);
             });

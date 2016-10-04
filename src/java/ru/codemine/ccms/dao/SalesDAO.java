@@ -29,7 +29,7 @@ import ru.codemine.ccms.entity.Shop;
 
 public interface SalesDAO extends GenericDAO<SalesMeta, Integer>
 {
-    public void updatePlanAll(Double plan, LocalDate startDate, LocalDate endDate);
+    public boolean updatePlanAll(Double plan, LocalDate startDate, LocalDate endDate);
 
     public List<SalesMeta> getByShop(Shop shop);
 
