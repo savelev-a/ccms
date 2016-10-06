@@ -42,10 +42,12 @@ public class ExpenceType implements Serializable
     @Column(name = "id", nullable = false)
     private Integer id;
     
-    @Column(name = "description", length = 128, nullable = false)
+    @Column(name = "name", length = 128, nullable = false)
     @Length(max = 128, message = "Слишком длинное значение")
-    private String description;
+    private String name;
     
+    @Column(name = "comment", columnDefinition = "TEXT")
+    private String comment;
 
     public Integer getId()
     {
@@ -57,21 +59,30 @@ public class ExpenceType implements Serializable
         this.id = id;
     }
 
-    public String getDescription()
+    public String getName()
     {
-        return description;
+        return name;
     }
 
-    public void setDescription(String description)
+    public void setName(String name)
     {
-        this.description = description;
+        this.name = name;
     }
 
+    public String getComment()
+    {
+        return comment;
+    }
+
+    public void setComment(String comment)
+    {
+        this.comment = comment;
+    }
 
     @Override
     public String toString()
     {
-        return "ExpenceType{" + "id=" + id + ", description=" + description +  '}';
+        return "ExpenceType{" + "id=" + id + ", name=" + name + ", comment=" + comment + '}';
     }
     
     

@@ -233,19 +233,24 @@ public class SalesDAOImpl extends GenericDAOImpl<SalesMeta, Integer> implements 
     @Override
     public Double getTotalExpenceValueForPeriod(Shop shop, LocalDate startDate, LocalDate endDate, ExpenceType type)
     {
-        Query query = getSession().createQuery("SELECT VALUE(Sm.expences) "
-                + "FROM SalesMeta Sm "
+        Query query = getSession().createQuery("FROM SalesMeta Sm "
                 + "WHERE Sm.shop.id = :shopid "
                 + "AND Sm.startDate >= :startdate "
                 + "AND Sm.endDate <= :enddate "
-                + "AND :expenceType IN INDEX(Sm.expences)");
+                + "AND :expenceType IN INDICES(Sm.expences)");
         query.setInteger("shopid", shop.getId());
         query.setDate("startdate", startDate.toDate());
         query.setDate("enddate", endDate.toDate());
         query.setParameter("expenceType", type);
         
-        log.info(query.list());
-
-        return (Double)query.uniqueResult();
+        List<SalesMeta> smList = query.list();
+        Double result = 0.0;
+        
+        for(SalesMeta sm : smList)
+        {
+            result += sm.getExpences().get(type);
+        }
+        
+        return result;
     }
 }

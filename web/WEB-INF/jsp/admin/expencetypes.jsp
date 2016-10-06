@@ -44,8 +44,7 @@
                                     <thead>
                                         <tr>
                                             <th>ID</th>
-                                            <th>Описание</th>
-                                            <th>Тип</th>
+                                            <th>Наименование</th>
                                             <th>Действия</th>
                                         </tr>
                                     </thead>
@@ -55,7 +54,7 @@
                                                 <td><c:out value="${expenceType.id}" /></td>
                                                 <td>
                                                     <a href="<c:url value="/admin/expencetypes/edit?id=${expenceType.id}" />" >
-                                                        <c:out value="${expenceType.description}" />
+                                                        <c:out value="${expenceType.name}" />
                                                     </a>
                                                 </td>
                                                 
@@ -80,9 +79,14 @@
                                     <table class="table table-condensed">
                                         <tbody>
                                             <tr>
+                                                <td><b>Наименование</b></td>
+                                                <td><form:input path="name" class="form-control" /></td>
+                                                <td><form:errors path="name" cssStyle="color: #ff0000;" /></td>
+                                            </tr>
+                                            <tr>
                                                 <td><b>Описание</b></td>
-                                                <td><form:input path="description" class="form-control" /></td>
-                                                <td><form:errors path="description" cssStyle="color: #ff0000;" /></td>
+                                                <td><form:textarea path="comment" class="form-control" /></td>
+                                                <td><form:errors path="comment" cssStyle="color: #ff0000;" /></td>
                                             </tr>
                                         </tbody>
                                     </table>

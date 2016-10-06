@@ -36,7 +36,7 @@
                     <br><br>
 
                     
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <div class="panel panel-primary panel-primary-dark">
                             <div class="panel-heading panel-heading-dark" align="center">Редактировать тип расходов</div>
                             <div class="panel-body">
@@ -44,9 +44,14 @@
                                     <table class="table table-condensed">
                                         <tbody>
                                             <tr>
+                                                <td><b>Наименование</b></td>
+                                                <td><form:input path="name" class="form-control" /></td>
+                                                <td><form:errors path="name" cssStyle="color: #ff0000;" /></td>
+                                            </tr>
+                                            <tr>
                                                 <td><b>Описание</b></td>
-                                                <td><form:input path="description" class="form-control" /></td>
-                                                <td><form:errors path="description" cssStyle="color: #ff0000;" /></td>
+                                                <td><form:textarea path="comment" class="form-control" /></td>
+                                                <td><form:errors path="comment" cssStyle="color: #ff0000;" /></td>
                                             </tr>
                                         </tbody>
                                     </table>

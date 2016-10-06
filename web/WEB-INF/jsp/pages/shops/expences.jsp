@@ -6,6 +6,7 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
     "http://www.w3.org/TR/html4/loose.dtd">
 
@@ -18,6 +19,7 @@
         <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/jquery-ui.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/jquery-ui.theme.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/ui.jqgrid.css" />" >
+        <link rel="stylesheet" href="<c:url value="/res/css/jquery.dataTables.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/styles.css" />" >
         <title><c:out value="${title}" /></title>
     </head>
@@ -65,12 +67,46 @@
                                     <table id="expencesTable">
 
                                     </table>
-                                    <br>
-                                    <div id="expencesTableNav">
-                                        <button id="addRecord" class="btn btn-primary">Добавить</button>
+                                </div>
+                                <br>
+                                <div id="collasible">
+                                    <h4>Добавить типы расходов</h4>
+                                    <div>
+                                        <c:url var="performers_post_url"  value="/expences/addtype?shopid=${shop.id}&dateYear=${selectedYear}" />
+                                            <form:form method="post" commandName="expenceTypesForm" action="${performers_post_url}">
+                                                <table id="typesChooseTab">
+                                                    <thead>
+                                                        <tr>
+                                                            <th bgcolor="#d9edf7">#</th>
+                                                            <th bgcolor="#d9edf7">Наименование</th>
+                                                            <th bgcolor="#d9edf7">Описание</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <c:forEach items="${allExpTypes}" var="expType" varStatus="idx">
+                                                            <tr>
+                                                                <td>
+                                                                    <c:choose>
+                                                                        <c:when test="${addedExpTypes.contains(expType)}">
+                                                                            <form:checkbox path="types" value="${expType.id}" checked="true" disabled="true" />
+                                                                        </c:when>
+                                                                        <c:otherwise>
+                                                                            <form:checkbox path="types" value="${expType.id}" />
+                                                                        </c:otherwise>
+                                                                    </c:choose>
+
+                                                                </td>
+                                                                <td><c:out value="${expType.name}" /></td>
+                                                                <td><c:out value="${expType.comment}" /></td>
+                                                            </tr>
+                                                        </c:forEach>
+                                                    </tbody>
+                                                </table>
+                                                <br>
+                                                <input id="save" type="submit" name="save" value="Добавить" class="btn btn-primary">
+                                            </form:form>
                                     </div>
                                 </div>
-                                <br><br>
                             </div>
                         </div>
                     </div>
@@ -88,22 +124,6 @@
 
     <script type="text/javascript">
         $(function () {
-            
-            var extypesdata = (function (){
-                var list = null;
-                
-                $.ajax({
-                    'async': false,
-                    'global': false,
-                    'url': '<c:url value="/expences/typedata" />',
-                    'dataType': 'json',
-                    'success': function (data) {
-                        list = data;
-                    }
-                });
-                
-                return list;
-            });
 
             $("#expencesTable").jqGrid({
                 url: "<c:url value='/expences/data?shopid=${shop.id}&dateYear=${selectedYear}' />",
@@ -122,7 +142,7 @@
                 sortname: "expencetype",
                 colNames: ['Описание расхода', 'Янв', 'Фев', 'Мар', 'Апр', 'Майь', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек', 'Итого'],
                 colModel: [
-                    {name: 'expencetype', index: 'expencetype', width: 200, sorttype: "text", classes: "jqcol-hyperlink"},
+                    {name: 'expencetype', index: 'expencetype', width: 180, sorttype: "text", classes: "jqcol-hyperlink"},
                     <c:forEach varStatus="idx" begin="1" end="12">
                         {name: 'c${idx.count}', index: 'c${idx.count}', width: 60, sorttype: "float", editable: true, align: "right", formatter: 'number', 
                             editrules: {
@@ -140,6 +160,19 @@
                 ]
 
             });
+            
+            $("#typesChooseTab").DataTable({
+                    "scrollY": "200px",
+                    "scrollCollapse": true,
+                    "paging": false
+            });
+            
+            $("#collasible").accordion({
+                collapsible: true,
+                active: false,
+                heightStyle: "content"
+            });
+            
             
             
         });

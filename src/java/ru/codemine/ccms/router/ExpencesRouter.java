@@ -39,6 +39,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import ru.codemine.ccms.entity.ExpenceType;
 import ru.codemine.ccms.entity.SalesMeta;
 import ru.codemine.ccms.entity.Shop;
+import ru.codemine.ccms.forms.ExpenceTypesForm;
 import ru.codemine.ccms.service.ExpenceTypeService;
 import ru.codemine.ccms.service.SalesService;
 import ru.codemine.ccms.service.ShopService;
@@ -65,14 +66,24 @@ public class ExpencesRouter
                                   @RequestParam(required = false) String dateYear,
                                   ModelMap model)
     {
+        if(dateYear == null) dateYear = LocalDate.now().toString("YYYY");
+        
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd.MM.YYYY");
+        LocalDate startDate = formatter.parseLocalDate("01.01." + dateYear);
+        LocalDate endDate = formatter.parseLocalDate("31.12." + dateYear);
+        
         Shop shop = shopService.getById(shopid);
         
-        model.addAttribute("selectedYear", dateYear == null ? LocalDate.now().toString("YYYY") : dateYear);
-        
+        List<ExpenceType> allExpTypes = expenceTypeService.getAll();
+        Set<ExpenceType> addedExpTypes = salesService.getExpenceTypesByPeriod(shop, startDate, endDate);
+                
         model.addAllAttributes(utils.prepareModel("Установка расходов по магазину - " + shop.getName() + " - ИнфоПортал", "shops", "expences"));
         model.addAttribute("shop", shop);
-        model.addAttribute("dateYear", dateYear);
+        model.addAttribute("selectedYear", dateYear);
         model.addAttribute("yearList", utils.getYearStrings());
+        model.addAttribute("allExpTypes", allExpTypes);
+        model.addAttribute("addedExpTypes", addedExpTypes);
+        model.addAttribute("expenceTypesForm", new ExpenceTypesForm());
         
         return "pages/shops/expences";
     }
@@ -102,7 +113,7 @@ public class ExpencesRouter
                 String month = sm.getStartDate().toString("M");
                 record.put("c" + month, val);
             }
-            record.put("expencetype", type.getDescription());
+            record.put("expencetype", type.getName());
             record.put("totals", salesService.getTotalExpenceValueForPeriod(shop, startDate, endDate, type));
             records.add(record);
         }
