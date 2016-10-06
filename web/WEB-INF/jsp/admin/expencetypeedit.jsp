@@ -48,11 +48,6 @@
                                                 <td><form:input path="description" class="form-control" /></td>
                                                 <td><form:errors path="description" cssStyle="color: #ff0000;" /></td>
                                             </tr>
-                                            <tr>
-                                                <td><b>Отметить как ежемесячный</b></td>
-                                                <td><form:checkbox path="recurrent" /></td>
-                                                <td><form:errors path="recurrent" cssStyle="color: #ff0000;" /></td>
-                                            </tr>
                                         </tbody>
                                     </table>
                                     <input id="save" type="submit" value="Сохранить" class="btn btn-primary">

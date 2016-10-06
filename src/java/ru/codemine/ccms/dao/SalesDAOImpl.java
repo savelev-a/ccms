@@ -17,11 +17,15 @@
  */
 package ru.codemine.ccms.dao;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.joda.time.LocalDate;
 import org.springframework.stereotype.Repository;
+import ru.codemine.ccms.entity.ExpenceType;
 import ru.codemine.ccms.entity.SalesMeta;
 import ru.codemine.ccms.entity.Shop;
 
@@ -40,7 +44,10 @@ public class SalesDAOImpl extends GenericDAOImpl<SalesMeta, Integer> implements 
     {
         if(plan == null || startDate == null || endDate == null || startDate.isAfter(endDate)) return false;
         
-        Query updateQuery = getSession().createQuery("UPDATE SalesMeta Sm SET Sm.plan = :plan WHERE Sm.startDate = :startdate AND Sm.endDate = :enddate");
+        Query updateQuery = getSession().createQuery("UPDATE SalesMeta Sm "
+                + "SET Sm.plan = :plan "
+                + "WHERE Sm.startDate = :startdate "
+                + "AND Sm.endDate = :enddate");
         updateQuery.setDate("startdate", startDate.toDate());
         updateQuery.setDate("enddate", endDate.toDate());
         updateQuery.setDouble("plan", plan);
@@ -61,7 +68,10 @@ public class SalesDAOImpl extends GenericDAOImpl<SalesMeta, Integer> implements 
     @Override
     public SalesMeta getByShopAndDate(Shop shop, LocalDate startDate, LocalDate endDate)
     {
-        Query query = getSession().createQuery("FROM SalesMeta Sm WHERE Sm.shop.id = :shopid AND Sm.startDate = :startdate AND Sm.endDate = :enddate");
+        Query query = getSession().createQuery("FROM SalesMeta Sm "
+                + "WHERE Sm.shop.id = :shopid "
+                + "AND Sm.startDate = :startdate "
+                + "AND Sm.endDate = :enddate");
         query.setInteger("shopid", shop.getId());
         query.setDate("startdate", startDate.toDate());
         query.setDate("enddate", endDate.toDate());
@@ -72,7 +82,10 @@ public class SalesDAOImpl extends GenericDAOImpl<SalesMeta, Integer> implements 
     @Override
     public List<SalesMeta> getByPeriod(Shop shop, LocalDate startDate, LocalDate endDate)
     {
-        Query query = getSession().createQuery("FROM SalesMeta Sm WHERE Sm.shop.id = :shopid AND Sm.startDate >= :startdate AND Sm.endDate <= :enddate");
+        Query query = getSession().createQuery("FROM SalesMeta Sm "
+                + "WHERE Sm.shop.id = :shopid "
+                + "AND Sm.startDate >= :startdate "
+                + "AND Sm.endDate <= :enddate");
         query.setInteger("shopid", shop.getId());
         query.setDate("startdate", startDate.toDate());
         query.setDate("enddate", endDate.toDate());
@@ -83,7 +96,11 @@ public class SalesDAOImpl extends GenericDAOImpl<SalesMeta, Integer> implements 
     @Override
     public Integer getPassabilityValueByPeriod(Shop shop, LocalDate startDate, LocalDate endDate)
     {
-        Query query = getSession().createQuery("SELECT SUM(Sm.passabilityTotal) FROM SalesMeta Sm WHERE Sm.shop.id = :shopid AND Sm.startDate >= :startdate AND Sm.endDate <= :enddate");
+        Query query = getSession().createQuery("SELECT SUM(Sm.passabilityTotal) "
+                + "FROM SalesMeta Sm "
+                + "WHERE Sm.shop.id = :shopid "
+                + "AND Sm.startDate >= :startdate "
+                + "AND Sm.endDate <= :enddate");
         query.setInteger("shopid", shop.getId());
         query.setDate("startdate", startDate.toDate());
         query.setDate("enddate", endDate.toDate());
@@ -96,7 +113,11 @@ public class SalesDAOImpl extends GenericDAOImpl<SalesMeta, Integer> implements 
     @Override
     public Integer getCqcountValueByPeriod(Shop shop, LocalDate startDate, LocalDate endDate)
     {
-        Query query = getSession().createQuery("SELECT SUM(Sm.chequeCountTotal) FROM SalesMeta Sm WHERE Sm.shop.id = :shopid AND Sm.startDate >= :startdate AND Sm.endDate <= :enddate");
+        Query query = getSession().createQuery("SELECT SUM(Sm.chequeCountTotal) "
+                + "FROM SalesMeta Sm "
+                + "WHERE Sm.shop.id = :shopid "
+                + "AND Sm.startDate >= :startdate "
+                + "AND Sm.endDate <= :enddate");
         query.setInteger("shopid", shop.getId());
         query.setDate("startdate", startDate.toDate());
         query.setDate("enddate", endDate.toDate());
@@ -109,7 +130,11 @@ public class SalesDAOImpl extends GenericDAOImpl<SalesMeta, Integer> implements 
     @Override
     public Double getValueByPeriod(Shop shop, LocalDate startDate, LocalDate endDate)
     {
-        Query query = getSession().createQuery("SELECT SUM(Sm.valueTotal) FROM SalesMeta Sm WHERE Sm.shop.id = :shopid AND Sm.startDate >= :startdate AND Sm.endDate <= :enddate");
+        Query query = getSession().createQuery("SELECT SUM(Sm.valueTotal) "
+                + "FROM SalesMeta Sm "
+                + "WHERE Sm.shop.id = :shopid "
+                + "AND Sm.startDate >= :startdate "
+                + "AND Sm.endDate <= :enddate");
         query.setInteger("shopid", shop.getId());
         query.setDate("startdate", startDate.toDate());
         query.setDate("enddate", endDate.toDate());
@@ -122,7 +147,11 @@ public class SalesDAOImpl extends GenericDAOImpl<SalesMeta, Integer> implements 
     @Override
     public Double getCashbackValueByPeriod(Shop shop, LocalDate startDate, LocalDate endDate)
     {
-        Query query = getSession().createQuery("SELECT SUM(Sm.cashbackTotal) FROM SalesMeta Sm WHERE Sm.shop.id = :shopid AND Sm.startDate >= :startdate AND Sm.endDate <= :enddate");
+        Query query = getSession().createQuery("SELECT SUM(Sm.cashbackTotal) "
+                + "FROM SalesMeta Sm "
+                + "WHERE Sm.shop.id = :shopid "
+                + "AND Sm.startDate >= :startdate "
+                + "AND Sm.endDate <= :enddate");
         query.setInteger("shopid", shop.getId());
         query.setDate("startdate", startDate.toDate());
         query.setDate("enddate", endDate.toDate());
@@ -135,7 +164,11 @@ public class SalesDAOImpl extends GenericDAOImpl<SalesMeta, Integer> implements 
     @Override
     public Double getSalesValueByPeriod(Shop shop, LocalDate startDate, LocalDate endDate)
     {
-        Query query = getSession().createQuery("SELECT SUM(Sm.salesTotal) FROM SalesMeta Sm WHERE Sm.shop.id = :shopid AND Sm.startDate >= :startdate AND Sm.endDate <= :enddate");
+        Query query = getSession().createQuery("SELECT SUM(Sm.salesTotal) "
+                + "FROM SalesMeta Sm "
+                + "WHERE Sm.shop.id = :shopid "
+                + "AND Sm.startDate >= :startdate "
+                + "AND Sm.endDate <= :enddate");
         query.setInteger("shopid", shop.getId());
         query.setDate("startdate", startDate.toDate());
         query.setDate("enddate", endDate.toDate());
@@ -157,7 +190,11 @@ public class SalesDAOImpl extends GenericDAOImpl<SalesMeta, Integer> implements 
     @Override
     public Double getPlan(Shop shop, LocalDate startDate, LocalDate endDate)
     {
-        Query query = getSession().createQuery("SELECT SUM(Sm.plan) FROM SalesMeta Sm WHERE Sm.shop.id = :shopid AND Sm.startDate >= :startdate AND Sm.endDate <= :enddate");
+        Query query = getSession().createQuery("SELECT SUM(Sm.plan) "
+                + "FROM SalesMeta Sm "
+                + "WHERE Sm.shop.id = :shopid "
+                + "AND Sm.startDate >= :startdate "
+                + "AND Sm.endDate <= :enddate");
         query.setInteger("shopid", shop.getId());
         query.setDate("startdate", startDate.toDate());
         query.setDate("enddate", endDate.toDate());
@@ -174,5 +211,41 @@ public class SalesDAOImpl extends GenericDAOImpl<SalesMeta, Integer> implements 
         Double sale = getSalesValueByPeriod(shop, startDate, endDate);
         
         return plan.equals(0.0) ? 0.0 : sale / plan * 100;
+    }
+
+    @Override
+    public Set<ExpenceType> getExpenceTypesByPeriod(Shop shop, LocalDate startDate, LocalDate endDate)
+    {
+        Query query = getSession().createQuery("SELECT INDEX(Sm.expences) "
+                + "FROM SalesMeta Sm "
+                + "WHERE Sm.shop.id = :shopid "
+                + "AND Sm.startDate >= :startdate "
+                + "AND Sm.endDate <= :enddate");
+        query.setInteger("shopid", shop.getId());
+        query.setDate("startdate", startDate.toDate());
+        query.setDate("enddate", endDate.toDate());
+        
+        Set<ExpenceType> etSet = new HashSet<>(query.list());
+
+        return etSet;
+    }
+
+    @Override
+    public Double getTotalExpenceValueForPeriod(Shop shop, LocalDate startDate, LocalDate endDate, ExpenceType type)
+    {
+        Query query = getSession().createQuery("SELECT VALUE(Sm.expences) "
+                + "FROM SalesMeta Sm "
+                + "WHERE Sm.shop.id = :shopid "
+                + "AND Sm.startDate >= :startdate "
+                + "AND Sm.endDate <= :enddate "
+                + "AND :expenceType IN INDEX(Sm.expences)");
+        query.setInteger("shopid", shop.getId());
+        query.setDate("startdate", startDate.toDate());
+        query.setDate("enddate", endDate.toDate());
+        query.setParameter("expenceType", type);
+        
+        log.info(query.list());
+
+        return (Double)query.uniqueResult();
     }
 }

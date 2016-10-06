@@ -19,12 +19,14 @@ package ru.codemine.ccms.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import org.apache.log4j.Logger;
 import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.codemine.ccms.dao.SalesDAO;
+import ru.codemine.ccms.entity.ExpenceType;
 import ru.codemine.ccms.entity.Sales;
 import ru.codemine.ccms.entity.SalesMeta;
 import ru.codemine.ccms.entity.Shop;
@@ -156,6 +158,16 @@ public class SalesService
             result.addAll(sm.getSales());
         
         return result;
+    }
+
+    public Set<ExpenceType> getExpenceTypesByPeriod(Shop shop, LocalDate startDate, LocalDate endDate)
+    {
+        return salesDAO.getExpenceTypesByPeriod(shop, startDate, endDate);
+    }
+
+    public Double getTotalExpenceValueForPeriod(Shop shop, LocalDate startDate, LocalDate endDate, ExpenceType type)
+    {
+        return salesDAO.getTotalExpenceValueForPeriod(shop, startDate, endDate, type);
     }
     
 }

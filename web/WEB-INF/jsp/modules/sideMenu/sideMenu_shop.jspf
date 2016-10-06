@@ -37,7 +37,7 @@
                     <tr><td> </td></tr>
                     <tr ${sideMenuActiveItem == "expences" ? "class='info'" : ""}>
                     <td>
-                        <a href="<c:url value="/actions/setexpences?shopid=${shop.id}" />">
+                        <a href="<c:url value="/expences?shopid=${shop.id}" />">
                             Расходы магазина
                         </a> 
                     </td>

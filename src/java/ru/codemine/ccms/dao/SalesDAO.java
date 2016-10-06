@@ -18,7 +18,9 @@
 package ru.codemine.ccms.dao;
 
 import java.util.List;
+import java.util.Set;
 import org.joda.time.LocalDate;
+import ru.codemine.ccms.entity.ExpenceType;
 import ru.codemine.ccms.entity.SalesMeta;
 import ru.codemine.ccms.entity.Shop;
 
@@ -44,5 +46,9 @@ public interface SalesDAO extends GenericDAO<SalesMeta, Integer>
     public Double getMidPriceValueByPeriod(     Shop shop, LocalDate startDate, LocalDate endDate);
     public Double getPlan(                      Shop shop, LocalDate startDate, LocalDate endDate);
     public Double getPlanCoverage(              Shop shop, LocalDate startDate, LocalDate endDate);
+
+    public Set<ExpenceType> getExpenceTypesByPeriod(Shop shop, LocalDate startDate, LocalDate endDate);
+
+    public Double getTotalExpenceValueForPeriod(Shop shop, LocalDate startDate, LocalDate endDate, ExpenceType type);
     
 }

@@ -58,9 +58,8 @@
                                                         <c:out value="${expenceType.description}" />
                                                     </a>
                                                 </td>
-                                                <td>${expenceType.recurrent ? "Ежемесячный" : "Разовый"}</td>
+                                                
                                                 <td>
-                                                    
                                                     <a href="#" class="delete" id="del${expenceType.id}"><span class="glyphicon glyphicon-trash"></span> Удалить</a>
                                                 </td>
                                             </tr>
@@ -84,11 +83,6 @@
                                                 <td><b>Описание</b></td>
                                                 <td><form:input path="description" class="form-control" /></td>
                                                 <td><form:errors path="description" cssStyle="color: #ff0000;" /></td>
-                                            </tr>
-                                            <tr>
-                                                <td><b>Отметить как ежемесячный</b></td>
-                                                <td><form:checkbox path="recurrent" /></td>
-                                                <td><form:errors path="recurrent" cssStyle="color: #ff0000;" /></td>
                                             </tr>
                                         </tbody>
                                     </table>
