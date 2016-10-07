@@ -25,23 +25,33 @@
                         Магазины
                     </a> 
                 </li>
+                
+                <li class="dropdown ${mainMenuActiveItem == "directories" ? "active" : ""}">
+                        <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown">
+                            Справочники
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
 
-                <li ${mainMenuActiveItem == "offices" ? "class=active" : ""}>
-                    <a href="<c:url value="/offices" />">
-                        Офисы
-                    </a> 
-                </li>
+                            <li>
+                                <a href="<c:url value="/offices" />">
+                                    Офисы
+                                </a> 
+                            </li>
 
-                <li ${mainMenuActiveItem == "employees" ? "class=active" : ""}>
-                    <a href="<c:url value="/employees" />">
-                        Сотрудники
-                    </a> 
-                </li>
+                            <li>
+                                <a href="<c:url value="/employees" />">
+                                    Сотрудники
+                                </a> 
+                            </li>
 
-                <li ${mainMenuActiveItem == "organisations" ? "class=active" : ""}>
-                    <a href="<c:url value="/organisations" />">
-                        Юр. лица
-                    </a> 
+                            <li>
+                                <a href="<c:url value="/organisations" />">
+                                    Юр. лица
+                                </a> 
+                            </li>
+                            
+                        </ul>
                 </li>
 
                 <sec:authorize access="hasRole('ROLE_SHOP')">
@@ -68,6 +78,25 @@
                 </sec:authorize>
 
                 <sec:authorize access="hasRole('ROLE_OFFICE')">
+                    <li class="dropdown ${mainMenuActiveItem == "actions" ? "active" : ""}">
+                        <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown">
+                            Управление
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="<c:url value="/expences" />" >
+                                    <span class="glyphicon glyphicon-list-alt"></span> Установить расходы
+                                </a>
+                            </li>
+                            <li>
+                                <a href="<c:url value="/actions/setPlan" />" >
+                                    <span class="glyphicon glyphicon-list-alt"></span> Установить план
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    
                     <li class="dropdown ${mainMenuActiveItem == "reports" ? "active" : ""}">
                         <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown">
                             Отчеты

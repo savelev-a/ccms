@@ -65,23 +65,26 @@ public class ExpencesRouter
     
     @Secured("ROLE_OFFICE")
     @RequestMapping(value = "/expences", method = RequestMethod.GET)
-    public String getExpencesPage(@RequestParam(required = true)  Integer shopid, 
+    public String getExpencesPage(@RequestParam(required = false)  Integer shopid, 
                                   @RequestParam(required = false) String dateYear,
                                   ModelMap model)
     {
         if(dateYear == null) dateYear = LocalDate.now().toString("YYYY");
+        if(shopid == null) shopid = shopService.getAll().get(0).getId();
         
         DateTimeFormatter formatter = DateTimeFormat.forPattern("dd.MM.YYYY");
         LocalDate startDate = formatter.parseLocalDate("01.01." + dateYear);
         LocalDate endDate = formatter.parseLocalDate("31.12." + dateYear);
         
         Shop shop = shopService.getById(shopid);
+        List<Shop> shopList = shopService.getAllOpen();
         
         List<ExpenceType> allExpTypes = expenceTypeService.getAll();
         Set<ExpenceType> addedExpTypes = salesService.getExpenceTypesByPeriod(shop, startDate, endDate);
                 
-        model.addAllAttributes(utils.prepareModel("Установка расходов по магазину - " + shop.getName() + " - ИнфоПортал", "shops", "expences"));
+        model.addAllAttributes(utils.prepareModel("Установка расходов по магазину - " + shop.getName() + " - ИнфоПортал", "actions", "expences"));
         model.addAttribute("shop", shop);
+        model.addAttribute("shopList", shopList);
         model.addAttribute("selectedYear", dateYear);
         model.addAttribute("yearList", utils.getYearStrings());
         model.addAttribute("allExpTypes", allExpTypes);

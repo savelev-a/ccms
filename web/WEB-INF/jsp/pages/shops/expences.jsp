@@ -47,6 +47,14 @@
                                 <!-- Выбор периода -->
                                 <div class="form-inline" align="right">
                                     <form name="dateChooseForm" action="<c:url value="/expences" />" method="GET">
+                                        Выберите магазин: 
+                                        <select name="shopid" class="form-control" >
+                                            <c:forEach items="${shopList}" var="shp" >
+                                                <option ${shp == shop ? "selected" : ""} value="${shp.id}">
+                                                    <c:out value="${shp.name}" />
+                                                </option>
+                                            </c:forEach>
+                                        </select>
                                         Выберите год: 
                                         <select name="dateYear" class="form-control" >
                                             <c:forEach items="${yearList}" var="year" >
@@ -56,7 +64,6 @@
                                             </c:forEach>
                                         </select>&nbsp;
                                         
-                                        <input type="hidden" name="shopid" value="${shop.id}">
                                         <input type="submit" value="Загрузить" class="btn btn-primary">
                                     </form>
                                     <br>

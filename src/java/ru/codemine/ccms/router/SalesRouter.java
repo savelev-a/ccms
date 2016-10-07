@@ -506,7 +506,7 @@ public class SalesRouter
             ModelMap model)
     {
         model.addAllAttributes(utils.prepareModel("Установить план продаж - ИнфоПортал", 
-                "reports", "plan", 
+                "actions", "plan", 
                 dateMonth, dateYear));
         
         model.addAttribute("organisationList", organisationService.getAll());
