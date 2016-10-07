@@ -34,7 +34,7 @@ import org.hibernate.validator.constraints.Length;
 
 @Entity
 @Table(name = "expenceTypes")
-public class ExpenceType implements Serializable
+public class ExpenceType implements Serializable, Comparable<ExpenceType>
 {
     @Id
     @GeneratedValue(generator = "increment")
@@ -42,7 +42,7 @@ public class ExpenceType implements Serializable
     @Column(name = "id", nullable = false)
     private Integer id;
     
-    @Column(name = "name", length = 128, nullable = false)
+    @Column(name = "name", length = 128, nullable = false, unique = true)
     @Length(max = 128, message = "Слишком длинное значение")
     private String name;
     
@@ -83,6 +83,12 @@ public class ExpenceType implements Serializable
     public String toString()
     {
         return "ExpenceType{" + "id=" + id + ", name=" + name + ", comment=" + comment + '}';
+    }
+
+    @Override
+    public int compareTo(ExpenceType o)
+    {
+        return this.getName().compareTo(o.getName());
     }
     
     

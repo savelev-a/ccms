@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.joda.time.LocalDate;
@@ -225,7 +226,7 @@ public class SalesDAOImpl extends GenericDAOImpl<SalesMeta, Integer> implements 
         query.setDate("startdate", startDate.toDate());
         query.setDate("enddate", endDate.toDate());
         
-        Set<ExpenceType> etSet = new HashSet<>(query.list());
+        Set<ExpenceType> etSet = new TreeSet<>(query.list());
 
         return etSet;
     }

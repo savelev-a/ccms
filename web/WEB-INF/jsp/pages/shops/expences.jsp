@@ -129,22 +129,55 @@
                 url: "<c:url value='/expences/data?shopid=${shop.id}&dateYear=${selectedYear}' />",
                 datatype: "json",
                 loadonce: true,
-                height: "350px",
+                height: "280px",
                 width: null,
                 shrinkToFit: false,
                 caption: "",
-                rowNum: -1,
+                rowNum: 1000,
+                footerrow: true,
                 cellEdit: true,
-                cellsubmit: "clientArray",
+                cellsubmit: "remote",
+                cellurl: "<c:url value='/expences/savecell?shopid=${shop.id}&dateYear=${selectedYear}' />",
+                beforeSubmitCell: function(rowid,celname,value,iRow,iCol) {       
+                    var val = $('#expencesTable').jqGrid('getCell',rowid,'expencetype');
+                    return {"${_csrf.parameterName}":"${_csrf.token}", "extypename":val}
+                },
                 afterEditCell: function (id, name, val, iRow, iCol) {
                     $("#" + this.id + " tbody>tr:eq(" + iRow + ")>td:eq(" + iCol + ") input, select, textarea").select();
                 },
+                afterSaveCell: function (id, name, val, iRow, iCol) {
+                    var sum = 0;
+                    for(var i = 1; i <= 12; i++) {sum += parseFloat($('#expencesTable').jqGrid('getCell',id,'c'+i))};
+                    jQuery("#expencesTable").jqGrid('setRowData', id, {totals: sum});
+                    
+                    var elem = {};
+                    elem[name] = parseFloat($('#expencesTable').jqGrid('getCol', name, false, 'sum'));
+                    elem['totals'] = parseFloat($('#expencesTable').jqGrid('getCol', 'totals', false, 'sum'));
+                    $("#expencesTable").jqGrid('footerData','set', elem);
+
+                },
+                loadComplete: function () {
+                    var elem = {};
+                    for(var i = 1; i <= 12; i++) {
+                        var cellname = 'c'+i;
+                        elem[cellname] = parseFloat($('#expencesTable').jqGrid('getCol', cellname, false, 'sum'))
+                    };
+                    elem['expencetype'] = 'Итого: ';
+                    elem['totals'] = parseFloat($('#expencesTable').jqGrid('getCol', 'totals', false, 'sum'));
+
+                    $("#expencesTable").jqGrid('footerData','set', elem);
+
+                },
                 sortname: "expencetype",
-                colNames: ['Описание расхода', 'Янв', 'Фев', 'Мар', 'Апр', 'Майь', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек', 'Итого'],
+                colNames: ['Описание расхода', 'Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек', 'Итого'],
                 colModel: [
-                    {name: 'expencetype', index: 'expencetype', width: 180, sorttype: "text", classes: "jqcol-hyperlink"},
+                    {name: 'expencetype', index: 'expencetype', width: 120, sorttype: "text", classes: "jqcol-hyperlink",
+                        cellattr: function (rowId, val, rawObject, cm, rdata) {
+                            return 'title="' + rawObject.expencenote + '"';
+                        }
+                    },
                     <c:forEach varStatus="idx" begin="1" end="12">
-                        {name: 'c${idx.count}', index: 'c${idx.count}', width: 60, sorttype: "float", editable: true, align: "right", formatter: 'number', 
+                        {name: 'c${idx.count}', index: 'c${idx.count}', width: 69, sorttype: "float", editable: true, align: "right", formatter: 'number', 
                             editrules: {
                                 number: true, minValue: 0
                             },

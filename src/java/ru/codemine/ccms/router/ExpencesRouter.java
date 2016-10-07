@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
@@ -32,6 +33,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -114,12 +117,78 @@ public class ExpencesRouter
                 record.put("c" + month, val);
             }
             record.put("expencetype", type.getName());
+            record.put("expencenote", type.getComment());
             record.put("totals", salesService.getTotalExpenceValueForPeriod(shop, startDate, endDate, type));
             records.add(record);
         }
         
         
         return records;
+    }
+    
+    @Secured("ROLE_OFFICE")
+    @RequestMapping(value = "/expences/addtype", method = RequestMethod.POST)
+    public String addExpenceTypeToShop(
+                                    @RequestParam Integer shopid, 
+                                    @RequestParam String dateYear,
+                                    @ModelAttribute ExpenceTypesForm expenceTypesForm)
+    {
+        Shop shop = shopService.getById(shopid);
+        
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd.MM.YYYY");
+        LocalDate startDate = formatter.parseLocalDate("01.01." + dateYear);
+        LocalDate endDate = formatter.parseLocalDate("31.01." + dateYear);
+        
+        SalesMeta januarySalesMeta = salesService.getByShopAndDate(shop, startDate, endDate);
+        
+        for(ExpenceType type : expenceTypesForm.getTypes())
+        {
+            if(!januarySalesMeta.getExpences().containsKey(type))
+                januarySalesMeta.getExpences().put(type, 0.0);
+        }
+        
+        salesService.update(januarySalesMeta);
+        
+        return "redirect:/expences?shopid=" + shop.getId() + "&dateYear=" + dateYear;
+    }
+    
+    @Secured("ROLE_OFFICE")
+    @RequestMapping(value = "/expences/savecell", method = RequestMethod.POST)
+    public @ResponseBody String expencesSavecell( HttpServletRequest request,
+                                    @RequestParam Integer shopid, 
+                                    @RequestParam String dateYear)
+    {
+        Shop shop = shopService.getById(shopid);
+        
+        String expenceTypeName = request.getParameterMap().get("extypename")[0];
+        if(expenceTypeName == null) return "{\"result\": \"error\"}";
+        
+        ExpenceType expenceType = expenceTypeService.getByName(expenceTypeName);
+        if(expenceType == null) return "{\"result\": \"error\"}";
+        
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd.M.YYYY");
+        
+        for(Map.Entry<String, String[]> entry : request.getParameterMap().entrySet())
+        {
+            if(entry.getKey().startsWith("c"))
+            {
+                String cellname = entry.getKey();
+                String cellval = entry.getValue()[0];
+                if(cellval == null) return "{\"result\": \"error\"}";
+                
+                LocalDate startDate = formatter.parseLocalDate("01." + cellname.substring(1) + "." + dateYear);
+                LocalDate endDate = startDate.dayOfMonth().withMaximumValue();
+                
+                Double value = Double.parseDouble(cellval);
+                
+                SalesMeta sm = salesService.getByShopAndDate(shop, startDate, endDate);
+                sm.getExpences().put(expenceType, value);
+                salesService.update(sm);
+            }
+        }
+        
+        
+        return "{\"result\": \"success\"}";
     }
     
 }

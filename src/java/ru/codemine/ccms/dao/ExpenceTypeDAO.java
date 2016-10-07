@@ -28,4 +28,6 @@ import ru.codemine.ccms.entity.ExpenceType;
 public interface ExpenceTypeDAO extends GenericDAO<ExpenceType, Integer>
 {
     public List<ExpenceType> getAll();
+
+    public ExpenceType getByName(String expenceTypeName);
 }

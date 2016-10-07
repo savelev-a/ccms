@@ -20,6 +20,7 @@ package ru.codemine.ccms.dao;
 
 import java.util.List;
 import org.apache.log4j.Logger;
+import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
 import ru.codemine.ccms.entity.ExpenceType;
 
@@ -36,9 +37,18 @@ public class ExpenceTypeDAOImpl extends GenericDAOImpl<ExpenceType, Integer> imp
     @Override
     public List<ExpenceType> getAll()
     {
-        List<ExpenceType> result = getSession().createQuery("FROM ExpenceType e").list();
+        Query query = getSession().createQuery("FROM ExpenceType et ORDER BY et.name ASC");
+
+        return query.list();
+    }
+
+    @Override
+    public ExpenceType getByName(String expenceTypeName)
+    {
+        Query query = getSession().createQuery("FROM ExpenceType et WHERE et.name = :name");
+        query.setString("name", expenceTypeName);
         
-        return result;
+        return (ExpenceType)query.uniqueResult();
     }
 
 }

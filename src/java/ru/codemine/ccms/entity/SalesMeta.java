@@ -21,6 +21,7 @@ import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
@@ -130,7 +131,7 @@ public class SalesMeta implements Serializable
         this.salesTotal = 0.0;
         this.expencesTotal = 0.0;
         
-        this.expences = new LinkedHashMap<>();
+        this.expences = new TreeMap<>();
         this.sales = new TreeSet<>();
     }
     
@@ -148,7 +149,7 @@ public class SalesMeta implements Serializable
         this.salesTotal = 0.0;
         this.expencesTotal = 0.0;
         
-        this.expences = new LinkedHashMap<>();
+        this.expences = new TreeMap<>();
         this.sales = new TreeSet<>();
         for(int i = 1; i <= LocalDate.now().dayOfMonth().getMaximumValue(); i++)
         {
@@ -170,7 +171,7 @@ public class SalesMeta implements Serializable
         this.salesTotal = 0.0;
         this.expencesTotal = 0.0;
         
-        this.expences = new LinkedHashMap<>();
+        this.expences = new TreeMap<>();
         this.sales = new TreeSet<>();
         for(int i = 1; i <= startDate.dayOfMonth().getMaximumValue(); i++)
         {

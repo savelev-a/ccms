@@ -18,6 +18,7 @@
 
 package ru.codemine.ccms.forms;
 
+import java.util.ArrayList;
 import java.util.List;
 import ru.codemine.ccms.entity.ExpenceType;
 
@@ -28,6 +29,11 @@ import ru.codemine.ccms.entity.ExpenceType;
 public class ExpenceTypesForm 
 {
     private List<ExpenceType> types;
+    
+    public ExpenceTypesForm()
+    {
+        this.types = new ArrayList<>();
+    }
 
     public List<ExpenceType> getTypes()
     {

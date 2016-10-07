@@ -65,4 +65,9 @@ public class ExpenceTypeService
     {
         return expenceTypeDAO.getAll();
     }
+
+    public ExpenceType getByName(String expenceTypeName)
+    {
+        return expenceTypeDAO.getByName(expenceTypeName);
+    }
 }
