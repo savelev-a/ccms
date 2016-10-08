@@ -84,7 +84,8 @@ public class SalesDAOImpl extends GenericDAOImpl<SalesMeta, Integer> implements 
         Query query = getSession().createQuery("FROM SalesMeta Sm "
                 + "WHERE Sm.shop.id = :shopid "
                 + "AND Sm.startDate >= :startdate "
-                + "AND Sm.endDate <= :enddate");
+                + "AND Sm.endDate <= :enddate "
+                + "ORDER BY Sm.startDate ASC");
         query.setInteger("shopid", shop.getId());
         query.setDate("startdate", startDate.toDate());
         query.setDate("enddate", endDate.toDate());

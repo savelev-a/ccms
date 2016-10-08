@@ -370,5 +370,15 @@ public class SalesMeta implements Serializable
         
         return null;
     }
+
+    public String getGraphDataSalesTotal()
+    {
+        return "[\"" + startDate.toString("MMMM YYYY") + "\", " + getSalesTotal() + "]";
+    }
+
+    public String getGraphDataExpencesTotal()
+    {
+        return "[\"" + startDate.toString("MMMM YYYY") + "\", " + getExpencesTotal() + "]";
+    }
     
 }

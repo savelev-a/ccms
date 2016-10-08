@@ -20,7 +20,7 @@
                 <tr ${sideMenuActiveItem == "graph" ? "class='info'" : ""}>
                     <td>
                         <a href="<c:url value="/reports/graph/expences" />">
-                            График(годовой)
+                            График
                         </a> 
                     </td>
                 </tr>

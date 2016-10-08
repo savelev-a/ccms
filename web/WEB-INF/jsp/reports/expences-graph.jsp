@@ -15,6 +15,8 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="<c:url value="/res/css/bootstrap.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/bootstrap-theme.css" />" >
+        <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/jquery-ui.css" />" >
+        <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/jquery-ui.theme.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/styles.css" />" >
         <title><c:out value="${title}" /></title>
     </head>
@@ -35,8 +37,8 @@
                     <div class="col-md-10">
                         <div class="panel panel-primary panel-primary-dark">
                             <div class="panel-heading panel-heading-dark" align="center">График расходов и выручек по магазину: 
-                                <u><c:out value="${shop.name}" /></u> за 
-                                <u><c:out value="${selectedYear}" /> год.</u>
+                                <u><c:out value="${shop.name}" /></u> за период 
+                                <u>с <c:out value="${dateStartStr}" /> по <c:out value="${dateEndStr}" /></u>
                             </div>
                             <div class="panel-body">
 
@@ -50,16 +52,12 @@
                                                     <c:out value="${shp.name}" />
                                                 </option>
                                             </c:forEach>
-                                        </select>&nbsp;
-                                        Показать данные за: 
-                                        <select name="dateYear" class="form-control" >
-                                            <c:forEach items="${yearList}" var="year" >
-                                                <option ${year == selectedYear ? "selected" : ""} value="${year}">
-                                                    <c:out value="${year}" />
-                                                </option>
-                                            </c:forEach>
-                                        </select>&nbsp;
-
+                                        </select>
+                                        Показать данные за период с  
+                                        <input type="text" name="dateStartStr" id="dateStartField" value="${dateStartStr}" class="form-control datepicker-z">
+                                        по
+                                        <input type="text" name="dateEndStr" id="dateEndField" value="${dateEndStr}" class="form-control datepicker-z"> 
+                                        &nbsp;
                                         <input type="submit" value="Загрузить" class="btn btn-primary">
                                     </form>
                                     <br>
@@ -83,6 +81,7 @@
         <script type="text/javascript" src="<c:url value="/res/js/jquery.flot.categories.min.js" />"></script>
         <script type="text/javascript" src="<c:url value="/res/js/jquery.flot.crosshair.min.js" />"></script>
         <script type="text/javascript" src="<c:url value="/res/js/jquery.flot.tickrotor.js" />"></script>
+        <script type="text/javascript" src="<c:url value="/res/js/datepicker-ru.js" />"></script>
         <script type="text/javascript">
             $(function () {
 
@@ -146,6 +145,8 @@
                     }
                 });
                 
+                $("#dateStartField").datepicker();
+                $("#dateEndField").datepicker();
             });
         </script>
 

@@ -22,7 +22,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -243,8 +242,8 @@ public class DominoSalesLoader implements SalesLoader
                     }
                     else
                     {
-                        log.warn("Нет данных для загрузки по магазину " + shop.getName() + ", он не найден в таблице!");
-                        log.warn("Иия Домино: " + shop.getDominoName());
+                        log.warn("Нет данных для загрузки по магазину " + shop.getName() + ", нет данных за " + date.toString("dd.MM.YYYY"));
+                        //log.warn("Иия Домино: " + shop.getDominoName());
                     }
                 }
             }

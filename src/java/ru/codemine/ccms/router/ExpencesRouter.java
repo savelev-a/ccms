@@ -40,6 +40,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import ru.codemine.ccms.entity.ExpenceType;
+import ru.codemine.ccms.entity.Sales;
 import ru.codemine.ccms.entity.SalesMeta;
 import ru.codemine.ccms.entity.Shop;
 import ru.codemine.ccms.forms.ExpenceTypesForm;
@@ -280,5 +281,52 @@ public class ExpencesRouter
         }
         
         return records;
+    }
+    
+    @Secured("ROLE_OFFICE")
+    @RequestMapping(value = "/reports/graph/expences")
+    public String getExpencesGraph(
+            @RequestParam(required = false) Integer shopid, 
+            @RequestParam(required = false) String dateStartStr,
+            @RequestParam(required = false) String dateEndStr,
+            ModelMap model)
+    {
+        model.addAllAttributes(utils.prepareModel("Графики выручки и расходов - ИнфоПортал", "reports", "graph"));
+        
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd.MM.YYYY");
+        LocalDate dateStart = dateStartStr == null 
+                ? LocalDate.now().withDayOfMonth(1) 
+                : formatter.parseLocalDate(dateStartStr).withDayOfMonth(1);
+        LocalDate dateEnd = dateEndStr == null 
+                ? LocalDate.now().dayOfMonth().withMaximumValue() 
+                : formatter.parseLocalDate(dateEndStr).dayOfMonth().withMaximumValue();
+        
+        if(dateEnd.isBefore(dateStart)) dateEnd = dateStart;
+        
+        model.addAttribute("dateStartStr", dateStart.toString("dd.MM.YYYY"));
+        model.addAttribute("dateEndStr", dateEnd.toString("dd.MM.YYYY"));
+        
+        List<Shop> shopList = shopService.getAllOpen();
+        List<String> graphDataSalesTotal = new ArrayList<>();
+        List<String> graphDataExpencesTotal = new ArrayList<>();
+        
+        Shop shop = shopid == null ? shopList.get(0) : shopService.getById(shopid);
+        
+        model.addAttribute("shop", shop);
+        model.addAttribute("shopList", shopList);
+        
+        List<SalesMeta> smList = salesService.getByPeriod(shop, dateStart, dateEnd);
+        
+        for (SalesMeta sm : smList)
+        {
+
+            graphDataSalesTotal.add(sm.getGraphDataSalesTotal());
+            graphDataExpencesTotal.add(sm.getGraphDataExpencesTotal());
+        }
+
+        model.addAttribute("graphDataSalesTotal", graphDataSalesTotal);
+        model.addAttribute("graphDataExpencesTotal", graphDataExpencesTotal);
+
+        return "reports/expences-graph";
     }
 }
