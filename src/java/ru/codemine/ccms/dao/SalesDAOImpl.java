@@ -17,8 +17,6 @@
  */
 package ru.codemine.ccms.dao;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -253,5 +251,22 @@ public class SalesDAOImpl extends GenericDAOImpl<SalesMeta, Integer> implements 
         }
         
         return result;
+    }
+
+    @Override
+    public Double getTotalExpenceValueForPeriod(Shop shop, LocalDate startDate, LocalDate endDate)
+    {
+        Query query = getSession().createQuery("SELECT SUM(Sm.expencesTotal) "
+                + "FROM SalesMeta Sm "
+                + "WHERE Sm.shop.id = :shopid "
+                + "AND Sm.startDate >= :startdate "
+                + "AND Sm.endDate <= :enddate ");
+        query.setInteger("shopid", shop.getId());
+        query.setDate("startdate", startDate.toDate());
+        query.setDate("enddate", endDate.toDate());
+        
+        Double result = (Double)query.uniqueResult();
+
+        return result == null ? 0.0 : result;
     }
 }

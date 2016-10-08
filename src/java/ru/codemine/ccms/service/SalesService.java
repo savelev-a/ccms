@@ -169,5 +169,40 @@ public class SalesService
     {
         return salesDAO.getTotalExpenceValueForPeriod(shop, startDate, endDate, type);
     }
+
+    public Double getTotalExpenceValueForPeriod(Shop shop, LocalDate startDate, LocalDate endDate)
+    {
+        return salesDAO.getTotalExpenceValueForPeriod(shop, startDate, endDate);
+    }
+
+    public Double getMidExpences(Shop shop, int months)
+    {
+        if(months <= 0) return -1.0;
+        
+        LocalDate endDate = LocalDate.now().dayOfMonth().withMaximumValue();
+        LocalDate startDate = endDate.minusMonths(months).withDayOfMonth(1);
+        
+        Double expTotal = getTotalExpenceValueForPeriod(shop, startDate, endDate);
+        
+        Double result = Math.round(expTotal / months * 100.0) / 100.0;
+        
+        return result;
+    }
+
+    public Double getMidCleanSales(Shop shop, int months)
+    {
+        if(months <= 0) return -1.0;
+        
+        LocalDate endDate = LocalDate.now().dayOfMonth().withMaximumValue();
+        LocalDate startDate = endDate.minusMonths(months).withDayOfMonth(1);
+        
+        Double cleanSales = getSalesValueByPeriod(shop, startDate, endDate) - getTotalExpenceValueForPeriod(shop, startDate, endDate);
+        
+        Double result = Math.round(cleanSales / months * 100.0) / 100.0;
+        
+        return result;
+    }
+
+
     
 }

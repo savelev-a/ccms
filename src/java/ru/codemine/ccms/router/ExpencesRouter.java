@@ -194,4 +194,91 @@ public class ExpencesRouter
         return "{\"result\": \"success\"}";
     }
     
+    
+    //       //
+    // Отчет //
+    //       //
+    
+    
+    @Secured("ROLE_OFFICE")
+    @RequestMapping(value = "/reports/expences", method = RequestMethod.GET)
+    public String getExpencesReportPage(ModelMap model, @RequestParam(required = false) String dateYear)
+    {
+        if(dateYear == null) dateYear = LocalDate.now().toString("YYYY");
+
+        model.addAllAttributes(utils.prepareModel("Отчет по расходам - ИнфоПортал", "reports", "expences"));
+        model.addAttribute("selectedYear", dateYear);
+        model.addAttribute("yearList", utils.getYearStrings());
+
+        return "/reports/expences";
+        
+    }
+    
+    @Secured("ROLE_OFFICE")
+    @RequestMapping(value = "/reports/expences/data", method = RequestMethod.GET)
+    public @ResponseBody List<Map<String, Object>> getExpencesReportData(@RequestParam String dateYear)
+    {
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd.MM.YYYY");
+        LocalDate startDate = formatter.parseLocalDate("01.01." + dateYear);
+        LocalDate endDate = formatter.parseLocalDate("31.12." + dateYear);
+        
+        List<Shop> shopList = shopService.getAllOpen();
+        List<Map<String, Object>> recordList = new ArrayList<>();
+        
+        for(Shop shop : shopList)
+        {
+            Map<String, Object> record = new HashMap<>();
+            
+            Double sales = salesService.getSalesValueByPeriod(shop, startDate, endDate);
+            Double expences = salesService.getTotalExpenceValueForPeriod(shop, startDate, endDate);
+            Double cleanSales = (sales == null || expences == null) ? 0 : sales - expences;
+            Double midExpences = salesService.getMidExpences(shop, 6);
+            Double midCleanSales = salesService.getMidCleanSales(shop, 6);
+            
+            record.put("shopname", shop.getName());
+            record.put("sales", sales);
+            record.put("expences", expences);
+            record.put("cleanSales", cleanSales);
+            record.put("midExpences", midExpences);
+            record.put("midCleanSales", midCleanSales);
+            
+            recordList.add(record);
+        }
+        
+        return recordList;
+    }
+    
+    @Secured("ROLE_OFFICE")
+    @RequestMapping(value = "/reports/expences/details", method = RequestMethod.GET)
+    public @ResponseBody List<Map<String, Object>> getExpencesReportDetails(
+            @RequestParam String dateYear, 
+            @RequestParam String shopname)
+    {
+        List<Map<String, Object>> records = new ArrayList<>(); 
+        Shop shop = shopService.getByName(shopname);
+        
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd.MM.YYYY");
+        LocalDate startDate = formatter.parseLocalDate("01.01." + dateYear);
+        LocalDate endDate = formatter.parseLocalDate("31.12." + dateYear);
+        
+        List<SalesMeta> smList = salesService.getByPeriod(shop, startDate, endDate);
+        Set<ExpenceType> expenceTypes = salesService.getExpenceTypesByPeriod(shop, startDate, endDate);
+        
+        for(ExpenceType type : expenceTypes)
+        {
+            Map<String, Object> record = new HashMap<>();
+            for(SalesMeta sm : smList)
+            {
+                Double val = sm.getExpences().get(type);
+                String month = sm.getStartDate().toString("M");
+                record.put("c" + month, val);
+            }
+            record.put("expencetype", type.getName());
+            record.put("expencenote", type.getComment());
+            record.put("totals", salesService.getTotalExpenceValueForPeriod(shop, startDate, endDate, type));
+            records.add(record);
+        }
+        
+        return records;
+    }
 }

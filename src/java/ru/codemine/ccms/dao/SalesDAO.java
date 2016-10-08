@@ -50,5 +50,6 @@ public interface SalesDAO extends GenericDAO<SalesMeta, Integer>
     public Set<ExpenceType> getExpenceTypesByPeriod(Shop shop, LocalDate startDate, LocalDate endDate);
 
     public Double getTotalExpenceValueForPeriod(Shop shop, LocalDate startDate, LocalDate endDate, ExpenceType type);
-    
+    public Double getTotalExpenceValueForPeriod(Shop shop, LocalDate startDate, LocalDate endDate);
+
 }
