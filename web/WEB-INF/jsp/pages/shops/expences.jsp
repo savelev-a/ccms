@@ -151,6 +151,11 @@
                 },
                 afterEditCell: function (id, name, val, iRow, iCol) {
                     $("#" + this.id + " tbody>tr:eq(" + iRow + ")>td:eq(" + iCol + ") input, select, textarea").select();
+                    if($("#expencesTable").jqGrid('getCell', id, 'editlock') == "True")
+                    {
+                        $("#expencesTable").jqGrid('restoreCell', iRow, iCol);
+                    }
+                    
                 },
                 afterSaveCell: function (id, name, val, iRow, iCol) {
                     var sum = 0;
@@ -176,9 +181,11 @@
 
                 },
                 sortname: "expencetype",
-                colNames: ['Описание расхода', 'Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек', 'Итого'],
+                colNames: ['@', 'Описание расхода', 'Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек', 'Итого'],
                 colModel: [
-                    {name: 'expencetype', index: 'expencetype', width: 120, sorttype: "text", classes: "jqcol-hyperlink",
+                    {name: 'editlock', index: 'editlock', width: 20, editable: false, edittype: "checkbox", editoptions: {value:"True:False"}, classes: "chk-editlock",
+                        formatter: "checkbox", formatoptions: {disabled : false}},
+                    {name: 'expencetype', index: 'expencetype', width: 110, sorttype: "text", classes: "jqcol-hyperlink",
                         cellattr: function (rowId, val, rawObject, cm, rdata) {
                             return 'title="' + rawObject.expencenote + '"';
                         }
@@ -192,7 +199,7 @@
                                 decimalSeparator: ".", thousandsSeparator: " ", decimalPlaces: 2, defaultValue: '0.00'
                             }},
                     </c:forEach>
-                    {name: 'totals', index: 'totals', width: 100, sorttype: "float", align: "right", formatter: 'number', 
+                    {name: 'totals', index: 'totals', width: 90, sorttype: "float", align: "right", formatter: 'number', 
                         formatoptions: {
                             decimalSeparator: ".", thousandsSeparator: " ", decimalPlaces: 2, defaultValue: '0.00'
                         }
