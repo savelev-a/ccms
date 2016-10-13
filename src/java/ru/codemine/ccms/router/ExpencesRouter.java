@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
@@ -33,6 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -328,5 +330,77 @@ public class ExpencesRouter
         model.addAttribute("graphDataExpencesTotal", graphDataExpencesTotal);
 
         return "reports/expences-graph";
+    }
+    
+    
+    //                 //
+    //  Виды расходов  //
+    //                 //
+    
+    @Secured("ROLE_OFFICE")
+    @RequestMapping(value = "/admin/expencetypes", method = RequestMethod.GET)
+    public String getExpenceTypesPage(ModelMap model)
+    {
+        model.addAllAttributes(utils.prepareModel("Администрирование - типы расходов - ИнфоПортал", "actions", "expenceTypes"));
+        model.addAttribute("allExpenceTypes", expenceTypeService.getAll());
+        model.addAttribute("expenceTypeFrm", new ExpenceType());
+        
+        return "admin/expencetypes";
+    }
+    
+    @Secured("ROLE_OFFICE")
+    @RequestMapping(value = "/admin/expencetypes", method = RequestMethod.POST)
+    public String addExpenceType(@Valid @ModelAttribute("expenceTypeFrm") ExpenceType expenceType,
+            BindingResult result,
+            ModelMap model)
+    {
+        if(result.hasErrors())
+        {
+            model.addAllAttributes(utils.prepareModel("Администрирование - типы расходов - ИнфоПортал", "actions", "expenceTypes"));
+            model.addAttribute("allExpenceTypes", expenceTypeService.getAll());
+        
+            return "admin/expencetypes";
+        }
+        
+        expenceTypeService.create(expenceType);
+        
+        return "redirect:/admin/expencetypes";
+    }
+    
+    @Secured("ROLE_OFFICE")
+    @RequestMapping(value = "admin/expencetypes/edit", method = RequestMethod.GET)
+    public String getExpenceTypeEditPage(@RequestParam("id") Integer id, ModelMap model)
+    {
+        model.addAllAttributes(utils.prepareModel("Администрирование - типы расходов (редактирование) - ИнфоПортал", "actions", "expenceTypes"));
+        model.addAttribute("expenceType", expenceTypeService.getById(id));
+        
+        return "admin/expencetypeedit";
+    }
+    
+    @Secured("ROLE_OFFICE")
+    @RequestMapping(value = "admin/expencetypes/edit", method = RequestMethod.POST)
+    public String expenceTypeEdit(@Valid @ModelAttribute ExpenceType type, 
+            BindingResult result,
+            ModelMap model)
+    {
+        if(result.hasErrors())
+        {
+            model.addAllAttributes(utils.prepareModel("Администрирование - типы расходов (редактирование) - ИнфоПортал", "actions", "expenceTypes"));
+            
+            return "admin/expencetypeedit";
+        }
+        
+        expenceTypeService.update(type);
+        
+        return "redirect:/admin/expencetypes";
+    }
+    
+    @Secured("ROLE_OFFICE")
+    @RequestMapping(value = "/admin/expencetypes/delete", method = RequestMethod.POST)
+    public String deleteExpenceType(@RequestParam("id") Integer id)
+    {
+        expenceTypeService.deleteById(id);
+        
+        return "redirect:/admin/expencetypes";
     }
 }

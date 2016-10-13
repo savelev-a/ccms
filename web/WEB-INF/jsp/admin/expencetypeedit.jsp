@@ -31,7 +31,7 @@
 
                 <div class="row">
 
-                    <%@include file="../modules/sideMenu/sideMenu_admin.jspf" %>
+                    <%@include file="../modules/sideMenu/sideMenu_expences.jspf" %>
 
                     <br><br>
 

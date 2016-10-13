@@ -84,11 +84,19 @@
                             <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu">
+                            <div class="dropdown-menu-item-center">-<b>Расходы магазинов</b>-</div>
                             <li>
                                 <a href="<c:url value="/expences" />" >
                                     <span class="glyphicon glyphicon-list-alt"></span> Установить расходы
                                 </a>
                             </li>
+                            <li>
+                                <a href="<c:url value="/admin/expencetypes" />" >
+                                    <span class="glyphicon glyphicon-list-alt"></span> Управление видами расходов
+                                </a>
+                            </li>
+                            <br>
+                            <div class="dropdown-menu-item-center">-<b>План продаж</b>-</div>
                             <li>
                                 <a href="<c:url value="/actions/setPlan" />" >
                                     <span class="glyphicon glyphicon-list-alt"></span> Установить план
