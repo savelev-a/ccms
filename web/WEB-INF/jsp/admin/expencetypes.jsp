@@ -110,7 +110,9 @@
     <link rel="stylesheet" href="<c:url value="/res/css/jquery.dataTables.css" />" >
     <script type="text/javascript">
         $(document).ready(function () {
-            $("#expenceTypesTable").DataTable();
+            $("#expenceTypesTable").DataTable({
+                "order": [[ 1, "asc" ]]
+            });
         });
         
         $(".delete").click(function () {
