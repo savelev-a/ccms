@@ -102,18 +102,6 @@
                                     <span class="glyphicon glyphicon-list-alt"></span> Установить план
                                 </a>
                             </li>
-                            <br>
-                            <div class="dropdown-menu-item-center">-<b>Акции и распродажи</b>-</div>
-                            <li>
-                                <a href="<c:url value="/actions/create" />" >
-                                    <span class="glyphicon glyphicon-plus"></span> Новая акция
-                                </a>
-                            </li>
-                            <li>
-                                <a href="<c:url value="/actions/currentFuture" />" >
-                                    <span class="glyphicon glyphicon-briefcase"></span> Управление акциями
-                                </a>
-                            </li>
                         </ul>
                     </li>
                     
