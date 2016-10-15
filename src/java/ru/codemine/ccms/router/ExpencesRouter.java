@@ -85,7 +85,7 @@ public class ExpencesRouter
         List<ExpenceType> allExpTypes = expenceTypeService.getAll();
         Set<ExpenceType> addedExpTypes = salesService.getExpenceTypesByPeriod(shop, startDate, endDate);
                 
-        model.addAllAttributes(utils.prepareModel("Установка расходов по магазину - " + shop.getName() + " - ИнфоПортал", "actions", "expences"));
+        model.addAllAttributes(utils.prepareModel("Установка расходов по магазину - " + shop.getName() + " - ИнфоПортал", "management", "expences"));
         model.addAttribute("shop", shop);
         model.addAttribute("shopList", shopList);
         model.addAttribute("selectedYear", dateYear);
@@ -341,7 +341,7 @@ public class ExpencesRouter
     @RequestMapping(value = "/admin/expencetypes", method = RequestMethod.GET)
     public String getExpenceTypesPage(ModelMap model)
     {
-        model.addAllAttributes(utils.prepareModel("Администрирование - типы расходов - ИнфоПортал", "actions", "expenceTypes"));
+        model.addAllAttributes(utils.prepareModel("Администрирование - типы расходов - ИнфоПортал", "management", "expenceTypes"));
         model.addAttribute("allExpenceTypes", expenceTypeService.getAll());
         model.addAttribute("expenceTypeFrm", new ExpenceType());
         
@@ -356,7 +356,7 @@ public class ExpencesRouter
     {
         if(result.hasErrors())
         {
-            model.addAllAttributes(utils.prepareModel("Администрирование - типы расходов - ИнфоПортал", "actions", "expenceTypes"));
+            model.addAllAttributes(utils.prepareModel("Администрирование - типы расходов - ИнфоПортал", "management", "expenceTypes"));
             model.addAttribute("allExpenceTypes", expenceTypeService.getAll());
         
             return "admin/expencetypes";
@@ -371,7 +371,7 @@ public class ExpencesRouter
     @RequestMapping(value = "admin/expencetypes/edit", method = RequestMethod.GET)
     public String getExpenceTypeEditPage(@RequestParam("id") Integer id, ModelMap model)
     {
-        model.addAllAttributes(utils.prepareModel("Администрирование - типы расходов (редактирование) - ИнфоПортал", "actions", "expenceTypes"));
+        model.addAllAttributes(utils.prepareModel("Администрирование - типы расходов (редактирование) - ИнфоПортал", "management", "expenceTypes"));
         model.addAttribute("expenceType", expenceTypeService.getById(id));
         
         return "admin/expencetypeedit";
@@ -385,7 +385,7 @@ public class ExpencesRouter
     {
         if(result.hasErrors())
         {
-            model.addAllAttributes(utils.prepareModel("Администрирование - типы расходов (редактирование) - ИнфоПортал", "actions", "expenceTypes"));
+            model.addAllAttributes(utils.prepareModel("Администрирование - типы расходов (редактирование) - ИнфоПортал", "management", "expenceTypes"));
             
             return "admin/expencetypeedit";
         }

@@ -56,7 +56,7 @@
                                         <a href="<c:url value="/reports/sales-pass" />">сводный отчет по проходимости и выручке</a>
                                         , построить 
                                         <a href="<c:url value="/reports/graph/sales-pass" />">графики</a>
-                                        и задать <a href="<c:url value="/actions/setPlan" />">план выручек</a>.
+                                        и задать <a href="<c:url value="/management/setPlan" />">план выручек</a>.
                                         <br><br>
                                         <c:if test="${currentUserActiveTasksCount > 0}">
                                             <c:out value="${currentUser.firstName} ${currentUser.middleName}" />, у вас <c:out value="${currentUserActiveTasksCount}" /> активных задач. Нажмите 

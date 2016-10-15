@@ -27,7 +27,7 @@
                 
                 <tr ${sideMenuActiveItem == "plan" ? "class='info'" : ""}>
                     <td>
-                        <a href="<c:url value="/actions/setPlan" />">
+                        <a href="<c:url value="/management/setPlan" />">
                             Установить план
                         </a> 
                     </td>

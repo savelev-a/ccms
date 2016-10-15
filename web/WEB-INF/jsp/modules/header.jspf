@@ -78,7 +78,7 @@
                 </sec:authorize>
 
                 <sec:authorize access="hasRole('ROLE_OFFICE')">
-                    <li class="dropdown ${mainMenuActiveItem == "actions" ? "active" : ""}">
+                    <li class="dropdown ${mainMenuActiveItem == "management" ? "active" : ""}">
                         <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown">
                             Управление
                             <span class="caret"></span>
@@ -98,7 +98,7 @@
                             <br>
                             <div class="dropdown-menu-item-center">-<b>План продаж</b>-</div>
                             <li>
-                                <a href="<c:url value="/actions/setPlan" />" >
+                                <a href="<c:url value="/management/setPlan" />" >
                                     <span class="glyphicon glyphicon-list-alt"></span> Установить план
                                 </a>
                             </li>

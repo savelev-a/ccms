@@ -39,7 +39,7 @@
                             <div class="panel-heading panel-heading-dark" align="center">Установить план по отдельным магазинам</div>
                             <div class="panel-body">
                                 <div class="form-inline" align="right">
-                                    <form name="setByOrgForm" action="<c:url value="/actions/setPlan" />" method="GET">
+                                    <form name="setByOrgForm" action="<c:url value="/management/setPlan" />" method="GET">
                                         Показать данные за: 
                                         <select name="dateMonth" class="form-control" >
                                             <c:forEach items="${monthList}" var="month" >
@@ -93,7 +93,7 @@
                             <div class="panel-heading panel-heading-dark" align="center">Установить план по юр. лицу</div>
                             <div class="panel-body">
 
-                                <form name="setByOrgForm" action="<c:url value="/actions/setPlanByOrg" />" method="POST">
+                                <form name="setByOrgForm" action="<c:url value="/management/setPlanByOrg" />" method="POST">
                                     <table class="table table-condensed">
                                         <tbody>
                                             <tr>
@@ -155,7 +155,7 @@
                             <div class="panel-heading panel-heading-dark" align="center">Установить план по всем магазинам</div>
                             <div class="panel-body">
 
-                                <form name="setAllForm" action="<c:url value="/actions/setPlanAll" />" method="POST">
+                                <form name="setAllForm" action="<c:url value="/management/setPlanAll" />" method="POST">
                                     <table class="table table-condensed">
                                         <tbody>
                                             <tr>
@@ -289,7 +289,7 @@
                 //alert("DEBUG:\n" + dataToSend);
                 $.ajax({
                     type: "POST",
-                    url: "<c:url value='/actions/setPlanCustom?dateMonth=${selectedMonth}&dateYear=${selectedYear}' />",
+                    url: "<c:url value='/management/setPlanCustom?dateMonth=${selectedMonth}&dateYear=${selectedYear}' />",
                     dataType: "json",
                     data: dataToSend,
                     contentType: "application/json; charset=utf-8",

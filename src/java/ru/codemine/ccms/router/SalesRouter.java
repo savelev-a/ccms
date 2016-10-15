@@ -499,24 +499,24 @@ public class SalesRouter
     //      //
     
     @Secured("ROLE_OFFICE")
-    @RequestMapping(value = "/actions/setPlan", method = RequestMethod.GET)
+    @RequestMapping(value = "/management/setPlan", method = RequestMethod.GET)
     public String getPlanSetupPage(
             @RequestParam(required = false) String dateMonth,
             @RequestParam(required = false) String dateYear,
             ModelMap model)
     {
         model.addAllAttributes(utils.prepareModel("Установить план продаж - ИнфоПортал", 
-                "actions", "plan", 
+                "management", "plan", 
                 dateMonth, dateYear));
         
         model.addAttribute("organisationList", organisationService.getAll());
         model.addAttribute("salesMap", utils.getShopSalesMap(dateMonth, dateYear));
 
-        return "actions/setPlan";
+        return "management/setPlan";
     }
 
     @Secured("ROLE_OFFICE")
-    @RequestMapping(value = "/actions/setPlanAll", method = RequestMethod.POST)
+    @RequestMapping(value = "/management/setPlanAll", method = RequestMethod.POST)
     public String setPlanAll(
             @RequestParam String dateMonth,
             @RequestParam String dateYear,
@@ -559,11 +559,11 @@ public class SalesRouter
         model.addAttribute("dateYear", dateYear);
         model.addAttribute("status", status);
 
-        return "redirect:/actions/setPlan";
+        return "redirect:/management/setPlan";
     }
     
     @Secured("ROLE_OFFICE")
-    @RequestMapping(value = "/actions/setPlanByOrg", method = RequestMethod.POST)
+    @RequestMapping(value = "/management/setPlanByOrg", method = RequestMethod.POST)
     public String setPlanByOrg(
             @RequestParam String dateMonth,
             @RequestParam String dateYear,
@@ -599,12 +599,12 @@ public class SalesRouter
         model.addAttribute("dateYear", dateYear);
         model.addAttribute("status", status);
 
-        return "redirect:/actions/setPlan";
+        return "redirect:/management/setPlan";
         
     }
     
     @Secured("ROLE_OFFICE")
-    @RequestMapping(value = "/actions/setPlanCustom", method = RequestMethod.POST)
+    @RequestMapping(value = "/management/setPlanCustom", method = RequestMethod.POST)
     public @ResponseBody String setPlanCustom(
             @RequestParam String dateMonth,
             @RequestParam String dateYear,
