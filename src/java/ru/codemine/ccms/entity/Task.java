@@ -44,6 +44,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Period;
 import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
+import ru.codemine.ccms.entity.interfaces.Hyperlinkable;
 
 /**
  *
@@ -52,7 +53,7 @@ import org.joda.time.format.PeriodFormatterBuilder;
 
 @Entity
 @Table(name = "tasks")
-public class Task implements Serializable
+public class Task implements Serializable, Hyperlinkable
 {
     
     private static final Logger log = Logger.getLogger("Task");
@@ -403,5 +404,23 @@ public class Task implements Serializable
         return formatter.print(progressPeriod);
     }
     
+    @Override
+    public String getLinkTarget()
+    {
+        return "/tasks/taskinfo?id=" + getId();
+    }
+
+    @Override
+    public String getLinkCaption()
+    {
+        return getTitle();
+    }
+    
+    @Override
+    public String getLinkAdminTarget()
+    {
+        return getLinkTarget();
+    }
+
 
 }

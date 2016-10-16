@@ -1,4 +1,10 @@
-<%@ page pageEncoding="UTF-8" %>
+<%-- 
+    Document   : footer
+    Created on : 15.10.2016, 23:22:39
+    Author     : alchemist
+--%>
+
+<%@tag description="Footer tag" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
@@ -6,8 +12,6 @@
     Alexander Savelev, 2016
 </div>
 
-
-<!-- Scripts -->
 <script src="<c:url value="/res/js/jquery-2.2.2.min.js" /> "></script>
 <script src="<c:url value="/res/js/messagebox.js" /> "></script>
 <script src="<c:url value="/res/js/jquery.dataTables.js" /> "></script>
@@ -24,6 +28,14 @@
                         window.location.replace("<c:url value="/"/>");
                     });
                 });
+                
+                $(".dataTablesPreparedSmall").DataTable({
+                    "scrollY": "200px",
+                    "scrollCollapse": true,
+                    "paging": false
+                });
+                
+                $(".dataTablesPreparedBig").DataTable();
             });
         </script>
     </c:when>

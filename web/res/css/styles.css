@@ -245,3 +245,10 @@ body {
     position: relative;
     z-index: 100000;
 }
+
+.tabs-nobg ul {
+    background: none !important;
+    font-weight: normal !important;
+    border: none !important;
+    font: normal 13px / 18px Arial, 'Helvetica Neue', Helvetica, sans-serif !important;
+}

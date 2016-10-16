@@ -37,6 +37,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
+import ru.codemine.ccms.entity.interfaces.Hyperlinkable;
 
 /**
  *
@@ -45,7 +46,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 @Table(name = "shops", indexes = {@Index(name = "shop_name_idx", columnList = "name")})
-public class Shop implements Serializable
+public class Shop implements Serializable, Hyperlinkable
 {
     @Id
     @GeneratedValue(generator = "increment")
@@ -375,6 +376,24 @@ public class Shop implements Serializable
             return false;
         }
         return true;
+    }
+
+    @Override
+    public String getLinkTarget()
+    {
+        return "/shop?id=" + getId();
+    }
+
+    @Override
+    public String getLinkCaption()
+    {
+        return getName();
+    }
+
+    @Override
+    public String getLinkAdminTarget()
+    {
+        return "/admin/shopprofile?id=" + getId();
     }
     
     
