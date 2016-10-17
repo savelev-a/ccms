@@ -7,36 +7,14 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="ccms" tagdir="/WEB-INF/tags/" %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
     "http://www.w3.org/TR/html4/loose.dtd">
 
 
-<html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <link rel="stylesheet" href="<c:url value="/res/css/bootstrap.css" />" >
-        <link rel="stylesheet" href="<c:url value="/res/css/bootstrap-theme.css" />" >
-        <link rel="stylesheet" href="<c:url value="/res/css/styles.css" />" >
-        <title><c:out value="${title}" /></title>
-    </head>
-
-    <body>
-        <div class="wrapper">
-            <div class="container-fluid content">
-                <%@include file="../modules/header.jspf" %>
-
-                <br>
-
-                <div class="row">
-
-                    <%@include file="../modules/sideMenu/sideMenu_admin.jspf" %>
-
-                    <br><br>
-
-                    <div class="col-md-10">
-                        <div class="panel panel-primary panel-primary-dark">
-                            <div class="panel-heading panel-heading-dark" align="center">Профиль организации <c:out value="${organisation.name}" /></div>
-                            <div class="panel-body">
+<ccms:page title="Администрирование - ${organisation.name}">
+    <ccms:layout mainMenuActiveItem="admin" sideMenuSection="admin" sideMenuActiveItem="orgs">
+        <ccms:panel cols="10" title="Организация - ${organisation.name}">
                                 <form:form method="post" commandName="organisation">
                                     <table class="table table-condensed">
                                         <tbody>
@@ -113,7 +91,7 @@
                                                 <td><b>Директор</b></td>
                                                 <td colspan="3">
                                                     <div>
-                                                        <table id="dirChooseTab">
+                                                        <table class="dataTablesPreparedSmall">
                                                             <thead>
                                                                 <tr>
                                                                     <th>#</th>
@@ -151,42 +129,54 @@
                                     <input id="save" type="submit" value="Сохранить" class="btn btn-primary">
                                     <input id="delete" type="button" name="delete" value="Удалить организацию" class="btn btn-danger">
                                 </form:form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <%@include file="../modules/footer.jspf" %>
-
-        </div>
-
-    <link rel="stylesheet" href="<c:url value="/res/css/jquery.dataTables.css" />" >
-    <link rel="stylesheet" href="<c:url value="/res/css/messagebox.css" />" >
+        </ccms:panel>
+    </ccms:layout>
+                                    
+    <div id="msgDelConfirm" title="Подтверждение удаления">
+        <p>
+            Удалить данную организацию?
+        </p>
+    </div>
+                                    
     <script type="text/javascript">
         $(document).ready(function () {
-            $("#dirChooseTab").DataTable({
-                "scrollY": "200px",
-                "scrollCollapse": true,
-                "paging": false
-            });
-
+            
             $("#delete").on("click", function () {
-                $.MessageBox({
-                    buttonDone: "Удалить",
-                    buttonFail: "Отмена",
-                    message: "Удалть организацию <c:out value='${organisation.name}' />?"
-                }).done(function () {
-                    $.post("<c:url value="/admin/delOrganisationById"/>", {id: "${organisation.id}", ${_csrf.parameterName}: "${_csrf.token}"}).done(function () {
-                        window.location.replace("<c:url value="/admin/organisations"/>");
-                    });
-
-                });
+                $("#msgDelConfirm").dialog("open");
             });
-            $("#delete").mouseup(function () {
-                $(this).blur();
+            
+            $("#msgDelConfirm").dialog({
+                autoOpen: false,
+                modal: true,
+                dialogClass: "no-close",
+                width: 400,
+                buttons: [{
+                    text: "Удалить",
+                    class: "btn btn-danger",
+                    click: function () {
+                        $.post("<c:url value="/admin/delOrganisationById"/>", {"id": "${organisation.id}", "${_csrf.parameterName}": "${_csrf.token}"}).done(function(){
+                            window.location.replace("<c:url value="/admin/organisations"/>");
+                        });
+                        
+                        
+                    }
+                }, {
+                    text: "Отмена",
+                    class: "btn btn-default",
+                    click: function () {
+                        $(this).dialog("close");
+                    }
+                }],
+                show: {
+                    effect: "clip",
+                    duration: 200
+                },
+                hide: {
+                    effect: "clip",
+                    duration: 200
+                }
+
             });
         });
     </script>
-
-</body>
-</html>
+</ccms:page>

@@ -6,6 +6,7 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="ccms" tagdir="/WEB-INF/tags/" %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
     "http://www.w3.org/TR/html4/loose.dtd">
 
@@ -17,206 +18,159 @@
         <meta name="_csrf_header" content="${_csrf.headerName}"/>
         <link rel="stylesheet" href="<c:url value="/res/css/bootstrap.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/bootstrap-theme.css" />" >
+        <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/jquery-ui.css" />" >
+        <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/jquery-ui.structure.css" />" >
+        <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/jquery-ui.theme.css" />" >
+        <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/ui.jqgrid.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/styles.css" />" >
-        <title><c:out value="${title}" /></title>
+        <title>Установить план продаж - ИнфоПортал</title>
     </head>
 
     <body>
-        <div class="wrapper">
-            <div class="container-fluid content">
-                <%@include file="../modules/header.jspf" %>
+        <ccms:layout mainMenuActiveItem="management" sideMenuSection="reports_sp" sideMenuActiveItem="plan">
+            <ccms:panel cols="6" title="Установить план по отдельным магазинам">
+                
+                <ccms:periodSelector type="month-year" url="/management/setPlan" months="${monthList}" years="${yearList}" />
 
+                <!-- Placeholder для основной таблицы -->
+                <div style="width: 100%; height: 100%;">
+                    <table id="planTable">
+                        
+                    </table>
+                </div>
                 <br>
+                <input type="button" id="saveTable" class="btn btn-primary" value="Сохранить">
+            </ccms:panel>
 
-                <div class="row">
+            <div class="col-md-4">
+                <div class="panel panel-primary panel-primary-dark">
+                    <div class="panel-heading panel-heading-dark" align="center">Установить план по юр. лицу</div>
+                    <div class="panel-body">
 
-                    <%@include file="../modules/sideMenu/sideMenu_reports_sp.jspf" %> 
+                        <form name="setByOrgForm" action="<c:url value="/management/setPlanByOrg" />" method="POST">
+                            <table class="table table-condensed">
+                                <tbody>
+                                    <tr>
+                                        <td>Юр. лицо: </td>
+                                        <td colspan="2">
+                                            <select name="orgId" class="form-control">
+                                                <c:forEach items="${organisationList}" var="org">
+                                                    <option value="${org.id}">
+                                                        <c:out value="${org.name}" />
+                                                    </option>
+                                                </c:forEach>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Период: </td>
+                                        <td>
+                                            <select name="dateMonth" class="form-control" >
+                                                <c:forEach items="${monthList}" var="month" >
+                                                    <option ${month == selectedMonth ? "selected" : ""} value="${month}">
+                                                        <c:out value="${month}" />
+                                                    </option>
+                                                </c:forEach>
+                                            </select>
+                                        </td><td>
+                                            <select name="dateYear" class="form-control" >
+                                                <c:forEach items="${yearList}" var="year" >
+                                                    <option ${year == selectedYear ? "selected" : ""} value="${year}">
+                                                        <c:out value="${year}" />
+                                                    </option>
+                                                </c:forEach>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>План: </td>
+                                        <td colspan="2">
+                                            <input type="text" name="value" class="form-control"  >
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3">
+                                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                                            <input type="submit" value="Установить" class="btn btn-primary">
+                                        </td>
 
-                    <br><br>
-
-                    <div class="col-md-6">
-                        <div class="panel panel-primary panel-primary-dark">
-                            <div class="panel-heading panel-heading-dark" align="center">Установить план по отдельным магазинам</div>
-                            <div class="panel-body">
-                                <div class="form-inline" align="right">
-                                    <form name="setByOrgForm" action="<c:url value="/management/setPlan" />" method="GET">
-                                        Показать данные за: 
-                                        <select name="dateMonth" class="form-control" >
-                                            <c:forEach items="${monthList}" var="month" >
-                                                <option ${month == selectedMonth ? "selected" : ""} value="${month}">
-                                                    <c:out value="${month}" />
-                                                </option>
-                                            </c:forEach>
-                                        </select>
-
-                                        <select name="dateYear" class="form-control" >
-                                            <c:forEach items="${yearList}" var="year" >
-                                                <option ${year == selectedYear ? "selected" : ""} value="${year}">
-                                                    <c:out value="${year}" />
-                                                </option>
-                                            </c:forEach>
-                                        </select>
-                                        <input type="submit" value="Загрузить" class="btn btn-primary">
-                                    </form>
-                                    <br>
-                                </div>
-
-
-                                <!-- Placeholder для основной таблицы -->
-                                <div style="width: 100%; height: 100%;">
-                                    <table id="planTable">
-
-                                    </table>
-                                </div>
-                                <br>
-                                <input type="button" id="saveTable" class="btn btn-primary" value="Сохранить">
-                            </div>
-                        </div>
-                                        
-                                        
-                        <!-- Диалоги -->
-                        <div id="msgSuccess" title="Сохранение успешно">
-                            <p>
-                                <span class="glyphicon glyphicon-ok-circle" style="float:left; margin:0 7px 50px 0;"></span> 
-                                Сохранение успешно.
-                            </p>
-                        </div>
-                        <div id="msgError" title="">
-                            <p>
-
-                            </p>
-                        </div>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </form>
                     </div>
+                </div>
+                <br>
+                <div class="panel panel-primary panel-primary-dark">
+                    <div class="panel-heading panel-heading-dark" align="center">Установить план по всем магазинам</div>
+                    <div class="panel-body">
 
-                    <div class="col-md-4">
-                        <div class="panel panel-primary panel-primary-dark">
-                            <div class="panel-heading panel-heading-dark" align="center">Установить план по юр. лицу</div>
-                            <div class="panel-body">
+                        <form name="setAllForm" action="<c:url value="/management/setPlanAll" />" method="POST">
+                            <table class="table table-condensed">
+                                <tbody>
+                                    <tr>
+                                        <td>Период: </td>
+                                        <td>
+                                            <select name="dateMonth" class="form-control" >
+                                                <c:forEach items="${monthList}" var="month" >
+                                                    <option ${month == selectedMonth ? "selected" : ""} value="${month}">
+                                                        <c:out value="${month}" />
+                                                    </option>
+                                                </c:forEach>
+                                            </select>
+                                        </td><td>
+                                            <select name="dateYear" class="form-control" >
+                                                <c:forEach items="${yearList}" var="year" >
+                                                    <option ${year == selectedYear ? "selected" : ""} value="${year}">
+                                                        <c:out value="${year}" />
+                                                    </option>
+                                                </c:forEach>
+                                            </select>
+                                        </td>
+                                    </tr>
 
-                                <form name="setByOrgForm" action="<c:url value="/management/setPlanByOrg" />" method="POST">
-                                    <table class="table table-condensed">
-                                        <tbody>
-                                            <tr>
-                                                <td>Юр. лицо: </td>
-                                                <td colspan="2">
-                                                    <select name="orgId" class="form-control">
-                                                        <c:forEach items="${organisationList}" var="org">
-                                                            <option value="${org.id}">
-                                                                <c:out value="${org.name}" />
-                                                            </option>
-                                                        </c:forEach>
-                                                    </select>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>Период: </td>
-                                                <td>
-                                                    <select name="dateMonth" class="form-control" >
-                                                        <c:forEach items="${monthList}" var="month" >
-                                                            <option ${month == selectedMonth ? "selected" : ""} value="${month}">
-                                                                <c:out value="${month}" />
-                                                            </option>
-                                                        </c:forEach>
-                                                    </select>
-                                                </td><td>
-                                                    <select name="dateYear" class="form-control" >
-                                                        <c:forEach items="${yearList}" var="year" >
-                                                            <option ${year == selectedYear ? "selected" : ""} value="${year}">
-                                                                <c:out value="${year}" />
-                                                            </option>
-                                                        </c:forEach>
-                                                    </select>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>План: </td>
-                                                <td colspan="2">
-                                                    <input type="text" name="value" class="form-control"  >
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td colspan="3">
-                                                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-                                                    <input type="submit" value="Установить" class="btn btn-primary">
-                                                </td>
+                                    <tr>
+                                        <td>План для всех: </td>
+                                        <td colspan="2">
+                                            <input type="text" name="value" class="form-control" >
+                                            <c:if test="${status == 'error-all'}">
+                                                <font color="#ff0000">Неверное значение</font>
+                                            </c:if>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3">
+                                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                                            <input type="submit" value="Установить" class="btn btn-primary">
+                                        </td>
 
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </form>
 
-                                </form>
-
-
-
-                            </div>
-                        </div>
-                        <br>
-                        <div class="panel panel-primary panel-primary-dark">
-                            <div class="panel-heading panel-heading-dark" align="center">Установить план по всем магазинам</div>
-                            <div class="panel-body">
-
-                                <form name="setAllForm" action="<c:url value="/management/setPlanAll" />" method="POST">
-                                    <table class="table table-condensed">
-                                        <tbody>
-                                            <tr>
-                                                <td>Период: </td>
-                                                <td>
-                                                    <select name="dateMonth" class="form-control" >
-                                                        <c:forEach items="${monthList}" var="month" >
-                                                            <option ${month == selectedMonth ? "selected" : ""} value="${month}">
-                                                                <c:out value="${month}" />
-                                                            </option>
-                                                        </c:forEach>
-                                                    </select>
-                                                </td><td>
-                                                    <select name="dateYear" class="form-control" >
-                                                        <c:forEach items="${yearList}" var="year" >
-                                                            <option ${year == selectedYear ? "selected" : ""} value="${year}">
-                                                                <c:out value="${year}" />
-                                                            </option>
-                                                        </c:forEach>
-                                                    </select>
-                                                </td>
-                                            </tr>
-
-                                            <tr>
-                                                <td>План для всех: </td>
-                                                <td colspan="2">
-                                                    <input type="text" name="value" class="form-control" >
-                                                    <c:if test="${status == 'error-all'}">
-                                                        <font color="#ff0000">Неверное значение</font>
-                                                    </c:if>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td colspan="3">
-                                                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-                                                    <input type="submit" value="Установить" class="btn btn-primary">
-                                                </td>
-
-                                            </tr>
-                                        </tbody>
-                                    </table>
-
-
-                                </form>
-
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
-            <%@include file="../modules/footer.jspf" %> 
-        </div>
-
-    <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/jquery-ui.css" />" >
-    <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/jquery-ui.theme.css" />" >
-    <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/ui.jqgrid.css" />" >
+        </ccms:layout>
 
     <script type="text/javascript" src="<c:url value="/res/js/grid.locale-ru.js" />"></script>
     <script type="text/javascript" src="<c:url value="/res/js/jquery.jqGrid.min.js" />"></script>
 
+    <div id="msgSuccess" title="Сохранение успешно">
+        <p>
+            <span class="glyphicon glyphicon-ok-circle" style="float:left; margin:0 7px 50px 0;"></span> 
+            Сохранение успешно.
+        </p>
+    </div>
+    <div id="msgError" title="">
+        <p>
 
+        </p>
+    </div>
+
+    <script type="text/javascript" src="<c:url value="/res/js/grid.locale-ru.js" />"></script>
+    <script type="text/javascript" src="<c:url value="/res/js/jquery.jqGrid.min.js" />"></script>
     <script type="text/javascript">
         $(function () {
             var data = [<c:forEach items="${salesMap}" var="entry">{

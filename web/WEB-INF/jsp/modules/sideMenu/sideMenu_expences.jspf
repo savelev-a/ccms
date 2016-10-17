@@ -20,7 +20,7 @@
                 </tr>
                 <tr ${sideMenuActiveItem == "expenceTypes" ? "class='info'" : ""}>
                     <td>
-                        <a href="<c:url value="/admin/expencetypes" />">
+                        <a href="<c:url value="/management/expencetypes" />">
                             Управление типами расходов
                         </a> 
                     </td>

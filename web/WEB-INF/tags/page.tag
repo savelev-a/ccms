@@ -18,6 +18,7 @@
         <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/jquery-ui.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/jquery-ui.structure.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/jquery-ui.theme.css" />" >
+        <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/ui.jqgrid.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/jquery.dataTables.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/styles.css" />" >
 

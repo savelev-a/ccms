@@ -95,7 +95,7 @@ public class ExpenceType implements Serializable, Comparable<ExpenceType>, Hyper
     @Override
     public String getLinkTarget()
     {
-        return "/admin/expencetypes/edit?id=" + getId();
+        return "/management/expencetypes/edit?id=" + getId();
     }
 
     @Override

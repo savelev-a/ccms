@@ -98,7 +98,7 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="<c:url value="/admin/expencetypes" />" >
+                                <a href="<c:url value="/management/expencetypes" />" >
                                     <span class="glyphicon glyphicon-list-alt"></span> Управление видами расходов
                                 </a>
                             </li>

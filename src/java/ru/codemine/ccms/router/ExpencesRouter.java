@@ -338,18 +338,18 @@ public class ExpencesRouter
     //                 //
     
     @Secured("ROLE_OFFICE")
-    @RequestMapping(value = "/admin/expencetypes", method = RequestMethod.GET)
+    @RequestMapping(value = "/management/expencetypes", method = RequestMethod.GET)
     public String getExpenceTypesPage(ModelMap model)
     {
         model.addAllAttributes(utils.prepareModel("Администрирование - типы расходов - ИнфоПортал", "management", "expenceTypes"));
         model.addAttribute("allExpenceTypes", expenceTypeService.getAll());
         model.addAttribute("expenceTypeFrm", new ExpenceType());
         
-        return "admin/expencetypes";
+        return "management/expencetypes";
     }
     
     @Secured("ROLE_OFFICE")
-    @RequestMapping(value = "/admin/expencetypes", method = RequestMethod.POST)
+    @RequestMapping(value = "/management/expencetypes", method = RequestMethod.POST)
     public String addExpenceType(@Valid @ModelAttribute("expenceTypeFrm") ExpenceType expenceType,
             BindingResult result,
             ModelMap model)
@@ -359,26 +359,26 @@ public class ExpencesRouter
             model.addAllAttributes(utils.prepareModel("Администрирование - типы расходов - ИнфоПортал", "management", "expenceTypes"));
             model.addAttribute("allExpenceTypes", expenceTypeService.getAll());
         
-            return "admin/expencetypes";
+            return "management/expencetypes";
         }
         
         expenceTypeService.create(expenceType);
         
-        return "redirect:/admin/expencetypes";
+        return "redirect:/management/expencetypes";
     }
     
     @Secured("ROLE_OFFICE")
-    @RequestMapping(value = "admin/expencetypes/edit", method = RequestMethod.GET)
+    @RequestMapping(value = "management/expencetypes/edit", method = RequestMethod.GET)
     public String getExpenceTypeEditPage(@RequestParam("id") Integer id, ModelMap model)
     {
         model.addAllAttributes(utils.prepareModel("Администрирование - типы расходов (редактирование) - ИнфоПортал", "management", "expenceTypes"));
         model.addAttribute("expenceType", expenceTypeService.getById(id));
         
-        return "admin/expencetypeedit";
+        return "management/expencetypeedit";
     }
     
     @Secured("ROLE_OFFICE")
-    @RequestMapping(value = "admin/expencetypes/edit", method = RequestMethod.POST)
+    @RequestMapping(value = "management/expencetypes/edit", method = RequestMethod.POST)
     public String expenceTypeEdit(@Valid @ModelAttribute ExpenceType type, 
             BindingResult result,
             ModelMap model)
@@ -387,20 +387,20 @@ public class ExpencesRouter
         {
             model.addAllAttributes(utils.prepareModel("Администрирование - типы расходов (редактирование) - ИнфоПортал", "management", "expenceTypes"));
             
-            return "admin/expencetypeedit";
+            return "management/expencetypeedit";
         }
         
         expenceTypeService.update(type);
         
-        return "redirect:/admin/expencetypes";
+        return "redirect:/management/expencetypes";
     }
     
     @Secured("ROLE_OFFICE")
-    @RequestMapping(value = "/admin/expencetypes/delete", method = RequestMethod.POST)
+    @RequestMapping(value = "/management/expencetypes/delete", method = RequestMethod.POST)
     public String deleteExpenceType(@RequestParam("id") Integer id)
     {
         expenceTypeService.deleteById(id);
         
-        return "redirect:/admin/expencetypes";
+        return "redirect:/management/expencetypes";
     }
 }

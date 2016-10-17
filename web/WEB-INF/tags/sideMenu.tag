@@ -21,6 +21,11 @@
             <table class="table table-condensed">
                 <c:choose>
                     
+<%-- 
+
+                            Администрирование (admin)
+
+--%>
                     <c:when test="${section == 'admin'}">
                         <tr ${selectedItem == "employees" ? "class='info'" : ""}>
                             <td>
@@ -53,16 +58,6 @@
 
                         <tr><td> </td></tr>
 
-                        <tr ${selectedItem == "expenceTypes" ? "class='info'" : ""}>
-                            <td>
-                                <a href="<c:url value="/admin/expencetypes" />">
-                                    Типы расходов
-                                </a> 
-                            </td>
-                        </tr>
-
-                        <tr><td> </td></tr>
-
                         <tr ${selectedItem == "settings" ? "class='info'" : ""}>
                             <td>
                                 <a href="<c:url value="/admin/settings" />">
@@ -71,7 +66,12 @@
                             </td>
                         </tr>
                     </c:when>
+                        
+<%-- 
 
+                                Акции/распродажи (ActionEvents)
+
+--%>
                     <c:when test="${section == 'actionEvents'}">
                         <tr ${selectedItem == "newaction" ? "class='info'" : ""}>
                             <td>
@@ -105,7 +105,128 @@
                             </td>
                         </tr>
                     </c:when>
+                        
+<%-- 
 
+                                   Задачи (tasks)
+
+--%>
+                    <c:when test="${section == 'tasks'}">
+                        <tr ${selectedItem == "newtask" ? "class='info'" : ""}>
+                            <td>
+                                <a href="<c:url value="/tasks/create" />">
+                                    Создать задачу
+                                </a> 
+                            </td>
+                        </tr>
+
+                        <tr><td> </td></tr>
+
+                        <tr ${selectedItem == "performed" ? "class='info'" : ""}>
+                            <td>
+                                <a href="<c:url value="/tasks/mytasks" />">
+                                    Назначенные мне
+                                    <c:if test="${currentUserActiveTasksCount != 0}">
+                                    <span class="badge badge-right"><c:out value="${currentUserActiveTasksCount}" /></span>
+                                </c:if>
+                                </a> 
+                            </td>
+                        </tr>
+                        <tr ${selectedItem == "created" ? "class='info'" : ""}>
+                            <td>
+                                <a href="<c:url value="/tasks/mytasks/created" />">
+                                    Созданные мной
+                                </a> 
+                            </td>
+                        </tr>
+                        <tr ${selectedItem == "free" ? "class='info'" : ""}>
+                            <td>
+                                <a href="<c:url value="/tasks/freetasks" />">
+                                    Свободные 
+                                    <c:if test="${openTasksCount != 0}">
+                                        <span class="badge badge-right"><c:out value="${openTasksCount}" /></span>
+                                    </c:if>
+                                </a> 
+                            </td>
+                        </tr>
+                        <tr ${selectedItem == "closed" ? "class='info'" : ""}>
+                            <td>
+                                <a href="<c:url value="/tasks/mytasks/closed" />">
+                                    Закрытые
+                                </a> 
+                            </td>
+                        </tr>
+
+                        <sec:authorize access="hasRole('ROLE_ADMIN')">
+                            <tr><td> </td></tr>
+                            <tr ${selectedItem == "tasksadm" ? "class='info'" : ""}>
+                                <td>
+                                    <a href="<c:url value="/admin/tasks" />">
+                                        Управление задачами
+                                    </a> 
+                                </td>
+                            </tr>
+                        </sec:authorize>
+                    </c:when>
+                            
+<%-- 
+
+                                   Отчет - выручка/проходимость (reports_sp)
+
+--%>
+                    <c:when test="${section == 'reports_sp'}">
+                        <tr ${selectedItem == "general" ? "class='info'" : ""}>
+                            <td>
+                                <a href="<c:url value="/reports/sales-pass" />">
+                                    Общая таблица
+                                </a> 
+                            </td>
+                        </tr>
+
+                        <tr ${selectedItem == "graph" ? "class='info'" : ""}>
+                            <td>
+                                <a href="<c:url value="/reports/graph/sales-pass" />">
+                                    Графики
+                                </a> 
+                            </td>
+                        </tr>
+
+                        <tr ${selectedItem == "plan" ? "class='info'" : ""}>
+                            <td>
+                                <a href="<c:url value="/management/setPlan" />">
+                                    Установить план
+                                </a> 
+                            </td>
+                        </tr>
+                    </c:when>
+                            
+<%-- 
+
+                                   Расходы, управление (expences)
+
+--%>
+                    <c:when test="${section == 'expences'}">
+                        <tr ${sideMenuActiveItem == "expences" ? "class='info'" : ""}>
+                            <td>
+                                <a href="<c:url value="/expences?shopid=${shop.id}" />">
+                                    Ввод данных по расходам
+                                </a> 
+                            </td>
+                        </tr>
+                        <tr ${sideMenuActiveItem == "expenceTypes" ? "class='info'" : ""}>
+                            <td>
+                                <a href="<c:url value="/management/expencetypes" />">
+                                    Управление типами расходов
+                                </a> 
+                            </td>
+                        </tr>
+                    </c:when>
+                            
+<%-- 
+
+                                     Пустое меню
+
+--%>
                     <c:otherwise>
                         <td>
                             <a href="javascript:history.back()">

@@ -160,7 +160,6 @@
             <%@include file="../../modules/footer.jspf" %>
         </div>
 
-    <link rel="stylesheet" href="<c:url value="/res/css/messagebox.css" />" >
     <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/jquery-ui.css" />" >
     <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/jquery-ui.theme.css" />" >
     <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/ui.jqgrid.css" />" >
