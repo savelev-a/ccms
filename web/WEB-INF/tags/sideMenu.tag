@@ -168,7 +168,47 @@
                             </tr>
                         </sec:authorize>
                     </c:when>
-                            
+<%-- 
+
+                                   Магазин (shop)
+
+--%>  
+                    <c:when test="${section == 'shop'}">
+                        <tr ${selectedItem == "general" ? "class='info'" : ""}>
+                            <td>
+                                <a href="<c:url value="/shop?id=${shop.id}" />">
+                                    Общая информация
+                                </a> 
+                            </td>
+                        </tr>
+                        <c:if test="${shop.countersEnabled}">
+                            <tr ${selectedItem == "counters" ? "class='info'" : ""}>
+                                <td>
+                                    <a href="<c:url value="/counters?shopid=${shop.id}" />">
+                                        Счетчики посетителей
+                                    </a> 
+                                </td>
+                            </tr>
+                        </c:if>
+                        <tr ${selectedItem == "sales" ? "class='info'" : ""}>
+                            <td>
+                                <a href="<c:url value="/sales?shopid=${shop.id}" />">
+                                    Таблица проходимости
+                                </a> 
+                            </td>
+                        </tr>
+                        <sec:authorize access="hasRole('ROLE_OFFICE')">
+                            <tr><td> </td></tr>
+                            <tr ${selectedItem == "expences" ? "class='info'" : ""}>
+                            <td>
+                                <a href="<c:url value="/expences?shopid=${shop.id}" />">
+                                    Расходы магазина
+                                </a> 
+                            </td>
+                        </tr>
+                        </sec:authorize>
+                    </c:when>
+
 <%-- 
 
                                    Отчет - выручка/проходимость (reports_sp)
@@ -228,10 +268,8 @@
 
 --%>
                     <c:otherwise>
-                        <td>
-                            <a href="javascript:history.back()">
-                                <- назад --
-                            </a>
+                        <td align="center">
+                            <i><font color="gray">Нет вариантов</font> </i>
                         </td>
                     </c:otherwise>
                 </c:choose>
