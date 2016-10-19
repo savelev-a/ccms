@@ -15,6 +15,9 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="<c:url value="/res/css/bootstrap.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/bootstrap-theme.css" />" >
+        <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/jquery-ui.css" />" >
+        <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/jquery-ui.theme.css" />" >
+        <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/ui.jqgrid.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/styles.css" />" >
         <style type="text/css" media="print">
             @page { size: portrait; margin: 0cm }
@@ -53,10 +56,6 @@
 
             </small>
     
-    <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/jquery-ui.css" />" >
-    <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/jquery-ui.theme.css" />" >
-    <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/ui.jqgrid.css" />" >
-
     <script src="<c:url value="/res/js/jquery-2.2.2.min.js" /> "></script>
     <script src="<c:url value="/res/js/jquery-ui.min.js" />"></script>
     <script type="text/javascript" src="<c:url value="/res/js/grid.locale-ru.js" />"></script>

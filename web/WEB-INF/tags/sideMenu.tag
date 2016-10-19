@@ -239,7 +239,30 @@
                             </td>
                         </tr>
                     </c:when>
-                            
+                        
+<%-- 
+
+                                   Отчет - выручка/расходы (reports_exp)
+
+--%>
+                    <c:when test="${section == 'reports_exp'}">
+                        <tr ${selectedItem == "all" ? "class='info'" : ""}>
+                            <td>
+                                <a href="<c:url value="/reports/expences" />">
+                                    Общая таблица
+                                </a> 
+                            </td>
+                        </tr>
+
+                        <tr ${selectedItem == "graph" ? "class='info'" : ""}>
+                            <td>
+                                <a href="<c:url value="/reports/graph/expences" />">
+                                    График
+                                </a> 
+                            </td>
+                        </tr>
+                    </c:when>
+
 <%-- 
 
                                    Расходы, управление (expences)

@@ -49,7 +49,7 @@ public class ActionEventsRouter
     @RequestMapping(value = "/actions/create", method = RequestMethod.GET)
     public String newActionFrm(ModelMap model)
     {
-        model.addAllAttributes(utils.prepareModel("Новая задача - ИнфоПортал", "management", "newaction"));
+        model.addAllAttributes(utils.prepareModel());
         model.addAttribute("allShops", shopService.getAllOpen());
         model.addAttribute("newActionFrm", new ActionEvent(employeeService.getCurrentUser()));
         
@@ -61,7 +61,7 @@ public class ActionEventsRouter
     {
         if(result.hasErrors())
         {
-            model.addAllAttributes(utils.prepareModel("Новая задача - ИнфоПортал", "management", "newaction"));
+            model.addAllAttributes(utils.prepareModel());
             model.addAttribute("allShops", shopService.getAllOpen());
             
             return "pages/actions/newaction";
@@ -77,7 +77,7 @@ public class ActionEventsRouter
     @RequestMapping(value = "/actions/currentFuture", method = RequestMethod.GET)
     public String getCurrentFuture(ModelMap model)
     {
-        model.addAllAttributes(utils.prepareModel("Новая задача - ИнфоПортал", "management", "currentFuture"));
+        model.addAllAttributes(utils.prepareModel());
      
         List<ActionEvent> currentFutureActions = actionEventService.getCurrentFuture();
         model.addAttribute("currentFutureActions", currentFutureActions);

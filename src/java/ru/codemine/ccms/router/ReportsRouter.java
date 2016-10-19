@@ -45,7 +45,7 @@ public class ReportsRouter
     @RequestMapping(value = "/reports/shopproviders", method = RequestMethod.GET)
     public String getShopProvidersReport(ModelMap model)
     {
-        model.addAllAttributes(utils.prepareModel("Отчет по провайдерам - ИнфоПортал", "reports", ""));
+        model.addAllAttributes(utils.prepareModel());
         model.addAttribute("allshops", shopService.getAll());
         
         return "reports/shopprov";

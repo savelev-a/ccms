@@ -84,7 +84,7 @@ public class AdminRouter
     @RequestMapping(value = "/admin/employees", method = RequestMethod.GET)
     public String getEmplyees(ModelMap model)
     {
-        model.addAllAttributes(utils.prepareModel("Администрирование - сотрудники - ИнфоПортал", "admin", "employees"));
+        model.addAllAttributes(utils.prepareModel());
         model.addAttribute("allemps", employeeService.getAll());
         
         return "admin/employees";
@@ -94,7 +94,7 @@ public class AdminRouter
     @RequestMapping(value = "/admin/addemployee", method = RequestMethod.GET)
     public String addEmployeeFrm(ModelMap model)
     {
-        model.addAllAttributes(utils.prepareModel("Администрирование - новый сотрудник - ИнфоПортал", "admin", "employees"));
+        model.addAllAttributes(utils.prepareModel());
         model.addAttribute("addEmployeeFrm", new Employee());
         model.addAttribute("rolesList", employeeService.getAllRoles());
         
@@ -107,7 +107,7 @@ public class AdminRouter
     {
         if(result.hasErrors())
         {
-            model.addAllAttributes(utils.prepareModel("Администрирование - новый сотрудник - ИнфоПортал", "admin", "employees"));
+            model.addAllAttributes(utils.prepareModel());
             model.addAttribute("rolesList", employeeService.getAllRoles());
             
             return "admin/addemployee";
@@ -122,7 +122,7 @@ public class AdminRouter
     @RequestMapping(value = "/admin/profile",  method = RequestMethod.GET)
     public String employeeProfile(@RequestParam("id") Integer id, ModelMap model)
     {
-        model.addAllAttributes(utils.prepareModel("Администрирование - сотрудники - ИнфоПортал", "admin", "employees"));
+        model.addAllAttributes(utils.prepareModel());
         model.addAttribute("employee", employeeService.getById(id));
         model.addAttribute("rolesList", employeeService.getAllRoles());
         
@@ -137,7 +137,7 @@ public class AdminRouter
     {
         if(result.hasErrors())
         {
-            model.addAllAttributes(utils.prepareModel("Администрирование - сотрудники - ИнфоПортал", "admin", "employees"));
+            model.addAllAttributes(utils.prepareModel());
             model.addAttribute("rolesList", employeeService.getAllRoles());
             
             return "admin/profile";
@@ -177,7 +177,7 @@ public class AdminRouter
     @RequestMapping(value = "/admin/organisations", method = RequestMethod.GET)
     public String getOrganisations(ModelMap model)
     {
-        model.addAllAttributes(utils.prepareModel("Администрирование - юр. лица - ИнфоПортал", "admin", "orgs"));
+        model.addAllAttributes(utils.prepareModel());
         model.addAttribute("allorgs", organisationService.getAll());
         
         return "admin/organisations";
@@ -187,7 +187,7 @@ public class AdminRouter
     @RequestMapping(value = "/admin/addorganisation", method = RequestMethod.GET)
     public String addOrganisationFrm(ModelMap model)
     {
-        model.addAllAttributes(utils.prepareModel("Администрирование - новое юр. лицо - ИнфоПортал", "admin", "orgs"));
+        model.addAllAttributes(utils.prepareModel());
         model.addAttribute("addOrganisationFrm", new Organisation());
         model.addAttribute("emps", employeeService.getAll());
         
@@ -202,7 +202,7 @@ public class AdminRouter
         
         if(result.hasErrors())
         {
-            model.addAllAttributes(utils.prepareModel("Администрирование - новое юр. лицо - ИнфоПортал", "admin", "orgs"));
+            model.addAllAttributes(utils.prepareModel());
             model.addAttribute("emps", employeeService.getAll());
             
             return "admin/addorganisation";
@@ -217,7 +217,7 @@ public class AdminRouter
     @RequestMapping(value = "/admin/orgprofile",  method = RequestMethod.GET)
     public String organisationProfile(@RequestParam("id") Integer id, ModelMap model)
     {
-        model.addAllAttributes(utils.prepareModel("Администрирование - юр. лица - ИнфоПортал", "admin", "orgs"));
+        model.addAllAttributes(utils.prepareModel());
         model.addAttribute("organisation", organisationService.getById(id));
         model.addAttribute("emps", employeeService.getAll());
         
@@ -233,7 +233,7 @@ public class AdminRouter
     {
         if(result.hasErrors())
         {
-            model.addAllAttributes(utils.prepareModel("Администрирование - юр. лица - ИнфоПортал", "admin", "orgs"));
+            model.addAllAttributes(utils.prepareModel());
             model.addAttribute("emps", employeeService.getAll());
             
             return "admin/orgprofile";
@@ -261,7 +261,7 @@ public class AdminRouter
     @RequestMapping(value = "/admin/shops", method = RequestMethod.GET)
     public String getShops(ModelMap model)
     {
-        model.addAllAttributes(utils.prepareModel("Администрирование - магазины - ИнфоПортал", "admin", "shops"));
+        model.addAllAttributes(utils.prepareModel());
         model.addAttribute("allshops", shopService.getAll());
         
         return "admin/shops";
@@ -271,7 +271,7 @@ public class AdminRouter
     @RequestMapping(value = "/admin/addshop", method = RequestMethod.GET)
     public String addShopFrm(ModelMap model)
     {
-        model.addAllAttributes(utils.prepareModel("Администрирование - новый магазин - ИнфоПортал", "admin", "shops"));
+        model.addAllAttributes(utils.prepareModel());
         model.addAttribute("addShopFrm", new Shop());
         model.addAttribute("emps", employeeService.getAll());
         model.addAttribute("orgs", organisationService.getAll());
@@ -287,7 +287,7 @@ public class AdminRouter
         
         if(result.hasErrors())
         {
-            model.addAllAttributes(utils.prepareModel("Администрирование - новый магазин - ИнфоПортал", "admin", "shops"));
+            model.addAllAttributes(utils.prepareModel());
             model.addAttribute("emps", employeeService.getAll());
             model.addAttribute("orgs", organisationService.getAll());
             
@@ -303,7 +303,7 @@ public class AdminRouter
     @RequestMapping(value = "/admin/shopprofile",  method = RequestMethod.GET)
     public String shopProfile(@RequestParam("id") Integer id, ModelMap model)
     {
-        model.addAllAttributes(utils.prepareModel("Администрирование - магазины - ИнфоПортал", "admin", "shops"));
+        model.addAllAttributes(utils.prepareModel());
         model.addAttribute("shop", shopService.getById(id));
         model.addAttribute("emps", employeeService.getAll());
         model.addAttribute("orgs", organisationService.getAll());
@@ -320,7 +320,7 @@ public class AdminRouter
     {
         if(result.hasErrors())
         {
-            model.addAllAttributes(utils.prepareModel("Администрирование - магазины - ИнфоПортал", "admin", "shops"));
+            model.addAllAttributes(utils.prepareModel());
             model.addAttribute("emps", employeeService.getAll());
             model.addAttribute("orgs", organisationService.getAll());
             
@@ -349,7 +349,7 @@ public class AdminRouter
     @RequestMapping(value = "/admin/offices")
     public String getOffices(ModelMap model)
     {
-        model.addAllAttributes(utils.prepareModel("Администрирование - офисы - ИнфоПортал", "admin", "offices"));
+        model.addAllAttributes(utils.prepareModel());
         model.addAttribute("alloffices", officeService.getAll());
         
         return "admin/offices";
@@ -359,7 +359,7 @@ public class AdminRouter
     @RequestMapping(value = "/admin/addoffice", method = RequestMethod.GET)
     public String addOfficeFrm(ModelMap model)
     {
-        model.addAllAttributes(utils.prepareModel("Администрирование - новый офис - ИнфоПортал", "admin", "offices"));
+        model.addAllAttributes(utils.prepareModel());
         model.addAttribute("addOfficeFrm", new Office());
         model.addAttribute("emps", employeeService.getAll());
         model.addAttribute("orgs", organisationService.getAll());
@@ -373,7 +373,7 @@ public class AdminRouter
     {
         if(result.hasErrors())
         {
-            model.addAllAttributes(utils.prepareModel("Администрирование - новый офис - ИнфоПортал", "admin", "offices"));
+            model.addAllAttributes(utils.prepareModel());
             model.addAttribute("emps", employeeService.getAll());
             model.addAttribute("orgs", organisationService.getAll());
             
@@ -389,7 +389,7 @@ public class AdminRouter
     @RequestMapping(value = "/admin/officeprofile",  method = RequestMethod.GET)
     public String officeProfile(@RequestParam("id") Integer id, ModelMap model)
     {
-        model.addAllAttributes(utils.prepareModel("Администрирование - офисы - ИнфоПортал", "admin", "offices"));
+        model.addAllAttributes(utils.prepareModel());
         model.addAttribute("office", officeService.getById(id));
         model.addAttribute("emps", employeeService.getAll());
         model.addAttribute("orgs", organisationService.getAll());
@@ -406,7 +406,7 @@ public class AdminRouter
     {
         if(result.hasErrors())
         {
-            model.addAllAttributes(utils.prepareModel("Администрирование - офисы - ИнфоПортал", "admin", "offices"));
+            model.addAllAttributes(utils.prepareModel());
             model.addAttribute("emps", employeeService.getAll());
             model.addAttribute("orgs", organisationService.getAll());
             
@@ -441,7 +441,7 @@ public class AdminRouter
     @RequestMapping(value = "/admin/settings", method = RequestMethod.GET)
     public String getSettingsPage(ModelMap model)
     {
-        model.addAllAttributes(utils.prepareModel("Администрирование - Настройки - ИнфоПортал", "admin", "settings"));
+        model.addAllAttributes(utils.prepareModel());
         model.addAttribute("settingsForm", settingsService.createForm());
         
         return "admin/settings";
@@ -454,7 +454,7 @@ public class AdminRouter
     {
         if(result.hasErrors())
         {
-            model.addAllAttributes(utils.prepareModel("Администрирование - Настройки - ИнфоПортал", "admin", "settings"));
+            model.addAllAttributes(utils.prepareModel());
             
             return "admin/settings";
         }
@@ -472,45 +472,11 @@ public class AdminRouter
     @RequestMapping(value = "/admin/tasks")
     public String getTasks(ModelMap model)
     {
-        model.addAllAttributes(utils.prepareModel("Администрирование - задачи - ИнфоПортал", "tasks", "tasksadm"));
+        model.addAllAttributes(utils.prepareModel());
         model.addAttribute("openTasksCount", taskService.getOpenTaskCount());
         model.addAttribute("alltasks", taskService.getAll());
         
         return "admin/tasks";
     }
     
-    //
-    // Первоначальная настройка
-    //
-    
-    //@RequestMapping(value = "/setup",  method = RequestMethod.GET)
-    //public String doSetup(ModelMap model)
-    //{
-    //    List<Employee> empsList = employeeService.getAll();
-    //    if(empsList.isEmpty())
-    //    {
-    //        Employee defaultAdmin = new Employee();
-    //        
-    //        defaultAdmin.setUsername("admin");
-    //        defaultAdmin.setPassword("admin");
-    //        defaultAdmin.setFirstName("admin");
-    //        defaultAdmin.setLastName("admin");
-    //        defaultAdmin.setMiddleName("");
-    //        defaultAdmin.setPhone("");
-    //        defaultAdmin.setPosition("");
-    //        defaultAdmin.setEmail("admin@example.com");
-    //        List<String> defRole = new ArrayList<>();
-    //        defRole.add("ROLE_ADMIN");
-    //        defRole.add("ROLE_USER");
-    //        defaultAdmin.setRoles(defRole);
-    //        defaultAdmin.setActive(true);
-    //        
-    //        employeeService.create(defaultAdmin);
-    //        
-    //        log.info("Default administrator created: admin");
-    //    }
-    //    
-    //    return "index";
-    //}
-
 }

@@ -26,7 +26,6 @@ import java.util.TreeSet;
 import org.apache.log4j.Logger;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
-import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,9 +78,7 @@ public class SalesRouter
     {
         Shop shop = shopService.getById(shopid);
         
-        model.addAllAttributes(utils.prepareModel("Выручка магазина - " + shop.getName() + " - ИнфоПортал", 
-                "shops", "sales", 
-                dateMonth, dateYear));
+        model.addAllAttributes(utils.prepareModel(dateMonth, dateYear));
 
         LocalDate selectedStartDate;
         LocalDate selectedEndDate;
@@ -195,8 +192,7 @@ public class SalesRouter
             ModelMap model)
     {
 
-        model.addAllAttributes(utils.prepareModel("Отчет по проходимости и продажам - ИнфоПортал", 
-                "reports", "general"));
+        model.addAllAttributes(utils.prepareModel());
         
         DateTimeFormatter formatter = DateTimeFormat.forPattern("dd.MM.YYYY");
         LocalDate dateStart = dateStartStr == null 
@@ -440,8 +436,7 @@ public class SalesRouter
             @RequestParam(required = false) Integer shopid,
             ModelMap model)
     {
-        model.addAllAttributes(utils.prepareModel("Графики проходимости и продаж - ИнфоПортал", 
-                "reports", "graph"));
+        model.addAllAttributes(utils.prepareModel());
         
         List<Shop> shopList = shopService.getAllOpen();
         List<String> graphDataDayTotal = new ArrayList<>();
@@ -505,9 +500,7 @@ public class SalesRouter
             @RequestParam(required = false) String dateYear,
             ModelMap model)
     {
-        model.addAllAttributes(utils.prepareModel("Установить план продаж - ИнфоПортал", 
-                "management", "plan", 
-                dateMonth, dateYear));
+        model.addAllAttributes(utils.prepareModel(dateMonth, dateYear));
         
         model.addAttribute("organisationList", organisationService.getAll());
         model.addAttribute("salesMap", utils.getShopSalesMap(dateMonth, dateYear));

@@ -59,7 +59,7 @@ public class ContentRouter
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String getIndex(ModelMap model)
     {
-        model.addAllAttributes(utils.prepareModel("Главная - ИнфоПортал", "", ""));
+        model.addAllAttributes(utils.prepareModel());
         
         return "index";
     }
@@ -70,7 +70,7 @@ public class ContentRouter
     @RequestMapping(value = "/shops", method = RequestMethod.GET)
     public String getShops(ModelMap model, @RequestParam(required = false) String mode)
     {
-        model.addAllAttributes(utils.prepareModel("Магазины - ИнфоПортал", "shops", "short"));
+        model.addAllAttributes(utils.prepareModel());
         model.addAttribute("allshops", shopService.getAll());
         model.addAttribute("allorgs", organisationService.getAll());
         
@@ -87,7 +87,7 @@ public class ContentRouter
     @RequestMapping(value = "/offices", method = RequestMethod.GET)
     public String getOffices(ModelMap model, @RequestParam(required = false) String mode)
     {
-        model.addAllAttributes(utils.prepareModel("Офисы - ИнфоПортал", "directories", "all"));
+        model.addAllAttributes(utils.prepareModel());
         model.addAttribute("alloffices", officeService.getAll());
 
         return "print".equals(mode) ? "printforms/offices" : "pages/offices/officesAll";
@@ -97,7 +97,7 @@ public class ContentRouter
     @RequestMapping(value = "/employees", method = RequestMethod.GET)
     public String getEmployees(ModelMap model, @RequestParam(required = false) String mode)
     {
-        model.addAllAttributes(utils.prepareModel("Сотрудники - ИнфоПортал", "directories", "all"));
+        model.addAllAttributes(utils.prepareModel());
         model.addAttribute("allemps", employeeService.getAll());
 
         return "print".equals(mode) ? "printforms/employees" : "pages/employees/employeesAll";
@@ -107,7 +107,7 @@ public class ContentRouter
     @RequestMapping(value = "/organisations", method = RequestMethod.GET)
     public String getOrganisations(ModelMap model, @RequestParam(required = false) String mode)
     {
-        model.addAllAttributes(utils.prepareModel("Юр. лица - ИнфоПортал", "directories", "all"));
+        model.addAllAttributes(utils.prepareModel());
         model.addAttribute("allorgs", organisationService.getAll());
 
         return "print".equals(mode) ? "/printforms/organisations" : "pages/organisations/organisationsAll";
@@ -116,7 +116,7 @@ public class ContentRouter
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String getLogin(ModelMap model, @RequestParam(required = false) boolean error)
     {
-        model.addAllAttributes(utils.prepareModel("Авторизация - ИнфоПортал", "", ""));
+        model.addAllAttributes(utils.prepareModel());
 
         List<Employee> activeEmpsList = employeeService.getActive();
         Map<String, String> upperMap = new LinkedHashMap();
@@ -161,7 +161,7 @@ public class ContentRouter
     public String getShop(ModelMap model, @RequestParam Integer id, @RequestParam(required = false) String mode)
     {
         Shop shop = shopService.getById(id);
-        model.addAllAttributes(utils.prepareModel("Магазин - " + shop.getName() + " - ИнфоПортал", "shops", "general"));
+        model.addAllAttributes(utils.prepareModel());
         model.addAttribute("shop", shop);
         
         return "print".equals(mode) ? "/printforms/shopfrm" : "pages/shops/shop";
@@ -176,7 +176,7 @@ public class ContentRouter
     public String getOffice(ModelMap model, @RequestParam Integer id, @RequestParam(required = false) String mode)
     {
         Office office = officeService.getById(id);
-        model.addAllAttributes(utils.prepareModel("Офис - " + office.getName() + " - ИнфоПортал", "directories", ""));
+        model.addAllAttributes(utils.prepareModel());
         model.addAttribute("office", office);
 
         return "print".equals(mode) ? "/printforms/officefrm" : "pages/offices/office";
@@ -192,7 +192,7 @@ public class ContentRouter
     public String getOrganisation(ModelMap model, @RequestParam Integer id, @RequestParam(required = false) String mode)
     {
         Organisation org = organisationService.getById(id);
-        model.addAllAttributes(utils.prepareModel("Реквизиты - " + org.getName() + " - ИнфоПортал", "directories", ""));
+        model.addAllAttributes(utils.prepareModel());
         model.addAttribute("organisation", org);
 
         return "print".equals(mode) ? "/printforms/organisationfrm" : "pages/organisations/organisation";
@@ -207,7 +207,7 @@ public class ContentRouter
     public String getEmployee(ModelMap model, @RequestParam Integer id, @RequestParam(required = false) String mode)
     {
         Employee employee = employeeService.getById(id);
-        model.addAllAttributes(utils.prepareModel("Профиль - " + employee.getFullName() + " - ИнфоПортал", "directories", ""));
+        model.addAllAttributes(utils.prepareModel());
         model.addAttribute("employee", employee);
 
         return "print".equals(mode) ? "/printforms/employeefrm" : "pages/employees/employee";
@@ -221,7 +221,7 @@ public class ContentRouter
     @RequestMapping(value = "/403")
     public String errorDenied(ModelMap model)
     {
-        model.addAllAttributes(utils.prepareModel("Доступ запрещен - ИнфоПортал", "", ""));
+        model.addAllAttributes(utils.prepareModel());
         
         return "403";
     }
@@ -229,7 +229,7 @@ public class ContentRouter
     @RequestMapping(value = "/404")
     public String errorNotFound(ModelMap model)
     {
-        model.addAllAttributes(utils.prepareModel("Страница не найдена - ИнфоПортал", "", ""));
+        model.addAllAttributes(utils.prepareModel());
         
         return "404";
     }

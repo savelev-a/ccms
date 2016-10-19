@@ -7,84 +7,46 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="ccms" tagdir="/WEB-INF/tags/" %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
     "http://www.w3.org/TR/html4/loose.dtd">
 
+<ccms:page title="Отчет по расходам">
+    <ccms:layout mainMenuActiveItem="reports" sideMenuSection="reports_exp" sideMenuActiveItem="all">
+        <ccms:panel cols="10" title="Общая таблица расходов по магазинам за ${selectedYear} год">
 
-<html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <link rel="stylesheet" href="<c:url value="/res/css/bootstrap.css" />" >
-        <link rel="stylesheet" href="<c:url value="/res/css/bootstrap-theme.css" />" >
-        <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/jquery-ui.css" />" >
-        <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/jquery-ui.theme.css" />" >
-        <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/ui.jqgrid.css" />" >
-        <link rel="stylesheet" href="<c:url value="/res/css/jquery.dataTables.css" />" >
-        <link rel="stylesheet" href="<c:url value="/res/css/styles.css" />" >
-        <title><c:out value="${title}" /></title>
-    </head>
+            <!-- Выбор периода -->
+            <div class="form-inline" align="right">
+                <form name="dateChooseForm" action="<c:url value="/reports/expences" />" method="GET">
+                    Выберите год: 
+                    <select name="dateYear" class="form-control" >
+                        <c:forEach items="${yearList}" var="year" >
+                            <option ${year == selectedYear ? "selected" : ""} value="${year}">
+                                <c:out value="${year}" />
+                            </option>
+                        </c:forEach>
+                    </select>&nbsp;
 
-    <body>
-        <div class="wrapper">
-            <div class="container-fluid content">
-                <%@include file="../modules/header.jspf" %>
-
+                    <input type="submit" value="Загрузить" class="btn btn-primary">
+                </form>
                 <br>
-
-                <div class="row">
-
-                    <%@include file="../modules/sideMenu/sideMenu_reports_exp.jspf" %> 
-
-                    <br><br>
-
-                    <div class="col-md-10">
-                        <div class="panel panel-primary panel-primary-dark">
-                            <div class="panel-heading panel-heading-dark" align="center">Общая таблица расходов по магазинам 
-                                <c:out value="${shop.name}" /> за <c:out value="${selectedYear}" /> год.
-                            </div>
-                            <div class="panel-body">
-
-                                <!-- Выбор периода -->
-                                <div class="form-inline" align="right">
-                                    <form name="dateChooseForm" action="<c:url value="/reports/expences" />" method="GET">
-                                        Выберите год: 
-                                        <select name="dateYear" class="form-control" >
-                                            <c:forEach items="${yearList}" var="year" >
-                                                <option ${year == selectedYear ? "selected" : ""} value="${year}">
-                                                    <c:out value="${year}" />
-                                                </option>
-                                            </c:forEach>
-                                        </select>&nbsp;
-                                        
-                                        <input type="submit" value="Загрузить" class="btn btn-primary">
-                                    </form>
-                                    <br>
-                                </div>
-
-                                <!-- Placeholder для основной таблицы -->
-                                <div style="width: 100%; height: 100%;">
-                                    <table id="reportTable">
-
-                                    </table>
-                                </div>
-                                <br>
-                                <b>Примечание: </b>Выручка, затраты и чистая прибыль считаются с начала выбранного года. <br>
-                                План. затраты в мес. - это средние ежемесячные затраты за последние 6 месяцев. <br>
-                                План. прибыль в мес. - это средняя чистая прибыль магазина за последние 6 месяцев.<br>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
-            <%@include file="../modules/footer.jspf" %>
-        </div>
 
+            <!-- Placeholder для основной таблицы -->
+            <div style="width: 100%; height: 100%;">
+                <table id="reportTable">
 
-
-
+                </table>
+            </div>
+            <br>
+            <b>Примечание: </b>Выручка, затраты и чистая прибыль считаются с начала выбранного года. <br>
+            План. затраты в мес. - это средние ежемесячные затраты за последние 6 месяцев. <br>
+            План. прибыль в мес. - это средняя чистая прибыль магазина за последние 6 месяцев.<br>
+        </ccms:panel>
+    </ccms:layout>
+                                
     <script type="text/javascript" src="<c:url value="/res/js/grid.locale-ru.js" />"></script>
     <script type="text/javascript" src="<c:url value="/res/js/jquery.jqGrid.min.js" />"></script>
-
 
     <script type="text/javascript">
         $(function () {
@@ -180,6 +142,4 @@
         });
             
     </script>
-
-</body>
-</html>
+</ccms:page>
