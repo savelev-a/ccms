@@ -17,6 +17,7 @@
  */
 package ru.codemine.ccms.entity;
 
+import ru.codemine.ccms.entity.interfaces.Hyperlinkable;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Set;
@@ -43,7 +44,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 @Table(name = "office", indexes = {@Index(name = "office_name_idx", columnList = "name")})
-public class Office implements Serializable
+public class Office implements Serializable, Hyperlinkable
 {
     @Id
     @GeneratedValue(generator = "increment")
@@ -203,6 +204,24 @@ public class Office implements Serializable
             return false;
         }
         return true;
+    }
+
+    @Override
+    public String getLinkTarget()
+    {
+        return "/office?id=" + getId();
+    }
+
+    @Override
+    public String getLinkCaption()
+    {
+        return getName();
+    }
+
+    @Override
+    public String getLinkAdminTarget()
+    {
+        return "/admin/officeprofile?id=" + getId();
     }
     
     

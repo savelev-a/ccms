@@ -24,7 +24,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -80,7 +79,7 @@ public class TaskRouter
     @RequestMapping(value = "/tasks/create", method = RequestMethod.GET)
     public String newTaskFrm(ModelMap model)
     {
-        model.addAllAttributes(utils.prepareModel("Новая задача - ИнфоПортал", "tasks", "newtask"));
+        model.addAllAttributes(utils.prepareModel());
         model.addAttribute("openTasksCount", taskService.getOpenTaskCount());
         model.addAttribute("allEmps", employeeService.getActive());
         model.addAttribute("newTaskFrm", new Task(employeeService.getCurrentUser()));
@@ -94,7 +93,7 @@ public class TaskRouter
     {
         if(result.hasErrors())
         {
-            model.addAllAttributes(utils.prepareModel("Новая задача - ИнфоПортал", "tasks", ""));
+            model.addAllAttributes(utils.prepareModel());
             model.addAttribute("openTasksCount", taskService.getOpenTaskCount());
             model.addAttribute("allEmps", employeeService.getActive());
             
@@ -117,7 +116,7 @@ public class TaskRouter
         
         if(!task.isInTask(currentUser)) throw new ResourceNotFoundException();
         
-        model.addAllAttributes(utils.prepareModel("Задача - " + task.getTitle() + " - ИнфоПортал", "tasks", ""));
+        model.addAllAttributes(utils.prepareModel());
         model.addAttribute("openTasksCount", taskService.getOpenTaskCount());
         model.addAttribute("task", task);
         model.addAttribute("newcomment", new Comment(employeeService.getCurrentUser()));
@@ -137,7 +136,7 @@ public class TaskRouter
         Task task = taskService.getById(taskid);
         if(result.hasErrors())
         {
-            model.addAllAttributes(utils.prepareModel("Задача - " + task.getTitle() + " - ИнфоПортал", "tasks", ""));
+            model.addAllAttributes(utils.prepareModel());
             model.addAttribute("openTasksCount", taskService.getOpenTaskCount());
             model.addAttribute("task", task);
             model.addAttribute("newcomment", comment);
@@ -160,7 +159,7 @@ public class TaskRouter
     {
         Employee currentUser = employeeService.getCurrentUser();
         
-        model.addAllAttributes(utils.prepareModel("Мои задачи - назначенные - ИнфоПортал", "tasks", "performed"));
+        model.addAllAttributes(utils.prepareModel());
         model.addAttribute("openTasksCount", taskService.getOpenTaskCount());
         model.addAttribute("tasksPerformedByMe", taskService.getByPerformerNotClosed(currentUser));
         
@@ -173,7 +172,7 @@ public class TaskRouter
     {
         Employee currentUser = employeeService.getCurrentUser();
         
-        model.addAllAttributes(utils.prepareModel("Мои задачи - созданные - ИнфоПортал", "tasks", "created"));
+        model.addAllAttributes(utils.prepareModel());
         model.addAttribute("openTasksCount", taskService.getOpenTaskCount());
         model.addAttribute("tasksCreatedByMe", taskService.getByCreatorNotClosed(currentUser));
         
@@ -184,7 +183,7 @@ public class TaskRouter
     @RequestMapping(value = "/tasks/freetasks", method = RequestMethod.GET)
     public String getFreeTasks(ModelMap model)
     {
-        model.addAllAttributes(utils.prepareModel("Свободные задачи - ИнфоПортал", "tasks", "free"));
+        model.addAllAttributes(utils.prepareModel());
         model.addAttribute("openTasksCount", taskService.getOpenTaskCount());
         model.addAttribute("freetasks", taskService.getByStatus(Task.Status.NEW));
         
@@ -197,7 +196,7 @@ public class TaskRouter
     {
         Employee currentUser = employeeService.getCurrentUser();
         
-        model.addAllAttributes(utils.prepareModel("Свободные задачи - ИнфоПортал", "tasks", "closed"));
+        model.addAllAttributes(utils.prepareModel());
         model.addAttribute("openTasksCount", taskService.getOpenTaskCount());
         model.addAttribute("closedTasks", taskService.getByCreatorAndStatus(currentUser, Task.Status.CLOSED));
         
@@ -334,7 +333,7 @@ public class TaskRouter
                               @RequestParam(required = false) String dateStartStr,
                               @RequestParam(required = false) String dateEndStr)
     {
-        model.addAllAttributes(utils.prepareModel("Отчет по задачам (по пользователям) - ИнфоПортал", "reports", "byUsers"));
+        model.addAllAttributes(utils.prepareModel());
         
         DateTimeFormatter formatter = DateTimeFormat.forPattern("dd.MM.YYYY");
         LocalDate dateStart = dateStartStr == null 

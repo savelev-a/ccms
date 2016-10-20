@@ -18,6 +18,7 @@
 
 package ru.codemine.ccms.entity;
 
+import ru.codemine.ccms.entity.interfaces.Hyperlinkable;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -34,7 +35,7 @@ import org.hibernate.validator.constraints.Length;
 
 @Entity
 @Table(name = "expenceTypes")
-public class ExpenceType implements Serializable, Comparable<ExpenceType>
+public class ExpenceType implements Serializable, Comparable<ExpenceType>, Hyperlinkable
 {
     @Id
     @GeneratedValue(generator = "increment")
@@ -89,6 +90,24 @@ public class ExpenceType implements Serializable, Comparable<ExpenceType>
     public int compareTo(ExpenceType o)
     {
         return this.getName().compareTo(o.getName());
+    }
+
+    @Override
+    public String getLinkTarget()
+    {
+        return "/management/expencetypes/edit?id=" + getId();
+    }
+
+    @Override
+    public String getLinkCaption()
+    {
+        return getName();
+    }
+
+    @Override
+    public String getLinkAdminTarget()
+    {
+        return getLinkTarget();
     }
     
     

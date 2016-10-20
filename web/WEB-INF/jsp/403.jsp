@@ -6,6 +6,7 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="ccms" tagdir="/WEB-INF/tags/" %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
     "http://www.w3.org/TR/html4/loose.dtd">
 
@@ -16,12 +17,12 @@
         <link rel="stylesheet" href="<c:url value="/res/css/bootstrap.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/bootstrap-theme.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/styles.css" />" >
-        <title><c:out value="${title}" /></title>
+        <title>Доступ запрещен</title>
     </head>
 
     <body>
         <div class="container-fluid">
-            <%@include file="modules/header.jspf" %>
+            <ccms:mainMenu mainMenuActiveItem="" />
 
             <br>
             <div id="error-box" class="panel panel-primary panel-primary-dark">
@@ -34,7 +35,7 @@
 
             </div>
 
-            <%@include file="modules/footer.jspf" %>
+            <ccms:footer />
         </div>
     </body>
 </html>

@@ -6,86 +6,50 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@taglib prefix="ccms" tagdir="/WEB-INF/tags/" %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
     "http://www.w3.org/TR/html4/loose.dtd">
 
+<ccms:page title="Отчет по проходимости и продажам">
+    <ccms:layout mainMenuActiveItem="reports" sideMenuSection="reports_sp" sideMenuActiveItem="general">
+        <ccms:panel cols="10" title="Общая таблица проходимости и выручек по магазинам за период с ${dateStartStr} по ${dateEndStr}">
 
-<html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <link rel="stylesheet" href="<c:url value="/res/css/bootstrap.css" />" >
-        <link rel="stylesheet" href="<c:url value="/res/css/bootstrap-theme.css" />" >
-        <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/jquery-ui.css" />" >
-        <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/jquery-ui.theme.css" />" >
-        <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/ui.jqgrid.css" />" >
-        <link rel="stylesheet" href="<c:url value="/res/css/styles.css" />" >
-        <title><c:out value="${title}" /></title>
-    </head>
-
-    <body>
-        <div class="wrapper">
-            <div class="container-fluid content">
-                <%@include file="../modules/header.jspf" %>
-
+            <!-- Выбор периода -->
+            <div class="form-inline" align="right">
+                <form name="dateChooseForm" action="<c:url value="/reports/sales-pass" />" method="GET">
+                    Показать данные за период с  
+                    <input type="text" name="dateStartStr" id="dateStartField" value="${dateStartStr}" class="form-control datepicker-z">
+                    по
+                    <input type="text" name="dateEndStr" id="dateEndField" value="${dateEndStr}" class="form-control datepicker-z"> 
+                    &nbsp;
+                    <input type="submit" value="Загрузить" class="btn btn-primary">
+                </form>
                 <br>
-
-                <div class="row">
-
-                    <%@include file="../modules/sideMenu/sideMenu_reports_sp.jspf" %> 
-
-                    <br><br>
-
-                    <div class="col-md-10">
-                        <div class="panel panel-primary panel-primary-dark">
-                            <div class="panel-heading panel-heading-dark" align="center">Общая таблица проходимости и выручек по магазинам за период 
-                                <u>с <c:out value="${dateStartStr}" /> по <c:out value="${dateEndStr}" /></u>
-                            </div>
-                            <div class="panel-body">
-
-                                 <!-- Выбор периода -->
-                                <div class="form-inline" align="right">
-                                    <form name="dateChooseForm" action="<c:url value="/reports/sales-pass" />" method="GET">
-                                        Показать данные за период с  
-                                        <input type="text" name="dateStartStr" id="dateStartField" value="${dateStartStr}" class="form-control datepicker-z">
-                                        по
-                                        <input type="text" name="dateEndStr" id="dateEndField" value="${dateEndStr}" class="form-control datepicker-z"> 
-                                        &nbsp;
-                                        <input type="submit" value="Загрузить" class="btn btn-primary">
-                                    </form>
-                                    <br>
-                                </div>
-
-                                <!-- Placeholder для основной таблицы -->
-                                <div style="width: 100%; height: 100%;">
-                                    <table id="reportTable">
-
-                                    </table>
-                                </div>
-                                <br><br>
-                                <span class="glyphicon glyphicon-print"></span>
-                                <a href="<c:url value='/reports/sales-pass?dateStartStr=${dateStartStr}&dateEndStr=${dateEndStr}&mode=print' /> " target="_blank">Распечатать</a>
-                                <sec:authorize access="hasRole('ROLE_ADMIN')">
-                                    <br><br>
-                                    <form action="<c:url value='/forceSalesAutoload' />" method="POST">
-                                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-                                        <input type="submit" value="Запустить цикл автообновления вручную" class="btn btn-primary">
-                                    </form>
-                                </sec:authorize>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
-            <%@include file="../modules/footer.jspf" %>
-        </div>
 
+            <!-- Placeholder для основной таблицы -->
+            <div style="width: 100%; height: 100%;">
+                <table id="reportTable">
 
-    
-
+                </table>
+            </div>
+            <br><br>
+            <span class="glyphicon glyphicon-print"></span>
+            <a href="<c:url value='/reports/sales-pass?dateStartStr=${dateStartStr}&dateEndStr=${dateEndStr}&mode=print' /> " target="_blank">Распечатать</a>
+            <sec:authorize access="hasRole('ROLE_ADMIN')">
+                <br><br>
+                <form action="<c:url value='/forceSalesAutoload' />" method="POST">
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                    <input type="submit" value="Запустить цикл автообновления вручную" class="btn btn-primary">
+                </form>
+            </sec:authorize>
+        </ccms:panel>
+    </ccms:layout>
+                                    
     <script type="text/javascript" src="<c:url value="/res/js/grid.locale-ru.js" />"></script>
     <script type="text/javascript" src="<c:url value="/res/js/jquery.jqGrid.min.js" />"></script>
     <script type="text/javascript" src="<c:url value="/res/js/datepicker-ru.js" />"></script>
-
 
     <script type="text/javascript">
         $(function () {
@@ -172,6 +136,4 @@
             $("#dateEndField").datepicker();
         });
     </script>
-
-</body>
-</html>
+</ccms:page>

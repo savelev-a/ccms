@@ -55,7 +55,7 @@ public class CountersRouter
     {
         Shop shop = shopService.getById(shopid);
 
-        model.addAllAttributes(utils.prepareModel("Показания счетчиков - " + shop.getName() + " - ИнфоПортал", "shops", "counters"));
+        model.addAllAttributes(utils.prepareModel());
         model.addAttribute("shop", shop);
 
         List<String> graphDataInList = new ArrayList<>();

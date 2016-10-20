@@ -18,6 +18,7 @@
 
 package ru.codemine.ccms.entity;
 
+import ru.codemine.ccms.entity.interfaces.Hyperlinkable;
 import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -47,7 +48,7 @@ import org.joda.time.LocalDate;
 
 @Entity
 @Table(name = "actionEvents")
-public class ActionEvent implements Serializable
+public class ActionEvent implements Serializable, Hyperlinkable
 {
     @Id
     @GeneratedValue(generator = "increment")
@@ -273,6 +274,24 @@ public class ActionEvent implements Serializable
         }
         
         return result;
+    }
+
+    @Override
+    public String getLinkTarget()
+    {
+        return "/actions/actioninfo?id=" + getId();
+    }
+
+    @Override
+    public String getLinkCaption()
+    {
+        return getTitle();
+    }
+
+    @Override
+    public String getLinkAdminTarget()
+    {
+        return getLinkTarget();
     }
 
 }

@@ -66,12 +66,10 @@ public class Utils
      * Активный пункт бокового меню
      * @return
      */
-    public Map<String, Object> prepareModel(String title, String mainMenuActiveItem, String sideMenuActiveItem)
+    public Map<String, Object> prepareModel()
     {
         Map<String, Object> modelMap = new HashMap();
-        modelMap.put("title", title);
-        modelMap.put("mainMenuActiveItem", mainMenuActiveItem);
-        modelMap.put("sideMenuActiveItem", sideMenuActiveItem);
+
         Employee currentUser = employeeService.getCurrentUser();
         modelMap.put("currentUser", currentUser);
         modelMap.put("currentDate", DateTime.now().toString("dd.MM.YY"));
@@ -102,13 +100,9 @@ public class Utils
      * Выбранный год
      * @return
      */
-    public Map<String, Object> prepareModel(String title, 
-            String mainMenuActiveItem, 
-            String sideMenuActiveItem,
-            String dateMonth,
-            String dateYear)
+    public Map<String, Object> prepareModel(String dateMonth,  String dateYear)
     {
-        Map<String, Object> modelMap = prepareModel(title, mainMenuActiveItem, sideMenuActiveItem);
+        Map<String, Object> modelMap = prepareModel();
         modelMap.put("monthList", getMonthStrings());
         modelMap.put("yearList", getYearStrings());
         modelMap.put("selectedMonth", dateMonth == null ? LocalDate.now().toString("MMMM") : dateMonth);

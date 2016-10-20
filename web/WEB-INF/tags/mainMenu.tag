@@ -1,7 +1,14 @@
-<%@ page pageEncoding="UTF-8" %>
+<%-- 
+    Document   : mainMenu
+    Created on : 15.10.2016, 20:20:42
+    Author     : alchemist
+--%>
+
+<%@tag description="Main Menu tag" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+<%@attribute name="mainMenuActiveItem" required="true" rtexprvalue="true" type="java.lang.String"%>
 
 <nav class="navbar navbar-inverse navbar-fixed-top">
     <div class="container-fluid">
@@ -91,7 +98,7 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="<c:url value="/admin/expencetypes" />" >
+                                <a href="<c:url value="/management/expencetypes" />" >
                                     <span class="glyphicon glyphicon-list-alt"></span> Управление видами расходов
                                 </a>
                             </li>
@@ -105,13 +112,16 @@
                             <br>
                             <div class="dropdown-menu-item-center">-<b>Акции и распродажи</b>-</div>
                             <li>
-                                <a href="<c:url value="/actions/create" />" >
+                                <!--<a href="<c:url value="/actions/create" />" >
                                     <span class="glyphicon glyphicon-plus"></span> Новая акция
                                 </a>
                             </li>
                             <li>
                                 <a href="<c:url value="/actions/currentFuture" />" >
                                     <span class="glyphicon glyphicon-briefcase"></span> Управление акциями
+                                </a>-->
+                                <a href="<c:url value="#" />" >
+                                    <span class="glyphicon glyphicon-question-sign"></span> Данный раздел в разработке
                                 </a>
                             </li>
                         </ul>

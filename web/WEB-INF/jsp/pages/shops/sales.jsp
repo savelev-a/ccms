@@ -10,6 +10,7 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@taglib prefix="ccms" tagdir="/WEB-INF/tags/" %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
     "http://www.w3.org/TR/html4/loose.dtd">
 
@@ -21,150 +22,125 @@
         <meta name="_csrf_header" content="${_csrf.headerName}"/>
         <link rel="stylesheet" href="<c:url value="/res/css/bootstrap.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/bootstrap-theme.css" />" >
+        <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/jquery-ui.css" />" >
+        <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/jquery-ui.theme.css" />" >
+        <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/ui.jqgrid.css" />" >
         <link rel="stylesheet" href="<c:url value="/res/css/styles.css" />" >
-        <title><c:out value="${title}" /></title>
+        <title>Установка выручки и проходимости по магазину <c:out value="${shop.name}" /></title>
     </head>
 
     <body>
-        <div class="wrapper">
-            <div class="container-fluid content">
-                <%@include file="../../modules/header.jspf" %>
+        <ccms:layout mainMenuActiveItem="shops" sideMenuSection="shop" sideMenuActiveItem="sales">
+            <ccms:panel cols="8" title="Выручка магазина ${shop.name} (ввод данных)" >
 
+
+            <!-- Выбор периода -->
+            <div class="form-inline" align="right">
+                <form name="dateChooseForm" action="<c:url value="/sales" />" method="GET">
+                    Показать данные за: 
+                    <select name="dateMonth" class="form-control" >
+                        <c:forEach items="${monthList}" var="month" >
+                            <option ${month == selectedMonth ? "selected" : ""} value="${month}">
+                                <c:out value="${month}" />
+                            </option>
+                        </c:forEach>
+                    </select>
+                    <select name="dateYear" class="form-control" >
+                        <c:forEach items="${yearList}" var="year" >
+                            <option ${year == selectedYear ? "selected" : ""} value="${year}">
+                                <c:out value="${year}" />
+                            </option>
+                        </c:forEach>
+                    </select>&nbsp;
+
+                    <input type="hidden" name="shopid" value="${shop.id}" />
+                    <input type="submit" value="Загрузить" class="btn btn-primary">
+                </form>
                 <br>
+            </div>
 
-                <div class="row">
+                <!-- Placeholder для основной таблицы -->
+                <div style="width: 100%; height: 100%;">
+                    <table  id="salesTable">
 
-                    <%@include file="../../modules/sideMenu/sideMenu_shop.jspf" %>
+                    </table>
+                </div>
+            </ccms:panel>
 
-                    <br><br>
-
-                    <div class="col-md-8">
-                        <div class="panel panel-primary panel-primary-dark">
-                            <div class="panel-heading panel-heading-dark" align="center">Выручка магазина <c:out value="${shop.name}" /> (ввод данных)</div>
-                            <div class="panel-body">
-
-                                <!-- Выбор периода -->
-                                <div class="form-inline" align="right">
-                                    <form name="dateChooseForm" action="<c:url value="/sales" />" method="GET">
-                                        Показать данные за: 
-                                        <select name="dateMonth" class="form-control" >
-                                            <c:forEach items="${monthList}" var="month" >
-                                                <option ${month == selectedMonth ? "selected" : ""} value="${month}">
-                                                    <c:out value="${month}" />
-                                                </option>
-                                            </c:forEach>
-                                        </select>
-                                        <select name="dateYear" class="form-control" >
-                                            <c:forEach items="${yearList}" var="year" >
-                                                <option ${year == selectedYear ? "selected" : ""} value="${year}">
-                                                    <c:out value="${year}" />
-                                                </option>
-                                            </c:forEach>
-                                        </select>&nbsp;
-
-                                        <input type="hidden" name="shopid" value="${shop.id}" />
-                                        <input type="submit" value="Загрузить" class="btn btn-primary">
-                                    </form>
-                                    <br>
-                                </div>
-
-                                <!-- Placeholder для основной таблицы -->
-                                <div style="width: 100%; height: 100%;">
-                                    <table  id="salesTable">
-
-                                    </table>
-                                </div>
-
-
-                            </div>
-                        </div>
-
-
-                        <!-- Диалоги -->
-                        <div id="msgSuccess" title="Сохранение успешно">
-                            <p>
-                                <span class="glyphicon glyphicon-ok-circle" style="float:left; margin:0 7px 50px 0;"></span> 
-                                Сохранение успешно: <c:out value="${salesMeta.description}" />
-                            </p>
-                        </div>
-                        <div id="msgError" title="">
-                            <p>
-
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- Правая панель -->
-                    <div class="col-md-2">
-                        <div class="panel panel-primary panel-primary-dark">
-                            <div class="panel-heading panel-heading-dark" align="center">План</div>
-                            <div class="panel-body">
-                                <table width="100%">
-                                    <fmt:formatNumber value="${salesMeta.plan}" maxFractionDigits="2" var="rp_plan" />
-                                    <fmt:formatNumber value="${salesMeta.planCoverage}" maxFractionDigits="2" var="rp_plancover" />
-                                    <tr>
-                                        <td>План: </td>
-                                        <td align="right"><b>&nbsp;${fn:replace(rp_plan, ",", " ")}</b></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Выполнение: </td>
-                                        <td align="right"><b>&nbsp;${fn:replace(rp_plancover, ",", " ")}%</b></td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
-
-                        <div class="panel panel-primary panel-primary-dark">
-                            <div class="panel-heading panel-heading-dark" align="center">Итого:</div>
-                            <div class="panel-body">
-                                <table width="100%">
-                                    <fmt:formatNumber value="${salesMeta.passabilityTotal}" maxFractionDigits="0" var="rp_pass" />
-                                    <fmt:formatNumber value="${salesMeta.chequeCountTotal}" maxFractionDigits="0" var="rp_cheq" />
-                                    <fmt:formatNumber value="${salesMeta.valueTotal}" maxFractionDigits="2" var="rp_value" />
-                                    <fmt:formatNumber value="${salesMeta.cashbackTotal}" maxFractionDigits="2" var="rp_cashback" />
-                                    <fmt:formatNumber value="${salesMeta.salesTotal}" maxFractionDigits="2" var="rp_total" />
-                                    <fmt:formatNumber value="${salesMeta.periodMidPrice}" maxFractionDigits="2" var="rp_mdpr" />
-                                    <tr>
-                                        <td>Проходимость: </td>
-                                        <td align="right"><b>&nbsp;${fn:replace(rp_pass, ",", " ")}</b></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Покупки: </td>
-                                        <td align="right"><b>&nbsp;${fn:replace(rp_cheq, ",", " ")}</b></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Выручка: </td>
-                                        <td align="right"><b>&nbsp;${fn:replace(rp_value, ",", " ")}</b></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Возвраты: </td>
-                                        <td align="right"><b>&nbsp;${fn:replace(rp_cashback, ",", " ")}</b></td>
-                                    </tr>
-                                    <tr>
-                                        <td><b>ИТОГО: </b></td>
-                                        <td align="right"><b>&nbsp;${fn:replace(rp_total, ",", " ")}</b></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Средний чек: </td>
-                                        <td align="right"><b>&nbsp;${fn:replace(rp_mdpr, ",", " ")}</b></td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
-                        <input type="button" id="saveTable" class="btn btn-primary btn-primary-long" value="Сохранить">
+            <!-- Правая панель -->
+            <div class="col-md-2">
+                <div class="panel panel-primary panel-primary-dark">
+                    <div class="panel-heading panel-heading-dark" align="center">План</div>
+                    <div class="panel-body">
+                        <table width="100%">
+                            <fmt:formatNumber value="${salesMeta.plan}" maxFractionDigits="2" var="rp_plan" />
+                            <fmt:formatNumber value="${salesMeta.planCoverage}" maxFractionDigits="2" var="rp_plancover" />
+                            <tr>
+                                <td>План: </td>
+                                <td align="right"><b>&nbsp;${fn:replace(rp_plan, ",", " ")}</b></td>
+                            </tr>
+                            <tr>
+                                <td>Выполнение: </td>
+                                <td align="right"><b>&nbsp;${fn:replace(rp_plancover, ",", " ")}%</b></td>
+                            </tr>
+                        </table>
                     </div>
                 </div>
+
+                <div class="panel panel-primary panel-primary-dark">
+                    <div class="panel-heading panel-heading-dark" align="center">Итого:</div>
+                    <div class="panel-body">
+                        <table width="100%">
+                            <fmt:formatNumber value="${salesMeta.passabilityTotal}" maxFractionDigits="0" var="rp_pass" />
+                            <fmt:formatNumber value="${salesMeta.chequeCountTotal}" maxFractionDigits="0" var="rp_cheq" />
+                            <fmt:formatNumber value="${salesMeta.valueTotal}" maxFractionDigits="2" var="rp_value" />
+                            <fmt:formatNumber value="${salesMeta.cashbackTotal}" maxFractionDigits="2" var="rp_cashback" />
+                            <fmt:formatNumber value="${salesMeta.salesTotal}" maxFractionDigits="2" var="rp_total" />
+                            <fmt:formatNumber value="${salesMeta.periodMidPrice}" maxFractionDigits="2" var="rp_mdpr" />
+                            <tr>
+                                <td>Проходимость: </td>
+                                <td align="right"><b>&nbsp;${fn:replace(rp_pass, ",", " ")}</b></td>
+                            </tr>
+                            <tr>
+                                <td>Покупки: </td>
+                                <td align="right"><b>&nbsp;${fn:replace(rp_cheq, ",", " ")}</b></td>
+                            </tr>
+                            <tr>
+                                <td>Выручка: </td>
+                                <td align="right"><b>&nbsp;${fn:replace(rp_value, ",", " ")}</b></td>
+                            </tr>
+                            <tr>
+                                <td>Возвраты: </td>
+                                <td align="right"><b>&nbsp;${fn:replace(rp_cashback, ",", " ")}</b></td>
+                            </tr>
+                            <tr>
+                                <td><b>ИТОГО: </b></td>
+                                <td align="right"><b>&nbsp;${fn:replace(rp_total, ",", " ")}</b></td>
+                            </tr>
+                            <tr>
+                                <td>Средний чек: </td>
+                                <td align="right"><b>&nbsp;${fn:replace(rp_mdpr, ",", " ")}</b></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <input type="button" id="saveTable" class="btn btn-primary btn-primary-long" value="Сохранить">
             </div>
-            <br>
-            <br>
-            <%@include file="../../modules/footer.jspf" %>
+        </ccms:layout>
+
+
+        <div id="msgSuccess" title="Сохранение успешно">
+            <p>
+                <span class="glyphicon glyphicon-ok-circle" style="float:left; margin:0 7px 50px 0;"></span> 
+                Сохранение успешно: <c:out value="${salesMeta.description}" />
+            </p>
         </div>
+        <div id="msgError" title="">
+            <p>
 
-    <link rel="stylesheet" href="<c:url value="/res/css/messagebox.css" />" >
-    <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/jquery-ui.css" />" >
-    <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/jquery-ui.theme.css" />" >
-    <link rel="stylesheet" href="<c:url value="/res/css/jqgrid/ui.jqgrid.css" />" >
-
+            </p>
+        </div>
+                            
     <script type="text/javascript" src="<c:url value="/res/js/grid.locale-ru.js" />"></script>
     <script type="text/javascript" src="<c:url value="/res/js/jquery.jqGrid.min.js" />"></script>
 

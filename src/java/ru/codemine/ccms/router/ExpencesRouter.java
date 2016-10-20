@@ -26,7 +26,6 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import org.apache.log4j.Logger;
-import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -36,13 +35,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import ru.codemine.ccms.entity.ExpenceType;
-import ru.codemine.ccms.entity.Sales;
 import ru.codemine.ccms.entity.SalesMeta;
 import ru.codemine.ccms.entity.Shop;
 import ru.codemine.ccms.forms.ExpenceTypesForm;
@@ -85,7 +82,7 @@ public class ExpencesRouter
         List<ExpenceType> allExpTypes = expenceTypeService.getAll();
         Set<ExpenceType> addedExpTypes = salesService.getExpenceTypesByPeriod(shop, startDate, endDate);
                 
-        model.addAllAttributes(utils.prepareModel("Установка расходов по магазину - " + shop.getName() + " - ИнфоПортал", "management", "expences"));
+        model.addAllAttributes(utils.prepareModel());
         model.addAttribute("shop", shop);
         model.addAttribute("shopList", shopList);
         model.addAttribute("selectedYear", dateYear);
@@ -209,7 +206,7 @@ public class ExpencesRouter
     {
         if(dateYear == null) dateYear = LocalDate.now().toString("YYYY");
 
-        model.addAllAttributes(utils.prepareModel("Отчет по расходам - ИнфоПортал", "reports", "expences"));
+        model.addAllAttributes(utils.prepareModel());
         model.addAttribute("selectedYear", dateYear);
         model.addAttribute("yearList", utils.getYearStrings());
 
@@ -267,6 +264,10 @@ public class ExpencesRouter
         List<SalesMeta> smList = salesService.getByPeriod(shop, startDate, endDate);
         Set<ExpenceType> expenceTypes = salesService.getExpenceTypesByPeriod(shop, startDate, endDate);
         
+        Map<String, Object> totalExpences = new HashMap<>();
+        Map<String, Object> totalSales = new HashMap<>();
+        Map<String, Object> totalCleanSales = new HashMap<>();
+        
         for(ExpenceType type : expenceTypes)
         {
             Map<String, Object> record = new HashMap<>();
@@ -275,12 +276,31 @@ public class ExpencesRouter
                 Double val = sm.getExpences().get(type);
                 String month = sm.getStartDate().toString("M");
                 record.put("c" + month, val);
+                
+                totalExpences.put("c" + month, sm.getExpencesTotal());
+                totalSales.put("c" + month, sm.getSalesTotal());
+                totalCleanSales.put("c" + month, sm.getSalesTotal() - sm.getExpencesTotal());
             }
             record.put("expencetype", type.getName());
             record.put("expencenote", type.getComment());
             record.put("totals", salesService.getTotalExpenceValueForPeriod(shop, startDate, endDate, type));
             records.add(record);
         }
+        
+        
+        totalExpences.put("expencetype", "ИТОГО:");
+        totalSales.put("expencetype", "Выручка");
+        totalCleanSales.put("expencetype", "Чистая прибыль");
+        
+        Double totalExpencesValue = salesService.getTotalExpenceValueForPeriod(shop, startDate, endDate);
+        Double totalSalesValue = salesService.getSalesValueByPeriod(shop, startDate, endDate);
+        totalExpences.put("totals", totalExpencesValue);
+        totalSales.put("totals", totalSalesValue);
+        totalCleanSales.put("totals", totalSalesValue - totalExpencesValue);
+        
+        records.add(totalExpences);
+        records.add(totalSales);
+        records.add(totalCleanSales);
         
         return records;
     }
@@ -293,11 +313,11 @@ public class ExpencesRouter
             @RequestParam(required = false) String dateEndStr,
             ModelMap model)
     {
-        model.addAllAttributes(utils.prepareModel("Графики выручки и расходов - ИнфоПортал", "reports", "graph"));
+        model.addAllAttributes(utils.prepareModel());
         
         DateTimeFormatter formatter = DateTimeFormat.forPattern("dd.MM.YYYY");
         LocalDate dateStart = dateStartStr == null 
-                ? LocalDate.now().withDayOfMonth(1) 
+                ? LocalDate.now().withMonthOfYear(1).withDayOfMonth(1)
                 : formatter.parseLocalDate(dateStartStr).withDayOfMonth(1);
         LocalDate dateEnd = dateEndStr == null 
                 ? LocalDate.now().dayOfMonth().withMaximumValue() 
@@ -338,69 +358,69 @@ public class ExpencesRouter
     //                 //
     
     @Secured("ROLE_OFFICE")
-    @RequestMapping(value = "/admin/expencetypes", method = RequestMethod.GET)
+    @RequestMapping(value = "/management/expencetypes", method = RequestMethod.GET)
     public String getExpenceTypesPage(ModelMap model)
     {
-        model.addAllAttributes(utils.prepareModel("Администрирование - типы расходов - ИнфоПортал", "management", "expenceTypes"));
+        model.addAllAttributes(utils.prepareModel());
         model.addAttribute("allExpenceTypes", expenceTypeService.getAll());
         model.addAttribute("expenceTypeFrm", new ExpenceType());
         
-        return "admin/expencetypes";
+        return "management/expencetypes";
     }
     
     @Secured("ROLE_OFFICE")
-    @RequestMapping(value = "/admin/expencetypes", method = RequestMethod.POST)
+    @RequestMapping(value = "/management/expencetypes", method = RequestMethod.POST)
     public String addExpenceType(@Valid @ModelAttribute("expenceTypeFrm") ExpenceType expenceType,
             BindingResult result,
             ModelMap model)
     {
         if(result.hasErrors())
         {
-            model.addAllAttributes(utils.prepareModel("Администрирование - типы расходов - ИнфоПортал", "management", "expenceTypes"));
+            model.addAllAttributes(utils.prepareModel());
             model.addAttribute("allExpenceTypes", expenceTypeService.getAll());
         
-            return "admin/expencetypes";
+            return "management/expencetypes";
         }
         
         expenceTypeService.create(expenceType);
         
-        return "redirect:/admin/expencetypes";
+        return "redirect:/management/expencetypes";
     }
     
     @Secured("ROLE_OFFICE")
-    @RequestMapping(value = "admin/expencetypes/edit", method = RequestMethod.GET)
+    @RequestMapping(value = "management/expencetypes/edit", method = RequestMethod.GET)
     public String getExpenceTypeEditPage(@RequestParam("id") Integer id, ModelMap model)
     {
-        model.addAllAttributes(utils.prepareModel("Администрирование - типы расходов (редактирование) - ИнфоПортал", "management", "expenceTypes"));
+        model.addAllAttributes(utils.prepareModel());
         model.addAttribute("expenceType", expenceTypeService.getById(id));
         
-        return "admin/expencetypeedit";
+        return "management/expencetypeedit";
     }
     
     @Secured("ROLE_OFFICE")
-    @RequestMapping(value = "admin/expencetypes/edit", method = RequestMethod.POST)
+    @RequestMapping(value = "management/expencetypes/edit", method = RequestMethod.POST)
     public String expenceTypeEdit(@Valid @ModelAttribute ExpenceType type, 
             BindingResult result,
             ModelMap model)
     {
         if(result.hasErrors())
         {
-            model.addAllAttributes(utils.prepareModel("Администрирование - типы расходов (редактирование) - ИнфоПортал", "management", "expenceTypes"));
+            model.addAllAttributes(utils.prepareModel());
             
-            return "admin/expencetypeedit";
+            return "management/expencetypeedit";
         }
         
         expenceTypeService.update(type);
         
-        return "redirect:/admin/expencetypes";
+        return "redirect:/management/expencetypes";
     }
     
     @Secured("ROLE_OFFICE")
-    @RequestMapping(value = "/admin/expencetypes/delete", method = RequestMethod.POST)
+    @RequestMapping(value = "/management/expencetypes/delete", method = RequestMethod.POST)
     public String deleteExpenceType(@RequestParam("id") Integer id)
     {
         expenceTypeService.deleteById(id);
         
-        return "redirect:/admin/expencetypes";
+        return "redirect:/management/expencetypes";
     }
 }
