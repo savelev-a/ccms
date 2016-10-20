@@ -46,7 +46,10 @@
 
                 </table>
             </div>
-            <br>
+            
+            <span class="glyphicon glyphicon-print"></span>
+            <a href="<c:url value='/expences?mode=print&shopid=${shop.id}&dateYear=${selectedYear}' /> " target="_blank">Распечатать</a>
+            <br><br>
             <div id="collasible">
                 <h4>Добавить типы расходов</h4>
                 <div>

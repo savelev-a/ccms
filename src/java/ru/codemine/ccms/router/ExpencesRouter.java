@@ -67,6 +67,7 @@ public class ExpencesRouter
     @RequestMapping(value = "/expences", method = RequestMethod.GET)
     public String getExpencesPage(@RequestParam(required = false)  Integer shopid, 
                                   @RequestParam(required = false) String dateYear,
+                                  @RequestParam(required = false) String mode,
                                   ModelMap model)
     {
         if(dateYear == null) dateYear = LocalDate.now().toString("YYYY");
@@ -91,7 +92,7 @@ public class ExpencesRouter
         model.addAttribute("addedExpTypes", addedExpTypes);
         model.addAttribute("expenceTypesForm", new ExpenceTypesForm());
         
-        return "pages/shops/expences";
+        return "print".equals(mode) ? "printforms/expences" : "pages/shops/expences";
     }
     
     @Secured("ROLE_OFFICE")
