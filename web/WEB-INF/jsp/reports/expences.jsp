@@ -110,6 +110,7 @@
                         datatype: "json",
                         height: "100%",
                         shrinkToFit: false,
+                        rowNum: 1000,
                         width: subgrid_width,
                         colNames: ['Описание расхода', 'Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек', 'Итого'],
                         colModel: [
