@@ -134,7 +134,7 @@
                             },
                         ],
                         rowattr: function(rd) {
-                            if(rd.info == "ИТОГО" || rd.info == "Выручка" || rd.info == "Чистая прибыль") return { "class": "jqrow-yellow" };
+                            if(rd.expencetype == "ИТОГО:" || rd.expencetype == "Выручка" || rd.expencetype == "Чистая прибыль") return { "class": "jqrow-yellow" };
                         }
                     });
                 }

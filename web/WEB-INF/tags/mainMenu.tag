@@ -112,13 +112,16 @@
                             <br>
                             <div class="dropdown-menu-item-center">-<b>Акции и распродажи</b>-</div>
                             <li>
-                                <a href="<c:url value="/actions/create" />" >
+                                <!--<a href="<c:url value="/actions/create" />" >
                                     <span class="glyphicon glyphicon-plus"></span> Новая акция
                                 </a>
                             </li>
                             <li>
                                 <a href="<c:url value="/actions/currentFuture" />" >
                                     <span class="glyphicon glyphicon-briefcase"></span> Управление акциями
+                                </a>-->
+                                <a href="<c:url value="#" />" >
+                                    <span class="glyphicon glyphicon-question-sign"></span> Данный раздел в разработке
                                 </a>
                             </li>
                         </ul>

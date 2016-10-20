@@ -269,14 +269,14 @@
 
 --%>
                     <c:when test="${section == 'expences'}">
-                        <tr ${sideMenuActiveItem == "expences" ? "class='info'" : ""}>
+                        <tr ${selectedItem == "expences" ? "class='info'" : ""}>
                             <td>
                                 <a href="<c:url value="/expences?shopid=${shop.id}" />">
                                     Ввод данных по расходам
                                 </a> 
                             </td>
                         </tr>
-                        <tr ${sideMenuActiveItem == "expenceTypes" ? "class='info'" : ""}>
+                        <tr ${selectedItem == "expenceTypes" ? "class='info'" : ""}>
                             <td>
                                 <a href="<c:url value="/management/expencetypes" />">
                                     Управление типами расходов

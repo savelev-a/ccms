@@ -264,6 +264,10 @@ public class ExpencesRouter
         List<SalesMeta> smList = salesService.getByPeriod(shop, startDate, endDate);
         Set<ExpenceType> expenceTypes = salesService.getExpenceTypesByPeriod(shop, startDate, endDate);
         
+        Map<String, Object> totalExpences = new HashMap<>();
+        Map<String, Object> totalSales = new HashMap<>();
+        Map<String, Object> totalCleanSales = new HashMap<>();
+        
         for(ExpenceType type : expenceTypes)
         {
             Map<String, Object> record = new HashMap<>();
@@ -272,12 +276,31 @@ public class ExpencesRouter
                 Double val = sm.getExpences().get(type);
                 String month = sm.getStartDate().toString("M");
                 record.put("c" + month, val);
+                
+                totalExpences.put("c" + month, sm.getExpencesTotal());
+                totalSales.put("c" + month, sm.getSalesTotal());
+                totalCleanSales.put("c" + month, sm.getSalesTotal() - sm.getExpencesTotal());
             }
             record.put("expencetype", type.getName());
             record.put("expencenote", type.getComment());
             record.put("totals", salesService.getTotalExpenceValueForPeriod(shop, startDate, endDate, type));
             records.add(record);
         }
+        
+        
+        totalExpences.put("expencetype", "ИТОГО:");
+        totalSales.put("expencetype", "Выручка");
+        totalCleanSales.put("expencetype", "Чистая прибыль");
+        
+        Double totalExpencesValue = salesService.getTotalExpenceValueForPeriod(shop, startDate, endDate);
+        Double totalSalesValue = salesService.getSalesValueByPeriod(shop, startDate, endDate);
+        totalExpences.put("totals", totalExpencesValue);
+        totalSales.put("totals", totalSalesValue);
+        totalCleanSales.put("totals", totalSalesValue - totalExpencesValue);
+        
+        records.add(totalExpences);
+        records.add(totalSales);
+        records.add(totalCleanSales);
         
         return records;
     }
@@ -294,7 +317,7 @@ public class ExpencesRouter
         
         DateTimeFormatter formatter = DateTimeFormat.forPattern("dd.MM.YYYY");
         LocalDate dateStart = dateStartStr == null 
-                ? LocalDate.now().withDayOfMonth(1) 
+                ? LocalDate.now().withMonthOfYear(1).withDayOfMonth(1)
                 : formatter.parseLocalDate(dateStartStr).withDayOfMonth(1);
         LocalDate dateEnd = dateEndStr == null 
                 ? LocalDate.now().dayOfMonth().withMaximumValue() 

@@ -19,7 +19,7 @@
             <div class="form-inline" align="right">
                 <form name="dateChooseForm" action="<c:url value="/expences" />" method="GET">
                     Выберите магазин: 
-                    <select name="shopid" class="form-control" >
+                    <select name="shopid" id="shopSelector" class="form-control" >
                         <c:forEach items="${shopList}" var="shp" >
                             <option ${shp == shop ? "selected" : ""} value="${shp.id}">
                                 <c:out value="${shp.name}" />
@@ -35,7 +35,7 @@
                         </c:forEach>
                     </select>&nbsp;
 
-                    <input type="submit" value="Загрузить" class="btn btn-primary">
+                    <input type="submit" id="submitBtn" value="Загрузить" class="btn btn-primary">
                 </form>
                 <br>
             </div>
@@ -145,15 +145,15 @@
                 sortname: "expencetype",
                 colNames: ['@', 'Описание расхода', 'Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек', 'Итого'],
                 colModel: [
-                    {name: 'editlock', index: 'editlock', width: 20, editable: false, edittype: "checkbox", editoptions: {value:"True:False"}, classes: "chk-editlock",
+                    {name: 'editlock', index: 'editlock', width: 20, editable: false, edittype: "checkbox", editoptions: {value:"True:False"}, classes: "chk-editlock", 
                         formatter: "checkbox", formatoptions: {disabled : false}},
-                    {name: 'expencetype', index: 'expencetype', width: 110, sorttype: "text", classes: "jqcol-hyperlink",
+                    {name: 'expencetype', index: 'expencetype', width: 150, sorttype: "text", classes: "jqcol-hyperlink",
                         cellattr: function (rowId, val, rawObject, cm, rdata) {
                             return 'title="' + rawObject.expencenote + '"';
                         }
                     },
                     <c:forEach varStatus="idx" begin="1" end="12">
-                        {name: 'c${idx.count}', index: 'c${idx.count}', width: 69, sorttype: "float", editable: true, align: "right", formatter: 'number', 
+                        {name: 'c${idx.count}', index: 'c${idx.count}', width: 70, sorttype: "float", editable: true, align: "right", formatter: 'number', 
                             editrules: {
                                 number: true, minValue: 0
                             },
@@ -182,6 +182,9 @@
                 heightStyle: "content"
             });
             
+            $("#shopSelector").change(function(){
+                $("#submitBtn").trigger("click");
+            });
             
             
         });
