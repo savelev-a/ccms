@@ -209,12 +209,12 @@ body {
 }
 
 .jqcol-bold {
-    //font-weight: bold !important;
+    /*font-weight: bold !important;*/
     background-color: lightcyan !important;
 }
 
 .ui-widget-content .jqrow-yellow td {
-    //font-weight: bold !important;
+    /*font-weight: bold !important;*/
     background-color: lightyellow;
 }
 

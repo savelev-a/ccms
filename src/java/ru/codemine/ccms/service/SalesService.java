@@ -179,8 +179,8 @@ public class SalesService
     {
         if(months <= 0) return -1.0;
         
-        LocalDate endDate = LocalDate.now().dayOfMonth().withMaximumValue();
-        LocalDate startDate = endDate.minusMonths(months).withDayOfMonth(1);
+        LocalDate endDate = LocalDate.now().minusMonths(1).dayOfMonth().withMaximumValue();
+        LocalDate startDate = endDate.withDayOfMonth(1).minusMonths(months - 1);
         
         Double expTotal = getTotalExpenceValueForPeriod(shop, startDate, endDate);
         
@@ -193,8 +193,8 @@ public class SalesService
     {
         if(months <= 0) return -1.0;
         
-        LocalDate endDate = LocalDate.now().dayOfMonth().withMaximumValue();
-        LocalDate startDate = endDate.minusMonths(months).withDayOfMonth(1);
+        LocalDate endDate = LocalDate.now().minusMonths(1).dayOfMonth().withMaximumValue();
+        LocalDate startDate = endDate.withDayOfMonth(1).minusMonths(months - 1);
         
         Double cleanSales = getSalesValueByPeriod(shop, startDate, endDate) - getTotalExpenceValueForPeriod(shop, startDate, endDate);
         
