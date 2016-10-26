@@ -13,6 +13,12 @@ http://www.springframework.org/schema/security/spring-security-4.0.xsd
 ">
 
     <http pattern="/res/**" security="none" /> 
+    <http pattern="/api/login" security="none" />
+    
+    <http pattern="/api/**" entry-point-ref="apiEntryPointHandler" create-session="stateless">
+        <csrf disabled="true" />
+        <custom-filter before="FORM_LOGIN_FILTER" ref="apiAuthenticationFilter" />
+    </http>
     
     <http>
         <form-login login-page="/login" login-processing-url="/login" authentication-failure-url="/login?error=true" />
@@ -29,7 +35,7 @@ http://www.springframework.org/schema/security/spring-security-4.0.xsd
     
     <global-method-security secured-annotations="enabled" />
     
-    <authentication-manager>
+    <authentication-manager alias="authenticationManager">
         <authentication-provider>
             <password-encoder ref="bcryptEncoder" />
             <jdbc-user-service
@@ -43,6 +49,10 @@ http://www.springframework.org/schema/security/spring-security-4.0.xsd
     
     <beans:bean id="bcryptEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder">
         <beans:constructor-arg name="strength" value="11" />
+    </beans:bean>
+    
+    <beans:bean id="apiAuthenticationFilter" class="ru.codemine.ccms.api.security.ApiAuthenticationFilter">
+        <beans:property name="authenticationManager" ref="authenticationManager" />
     </beans:bean>
 
     

@@ -19,6 +19,8 @@ package ru.codemine.ccms.entity;
 
 import ru.codemine.ccms.entity.interfaces.Hyperlinkable;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.CollectionTable;
@@ -35,6 +37,8 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 /**
  *
@@ -289,6 +293,18 @@ public class Employee implements Serializable, Hyperlinkable
     public String getLinkAdminTarget()
     {
         return "/admin/profile?id=" + getId();
+    }
+
+    public List<? extends GrantedAuthority> getAuthorities()
+    {
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        
+        for(String role : getRoles())
+        {
+            authorities.add(new SimpleGrantedAuthority(role));
+        }
+        
+        return authorities;
     }
     
     
