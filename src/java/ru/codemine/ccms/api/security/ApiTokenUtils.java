@@ -104,7 +104,7 @@ public class ApiTokenUtils
         String username = getUsernameFromToken(token);
         DateTime created = getTokenCreationTime(token);
         DateTime expiration = getTokenExpirationTime(token);
-        
+         
         return (
                 username != null
                 && created != null

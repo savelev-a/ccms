@@ -159,7 +159,22 @@ public class SalesService
         
         return result;
     }
-
+    
+    public List<Sales> getAllSalesFromMetaList(List<SalesMeta> smList, LocalDate startDate, LocalDate endDate)
+    {
+        List<Sales> result = new ArrayList<>();
+        for(SalesMeta sm : smList)
+        {
+            for(Sales s : sm.getSales())
+            {
+                if(s.getDate().isAfter(startDate.minusDays(1)) && s.getDate().isBefore(endDate.plusDays(1)))
+                    result.add(s);
+            }
+        }
+        
+        return result;
+    }
+    
     public Set<ExpenceType> getExpenceTypesByPeriod(Shop shop, LocalDate startDate, LocalDate endDate)
     {
         return salesDAO.getExpenceTypesByPeriod(shop, startDate, endDate);
@@ -202,6 +217,13 @@ public class SalesService
         
         return result;
     }
+//
+//    public List<Sales> getAllSalesByPeriod(Shop shop, LocalDate startDate, LocalDate endDate)
+//    {
+//        return salesDAO.getAllSalesByPeriod(shop, startDate, endDate);
+//    }
+
+
 
 
     

@@ -16,28 +16,58 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package ru.codemine.ccms.dao;
-
-import java.util.List;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import ru.codemine.ccms.entity.Counter;
-import ru.codemine.ccms.entity.Shop;
+package ru.codemine.ccms.router.api.form;
 
 /**
  *
  * @author Alexander Savelev
  */
-public interface CounterDAO 
+public class PassabilityJson 
 {
-    public void update(Counter counter);
+    private String startDate;
+    private String endDate;
+    private Integer in;
+    private Integer out;
+
+    public String getStartDate()
+    {
+        return startDate;
+    }
+
+    public void setStartDate(String startDate)
+    {
+        this.startDate = startDate;
+    }
+
+    public String getEndDate()
+    {
+        return endDate;
+    }
+
+    public void setEndDate(String endDate)
+    {
+        this.endDate = endDate;
+    }
+
+    public Integer getIn()
+    {
+        return in;
+    }
+
+    public void setIn(Integer in)
+    {
+        this.in = in;
+    }
+
+    public Integer getOut()
+    {
+        return out;
+    }
+
+    public void setOut(Integer out)
+    {
+        this.out = out;
+    }
     
-    public List<Counter> getByShop(Shop shop);
-    public Counter getByShopAndDate(Shop shop, DateTime date);
-    public Integer getSumIn(DateTime date);
-    public Integer getSumOut(DateTime date);
     
-    public Integer getPassabilityValueByPeriod(Shop shop, LocalDate dateStart, LocalDate dateEnd);
-    public Integer getInValueByPeriod(Shop shop, LocalDate dateStart, LocalDate dateEnd);
-    public Integer getOutValueByPeriod(Shop shop, LocalDate dateStart, LocalDate dateEnd);
 }

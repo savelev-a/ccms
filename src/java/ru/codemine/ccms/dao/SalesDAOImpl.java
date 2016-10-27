@@ -25,6 +25,7 @@ import org.hibernate.Query;
 import org.joda.time.LocalDate;
 import org.springframework.stereotype.Repository;
 import ru.codemine.ccms.entity.ExpenceType;
+import ru.codemine.ccms.entity.Sales;
 import ru.codemine.ccms.entity.SalesMeta;
 import ru.codemine.ccms.entity.Shop;
 
@@ -270,4 +271,19 @@ public class SalesDAOImpl extends GenericDAOImpl<SalesMeta, Integer> implements 
 
         return result == null ? 0.0 : result;
     }
+
+//    @Override
+//    public List<Sales> getAllSalesByPeriod(Shop shop, LocalDate startDate, LocalDate endDate)
+//    {
+//        Query query = getSession().createQuery("SELECT Sm.sales AS sales FROM SalesMeta sm "
+//                + "WHERE sales.shop.id = :shopid "
+//                + "AND sales.date >= :startdate "
+//                + "AND sales.date <= :enddate "
+//                + "ORDER BY sales.date ASC");
+//        query.setInteger("shopid", shop.getId());
+//        query.setDate("startdate", startDate.withDayOfMonth(1).toDate());
+//        query.setDate("enddate", endDate.dayOfMonth().withMaximumValue().toDate());
+//        
+//        return query.list();
+//    }
 }

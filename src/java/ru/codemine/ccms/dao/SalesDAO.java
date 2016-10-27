@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Set;
 import org.joda.time.LocalDate;
 import ru.codemine.ccms.entity.ExpenceType;
+import ru.codemine.ccms.entity.Sales;
 import ru.codemine.ccms.entity.SalesMeta;
 import ru.codemine.ccms.entity.Shop;
 
@@ -51,5 +52,7 @@ public interface SalesDAO extends GenericDAO<SalesMeta, Integer>
 
     public Double getTotalExpenceValueForPeriod(Shop shop, LocalDate startDate, LocalDate endDate, ExpenceType type);
     public Double getTotalExpenceValueForPeriod(Shop shop, LocalDate startDate, LocalDate endDate);
+
+//    public List<Sales> getAllSalesByPeriod(Shop shop, LocalDate startDate, LocalDate endDate);
 
 }

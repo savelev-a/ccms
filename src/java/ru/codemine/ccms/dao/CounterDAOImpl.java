@@ -133,8 +133,28 @@ public class CounterDAOImpl implements CounterDAO
     @Override
     public Integer getPassabilityValueByPeriod(Shop shop, LocalDate dateStart, LocalDate dateEnd)
     {
+        return getInValueByPeriod(shop, dateStart, dateEnd);
+    }
+
+    @Override
+    public Integer getInValueByPeriod(Shop shop, LocalDate dateStart, LocalDate dateEnd)
+    {
         Session session = sessionFactory.getCurrentSession();
         Query query = session.createQuery("SELECT SUM(c.in) FROM Counter c WHERE c.shop.id = :id AND c.date >= :dateStart AND c.date <= :dateEnd");
+        query.setInteger("id", shop.getId());
+        query.setDate("dateStart", dateStart.toDate());
+        query.setDate("dateEnd", dateEnd.toDate());
+        
+        Long result = (Long)query.uniqueResult();
+        
+        return result == null ? 0 : result.intValue();
+    }
+
+    @Override
+    public Integer getOutValueByPeriod(Shop shop, LocalDate dateStart, LocalDate dateEnd)
+    {
+        Session session = sessionFactory.getCurrentSession();
+        Query query = session.createQuery("SELECT SUM(c.out) FROM Counter c WHERE c.shop.id = :id AND c.date >= :dateStart AND c.date <= :dateEnd");
         query.setInteger("id", shop.getId());
         query.setDate("dateStart", dateStart.toDate());
         query.setDate("dateEnd", dateEnd.toDate());

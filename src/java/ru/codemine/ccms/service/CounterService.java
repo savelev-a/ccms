@@ -75,4 +75,14 @@ public class CounterService
         return counterDAO.getPassabilityValueByPeriod(shop, dateStart, dateEnd);
     }
 
+    public Integer getInValueByPeriod(Shop shop, LocalDate dateStart, LocalDate dateEnd)
+    {
+        return counterDAO.getInValueByPeriod(shop, dateStart, dateEnd);
+    }
+
+    public Integer getOutValueByPeriod(Shop shop, LocalDate dateStart, LocalDate dateEnd)
+    {
+        return counterDAO.getOutValueByPeriod(shop, dateStart, dateEnd);
+    }
+
 }
