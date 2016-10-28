@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import ru.codemine.ccms.entity.Sales;
 import ru.codemine.ccms.entity.SalesMeta;
 import ru.codemine.ccms.entity.Shop;
+import ru.codemine.ccms.exceptions.InvalidParametersException;
 import ru.codemine.ccms.router.api.form.PassabilityJson;
 import ru.codemine.ccms.router.api.form.ShopJson;
 import ru.codemine.ccms.service.CounterService;
@@ -60,12 +61,13 @@ public class ApiRouter
             @RequestParam(required = false) Integer shopid,
             @RequestParam(required = false) String shopname)
     {
+        if(shopid == null && shopname == null) throw new InvalidParametersException();
+        if(shopid != null && shopname != null) throw new InvalidParametersException();
+            
         try
         {
-            if(shopid == null && shopname == null) return null;
-            if(shopid != null && shopname != null) return null;
             Shop shop = shopid == null ? shopService.getByName(shopname) : shopService.getById(shopid);
-
+            
             return new ShopJson(shop);
         }
         catch(Exception e)
@@ -93,7 +95,7 @@ public class ApiRouter
         catch(Exception e)
         {
             log.warn("Ошибка доступа через API (магазины) - " + e.getLocalizedMessage());
-            return null;
+            return new ArrayList<>();
         }
     }
     
@@ -107,10 +109,11 @@ public class ApiRouter
             @RequestParam("endDate") String endDateStr,
             @RequestParam(required = false) String detail)
     {        
+        if(shopid == null && shopname == null) throw new InvalidParametersException();
+        if(shopid != null && shopname != null) throw new InvalidParametersException();
+            
         try
         {
-            if(shopid == null && shopname == null) return null;
-            if(shopid != null && shopname != null) return null;
             Shop shop = shopid == null ? shopService.getByName(shopname) : shopService.getById(shopid);
 
             DateTimeFormatter formatter = DateTimeFormat.forPattern("dd.MM.YYYY");
@@ -187,7 +190,7 @@ public class ApiRouter
         catch(Exception e)
         {
             log.warn("Ошибка доступа через API (проходимость) - " + e.getLocalizedMessage());
-            return null;
+            return new ArrayList<>();
         }
     }
     

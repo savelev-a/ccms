@@ -24,5 +24,73 @@ package ru.codemine.ccms.router.api.form;
  */
 public class SalesJson 
 {
+    private String startDate;
+    private String endDate;
+    private Integer chequeCount;
+    private Double kkmValue;
+    private Double cashback;
+    private Double totalValue;
 
+    public String getStartDate()
+    {
+        return startDate;
+    }
+
+    public void setStartDate(String startDate)
+    {
+        this.startDate = startDate;
+    }
+
+    public String getEndDate()
+    {
+        return endDate;
+    }
+
+    public void setEndDate(String endDate)
+    {
+        this.endDate = endDate;
+    }
+
+    public Integer getChequeCount()
+    {
+        return chequeCount;
+    }
+
+    public void setChequeCount(Integer chequeCount)
+    {
+        this.chequeCount = chequeCount;
+    }
+
+    public Double getKkmValue()
+    {
+        return kkmValue;
+    }
+
+    public void setKkmValue(Double kkmValue)
+    {
+        this.kkmValue = kkmValue;
+    }
+
+    public Double getCashback()
+    {
+        return cashback;
+    }
+
+    public void setCashback(Double cashback)
+    {
+        this.cashback = cashback;
+    }
+
+    public Double getTotalValue()
+    {
+        return totalValue;
+    }
+
+    public void setTotalValue(Double totalValue)
+    {
+        this.totalValue = totalValue;
+    }
+    
+    
+    
 }
