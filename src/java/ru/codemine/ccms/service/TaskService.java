@@ -326,7 +326,6 @@ public class TaskService
     
     public void sendMsgOnAddComment(Task task, Comment comment)
     {
-        log.info("in service: " + comment);
         String title = "К созданной вами задаче добавлен новый комментарий";
         String text  = "Добрый день, " + task.getCreator().getFirstName() + ",<br>" +
                        "К вашей задаче на портале добавлен новый комментарий.<br><br>" +

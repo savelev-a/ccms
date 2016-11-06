@@ -40,6 +40,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 import org.joda.time.format.PeriodFormatter;
@@ -81,7 +82,8 @@ public class Task implements Serializable, Hyperlinkable
     @Column(name = "id", nullable = false)
     private Integer id;
     
-    @Length(max = 128)
+    @Length(max = 128, message = "Слишком длинное значение")
+    @NotEmpty(message = "Это поле не может быть пустым")
     @Column(name = "title", length = 128, nullable = false)
     private String title;
     

@@ -114,7 +114,7 @@ public class TaskRouter
         Task task = taskService.getById(id);
         Employee currentUser = employeeService.getCurrentUser();
         
-        if(!task.isInTask(currentUser)) throw new ResourceNotFoundException();
+        if(!task.isInTask(currentUser) && !currentUser.getRoles().contains("ROLE_ADMIN")) throw new ResourceNotFoundException();
         
         model.addAllAttributes(utils.prepareModel());
         model.addAttribute("openTasksCount", taskService.getOpenTaskCount());
@@ -259,7 +259,10 @@ public class TaskRouter
                 return;
         
         File targetFile = new File(targetDataFile.getFilename());
-        response.setHeader("Content-Disposition", "attachment;");
+        response.setHeader("Content-Disposition", "attachment;"); //TODO: имя файла задается тут, 
+                                                                  //но нужно правильно его закодировать, 
+                                                                  //чтобы все браузеры понимали правильно
+                                                                  //http://stackoverflow.com/questions/22319277/how-to-set-chinese-filename-correctly-for-different-browsers-when-download-file
         
         try
         {
