@@ -18,6 +18,10 @@
 
 package ru.codemine.ccms.service;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.logging.Level;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,6 +50,17 @@ public class DataFileService
     @Transactional
     public void delete(DataFile file)
     {
+        File f = new File(file.getFilename());
+        try
+        {
+            Files.deleteIfExists(f.toPath());
+        } 
+        catch (IOException ex)
+        {
+            log.warn("Ошибка при удалении файла с диска: " 
+                    + file.getViewName() 
+                    + "(" + file.getFilename() + "), причина: " + ex.getLocalizedMessage());
+        }
         dataFileDAO.delete(file);
     }
     

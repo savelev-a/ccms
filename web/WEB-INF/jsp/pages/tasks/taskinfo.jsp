@@ -80,6 +80,8 @@
                                 <a href="<c:url value="/tasks/getfile/${file.viewName}?taskid=${task.id}&fileid=${file.id}" />" data-toggle="tooltip" data-placement="right" title="Автор: ${file.creator.fullName}&#10;Создан: ${filetimefmt}&#10;Размер: ${file.sizeStr}">
                                     <img src="<c:url value="/res/images/datafile_types/${file.iconPath}" />" > <c:out value="${file.viewName}" />
                                 </a>
+                                &nbsp;&nbsp;
+                                <a href="#" class="delFile" id="del${file.id}"><span class="glyphicon glyphicon-trash"></span></a>
                                 <br>
                             </c:forEach>
                         </td>
@@ -243,6 +245,13 @@
             Подтвердите что задача выполнена и дальнейших действий не требуется.
         </p>
     </div>
+                        
+    <div id="msgDelFileConfirm" title="Подтвердите действие">
+            <p>
+                Удалить данный документ? 
+                
+            </p>
+    </div>
 
     <script type="text/javascript">
         $(document).ready(function () {
@@ -250,6 +259,11 @@
 
             $(".closeTask").click(function () {
                 $("#msgCloseConfirm").dialog("open");
+            });
+            
+            $(".delFile").click(function () {
+                $("#msgDelFileConfirm").data("idtodel", this.id);
+                $("#msgDelFileConfirm").dialog("open");
             });
 
             $(".takeTask").click(function () {
@@ -273,6 +287,40 @@
                             setTimeout(function () {
                                 location.reload()
                             }, 300);
+
+                        }
+                    }, {
+                        text: "Отмена",
+                        class: "btn btn-default",
+                        click: function () {
+                            $(this).dialog("close");
+                        }
+                    }],
+                show: {
+                    effect: "clip",
+                    duration: 200
+                },
+                hide: {
+                    effect: "clip",
+                    duration: 200
+                }
+
+            });
+            
+            $("#msgDelFileConfirm").dialog({
+                autoOpen: false,
+                modal: true,
+                dialogClass: "no-close",
+                width: 400,
+                buttons: [{
+                        text: "Удалить",
+                        class: "btn btn-danger",
+                        click: function () {
+                            //$(this).dialog("close");
+                            $.post("<c:url value="/tasks/delfile" />", {"fileid": $.data(this, "idtodel").toString().substring(3), "taskid": "${task.id}", "${_csrf.parameterName}": "${_csrf.token}"});
+                            setTimeout(function () {
+                                location.reload()
+                            }, 500);
 
                         }
                     }, {

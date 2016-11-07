@@ -22,6 +22,8 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -259,13 +261,13 @@ public class TaskRouter
                 return;
         
         File targetFile = new File(targetDataFile.getFilename());
-        response.setHeader("Content-Disposition", "attachment;"); //TODO: имя файла задается тут, 
-                                                                  //но нужно правильно его закодировать, 
-                                                                  //чтобы все браузеры понимали правильно
-                                                                  //http://stackoverflow.com/questions/22319277/how-to-set-chinese-filename-correctly-for-different-browsers-when-download-file
-        
+         
         try
         {
+            String encFilename = URLEncoder.encode(targetDataFile.getViewName().replace(" ", "_"), "UTF-8");
+            String decFilename = URLDecoder.decode(encFilename, "ISO8859_1");
+            response.setHeader("Content-Disposition", "attachment;filename=" + decFilename);
+            
             BufferedInputStream bs = new BufferedInputStream(new FileInputStream(targetFile));
             IOUtils.copy(bs, response.getOutputStream());
             response.flushBuffer();
@@ -275,6 +277,30 @@ public class TaskRouter
             log.error("Ошибка при отдаче файла " + targetDataFile.getViewName() + ", причина: " + ex.getLocalizedMessage());
         }
 
+    }
+    
+    @Secured("ROLE_USER")
+    @RequestMapping(value = "/tasks/delfile", method = RequestMethod.POST)
+    public String delFileFromTask(@RequestParam("taskid") Integer taskid, 
+                                  @RequestParam("fileid") Long fileid)
+    {
+        Task task = taskService.getById(taskid);
+        DataFile dataFile = dataFileService.getById(fileid);
+        Employee currentUser = employeeService.getCurrentUser();
+        
+        if(task.getFiles().contains(dataFile) 
+                && (currentUser.equals(dataFile.getCreator()) || currentUser.equals(task.getCreator())))
+        {
+            task.getFiles().remove(dataFile);
+            dataFileService.delete(dataFile);
+            taskService.update(task);
+        }
+        else
+        {
+            throw new ResourceNotFoundException();
+        }
+        
+        return "redirect:/tasks/taskinfo?id=" + task.getId(); 
     }
     
     @Secured("ROLE_USER")
