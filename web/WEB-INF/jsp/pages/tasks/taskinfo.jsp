@@ -26,7 +26,7 @@
                                     <c:out value="${task.title}" />
                                 </div>
                                 <div class="panel-body">
-                                    <div style="white-space: pre"><c:out value="${task.text}" /></div>
+                                    <div style="white-space: pre-wrap"><c:out value="${task.text}" /></div>
                                 </div>
                             </div>
                         </td>
@@ -161,7 +161,7 @@
                                     <div class="panel-body">
                                         <h4><c:out value="${comment.title}" /></h4>
                                         <hr>
-                                        <div style="white-space: pre"><c:out value="${comment.text}" /></div>
+                                        <div style="white-space: pre-wrap"><c:out value="${comment.text}" /></div>
                                         <br><br>
                                         <fmt:formatDate value="${comment.creationTime.toDate()}" type="both" pattern="dd.MM.yyyy HH:mm" var="commenttimefmt" />
                                         <div align="right"><small><c:out value="${commenttimefmt}" /></small></div>
