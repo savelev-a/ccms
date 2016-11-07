@@ -81,7 +81,11 @@
                                     <img src="<c:url value="/res/images/datafile_types/${file.iconPath}" />" > <c:out value="${file.viewName}" />
                                 </a>
                                 &nbsp;&nbsp;
-                                <a href="#" class="delFile" id="del${file.id}"><span class="glyphicon glyphicon-trash"></span></a>
+                                <a href="#" class="delFile" id="del${file.id}">
+                                    <c:if test="${currentUser.equals(file.creator) || currentUser.equals(task.creator)}">
+                                        <span class="glyphicon glyphicon-trash"></span>
+                                    </c:if>
+                                </a>
                                 <br>
                             </c:forEach>
                         </td>
