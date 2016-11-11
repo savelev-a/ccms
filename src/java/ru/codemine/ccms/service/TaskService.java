@@ -326,17 +326,37 @@ public class TaskService
     
     public void sendMsgOnAddComment(Task task, Comment comment)
     {
-        String title = "К созданной вами задаче добавлен новый комментарий";
-        String text  = "Добрый день, " + task.getCreator().getFirstName() + ",<br>" +
+        
+        if(task.getCreator().equals(comment.getCreator()))
+        {
+            String title = "К назначенной вам задаче добавлен новый комментарий";
+            String text  = "Добрый день!<br>" +
+                       "К назначенной вам задаче на портале добавлен новый комментарий.<br><br>" +
+                       "Пользователь <b>" + comment.getCreator().getFullName() + "</b> написал комментарий к задаче <b>" + task.getTitle() + "</b>:<br><br>" +
+                       "Заголовок комментария: <a href=\"" + settingsService.getRootURL() + "/tasks/taskinfo?id=" + task.getId() + "\">" + comment.getTitle() + "</a><br>" +
+                       "Текст комментария : " + comment.getText() + "<br><br>" +
+                       "Чтобы просмотреть комментарий пройдите по вышеуказанной ссылке.<br><br>" +
+                       "Спасибо за пользование веб-порталом!";
+            for(Employee emp : task.getPerformers())
+            {
+                emailService.sendSimpleMessage(emp.getEmail(), title, text);
+            }
+            
+        }
+        else
+        {
+            String title = "К созданной вами задаче добавлен новый комментарий";
+            String text  = "Добрый день, " + task.getCreator().getFirstName() + ",<br>" +
                        "К вашей задаче на портале добавлен новый комментарий.<br><br>" +
                        "Пользователь <b>" + comment.getCreator().getFullName() + "</b> написал комментарий к задаче <b>" + task.getTitle() + "</b>:<br><br>" +
                        "Заголовок комментария: <a href=\"" + settingsService.getRootURL() + "/tasks/taskinfo?id=" + task.getId() + "\">" + comment.getTitle() + "</a><br>" +
                        "Текст комментария : " + comment.getText() + "<br><br>" +
                        "Чтобы просмотреть комментарий пройдите по вышеуказанной ссылке.<br><br>" +
                        "Спасибо за пользование веб-порталом!";
-        
-        emailService.sendSimpleMessage(task.getCreator().getEmail(), title, text);
-        //log.info(text);
+            
+            emailService.sendSimpleMessage(task.getCreator().getEmail(), title, text);
+        }
+
     }
 
 }

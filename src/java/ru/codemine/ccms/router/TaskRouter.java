@@ -116,7 +116,10 @@ public class TaskRouter
         Task task = taskService.getById(id);
         Employee currentUser = employeeService.getCurrentUser();
         
-        if(!task.isInTask(currentUser) && !currentUser.getRoles().contains("ROLE_ADMIN")) throw new ResourceNotFoundException();
+        if(!task.isInTask(currentUser) 
+                && !currentUser.getRoles().contains("ROLE_ADMIN")
+                && task.hasPerformer()) 
+            throw new ResourceNotFoundException();
         
         model.addAllAttributes(utils.prepareModel());
         model.addAttribute("openTasksCount", taskService.getOpenTaskCount());

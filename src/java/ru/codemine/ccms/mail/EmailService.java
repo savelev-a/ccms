@@ -18,6 +18,7 @@
 
 package ru.codemine.ccms.mail;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Properties;
 import javax.mail.Authenticator;
 import javax.mail.Message;
@@ -29,6 +30,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.codemine.ccms.service.SettingsService;
 
@@ -42,32 +44,45 @@ public class EmailService
 {
     private static final Logger log = Logger.getLogger("EmailSender");
     
-    @Autowired private SettingsService settingsService;
+    @Value("${smtp.url}")
+    private String host;
+    
+    @Value("${smtp.username}")
+    private String username;
+    
+    @Value("${smtp.pass}")
+    private String password;
+    
+    @Value("${smtp.port}")
+    private String port;
+    
+    @Value("${smtp.ssl}")
+    private String ssl;
+    
     
     public void sendSimpleMessage(String address, String subject, String content)
     {
         try
         {
-            String host = settingsService.getSalesLoaderUrl();
-            String username = settingsService.getSalesLoaderEmail();
-            String password = settingsService.getSalesLoaderEmailPass();
-            
             Properties props = new Properties();
             props.put("mail.smtp.host", host);
-            props.put("mail.smtp.port", 25);
+            props.put("mail.smtp.port", port);
             props.put("mail.smtp.auth", "true");
             props.put("mail.mime.charset", "UTF-8");
+            props.put("mail.smtp.ssl.enable", ssl);
             
             Session session = Session.getInstance(props, new EmailAuthenticator(username, password));
             
             MimeMessage message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(username));
+            message.setFrom(new InternetAddress(username, "ИнфоПортал"));
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(address));
             message.setSubject(subject);
             message.setText(content, "utf-8", "html");
-            Transport.send(message);
+            Transport transport = session.getTransport("smtp");
+            transport.connect();
+            transport.sendMessage(message, message.getAllRecipients());
         } 
-        catch (MessagingException ex)
+        catch (MessagingException | UnsupportedEncodingException ex)
         {
             log.error("Невозможно отправить сообщение email, возникла ошибка: " + ex.getLocalizedMessage());
             ex.printStackTrace();
