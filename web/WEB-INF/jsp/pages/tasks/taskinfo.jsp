@@ -212,28 +212,35 @@
 
                 </tbody>
             </table>
+                            
+            <c:set var="userIsAdmin" value="false" />
+            <c:forEach var="role" items="${currentUser.roles}">
+              <c:if test="${role eq 'ROLE_ADMIN'}">
+                <c:set var="userIsAdmin" value="true" />
+              </c:if>
+            </c:forEach>
 
             <c:choose>
                 <c:when test="${task.statusString == 'Новая'}" >
                     <button class="btn btn-primary takeTask" ><span class="glyphicon glyphicon-expand"></span> Взять себе</button>
-                    <c:if test="${task.creator.equals(currentUser)}">
+                    <c:if test="${task.creator.equals(currentUser) || userIsAdmin}">
                         <button class="btn btn-primary closeTask" ><span class="glyphicon glyphicon-expand"></span> Закрыть</button>
                     </c:if>
                 </c:when>
 
                 <c:when test="${task.statusString == 'Назначена'}" >
-                    <c:if test="${task.creator.equals(currentUser)}">
+                    <c:if test="${task.creator.equals(currentUser) || userIsAdmin}">
                         <button class="btn btn-primary closeTask" ><span class="glyphicon glyphicon-expand"></span> Закрыть</button>
                     </c:if>
                 </c:when>
 
                 <c:when test="${task.statusString == 'В работе'}" >
-                    <c:if test="${task.creator.equals(currentUser)}">
+                    <c:if test="${task.creator.equals(currentUser) || userIsAdmin}">
                         <button class="btn btn-primary closeTask" ><span class="glyphicon glyphicon-expand"></span> Закрыть</button>
                     </c:if>
                 </c:when>
                 <c:when test="${task.statusString == 'Приостановлена'}" >
-                    <c:if test="${task.creator.equals(currentUser)}">
+                    <c:if test="${task.creator.equals(currentUser) || userIsAdmin}">
                         <button class="btn btn-primary closeTask" ><span class="glyphicon glyphicon-expand"></span> Закрыть</button>
                     </c:if>
                 </c:when>

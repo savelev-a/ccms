@@ -325,7 +325,7 @@ public class TaskRouter
         Task task = taskService.getById(id);
         Employee employee = employeeService.getCurrentUser();
         
-        if(employee.equals(task.getCreator()))
+        if(employee.equals(task.getCreator()) || employee.hasRole("ROLE_ADMIN"))
         {
             taskService.close(task);
         }

@@ -307,7 +307,10 @@ public class Employee implements Serializable, Hyperlinkable
         return authorities;
     }
     
-    
+    public boolean hasRole(String role)
+    {
+        return getRoles().contains(role);
+    }
     
     
     
