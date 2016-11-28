@@ -73,13 +73,18 @@ public class KondorClient implements CounterClient
             manageSocket.connect(new InetSocketAddress(ip, 21), 3000);
             BufferedReader in = new BufferedReader(new InputStreamReader(manageSocket.getInputStream()));
             PrintWriter out = new PrintWriter(manageSocket.getOutputStream(), true);
+            String ftpAnswer;
+            
+            ftpAnswer = in.readLine();
+            log.debug("FTP greetings: " + ftpAnswer);
             
             out.println("USER " + login);
-            log.debug("FTP: " + in.readLine());
+            ftpAnswer = in.readLine();
+            log.debug("FTP USER command responce: " + ftpAnswer);
             
             out.println("PASS " + pass);
             String afterAuth = in.readLine();
-            log.debug("FTP: " + afterAuth);
+            log.debug("FTP PASS command responce: " + afterAuth);
             
             out.println("PASV");
             String pasvResponce = in.readLine();
@@ -101,12 +106,10 @@ public class KondorClient implements CounterClient
                 FileOutputStream dataOut = new FileOutputStream(tmpFileName);
                 
                 out.println("RETR total.dbf");
-                log.debug("FTP: " + in.readLine());
+                ftpAnswer = in.readLine();
+                log.debug("FTP RETR command responce: " + ftpAnswer);
                 
                 IOUtils.copy(dataIn, dataOut);
-                
-                out.println("QUIT");
-                log.debug("FTP: " + in.readLine());
                 
                 dataOut.flush();
                 dataOut.close();
@@ -117,6 +120,7 @@ public class KondorClient implements CounterClient
                 if(afterAuth.startsWith("530")) 
                 {
                     log.warn("Ошибка авторизации при подключении к счетчику, магазин: " + shop.getName());
+                    
                 }
                 else
                 {
@@ -125,11 +129,15 @@ public class KondorClient implements CounterClient
                     
             }
             
+            out.println("QUIT");
+            ftpAnswer = in.readLine();
+            log.debug("FTP QUIT command responce: " + ftpAnswer);
+            
             manageSocket.close();
         } 
         catch (Exception e)
         {
-            log.error("Невозможно загрузить данные со счетчиков по магазину " + shop.getName() + ", возникла ошибка: " + e.getMessage());
+            log.warn("Невозможно загрузить данные со счетчиков по магазину " + shop.getName() + ", возникла ошибка: " + e.getMessage());
         }
         
         return new File(tmpFileName);
@@ -141,7 +149,7 @@ public class KondorClient implements CounterClient
         File dbfFile = ftpDownload(shop);
         if(!dbfFile.exists())
         {
-            log.error(".dbf не загружен по магазину: " + shop.getName());
+            log.warn(".dbf не загружен по магазину: " + shop.getName());
             return null;
         }
         
