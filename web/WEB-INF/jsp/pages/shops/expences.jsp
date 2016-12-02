@@ -50,7 +50,16 @@
             <span class="glyphicon glyphicon-print"></span>
             <a href="<c:url value='/expences?mode=print&shopid=${shop.id}&dateYear=${selectedYear}' /> " target="_blank">Распечатать</a>
             <br><br>
-            <div id="collasible">
+            <div id="collapsible_comments">
+                <h4>Добавить комментарии</h4>
+                <div>
+                    <textarea id="expComment" class="textAreaFullWidth"><c:out value="${shop.expencesComment}" /></textarea>
+                    <br><br>
+                    <button id="expCommentSaveBtn" class="btn btn-primary">Сохранить комментарий</button>
+                </div>
+            </div>
+            
+            <div id="collapsible_types">
                 <h4>Добавить типы расходов</h4>
                 <div>
                     <c:url var="performers_post_url"  value="/expences/addtype?shopid=${shop.id}&dateYear=${selectedYear}" />
@@ -90,6 +99,9 @@
             </div>
         </ccms:panel>
     </ccms:layout>
+            
+    <div id="addCommentDialog"><div id="addCommentDialogText"></div></div>
+            
     <script type="text/javascript" src="<c:url value="/res/js/grid.locale-ru.js" />"></script>
     <script type="text/javascript" src="<c:url value="/res/js/jquery.jqGrid.min.js" />"></script>
 
@@ -179,7 +191,13 @@
                     "paging": false
             });
             
-            $("#collasible").accordion({
+            $("#collapsible_comments").accordion({
+                collapsible: true,
+                active: false,
+                heightStyle: "content"
+            });
+            
+            $("#collapsible_types").accordion({
                 collapsible: true,
                 active: false,
                 heightStyle: "content"
@@ -187,6 +205,44 @@
             
             $("#shopSelector").change(function(){
                 $("#submitBtn").trigger("click");
+            });
+            
+            $("#addCommentDialog").dialog({
+                autoOpen: false,
+                modal: true,
+                dialogClass: "no-close",
+                width: 400,
+                buttons: [{
+                        text: "ОК",
+                        class: "btn btn-default",
+                        click: function () {
+                            $(this).dialog("close");
+                        }
+                    }],
+                show: {
+                    effect: "clip",
+                    duration: 200
+                },
+                hide: {
+                    effect: "clip",
+                    duration: 200
+                }
+
+            });
+            
+            $("#expCommentSaveBtn").click(function(){
+                var txtfield = document.getElementById("expComment");
+                var posturl = "<c:url value="/expences/addcomment" />";
+                var postdata = {};
+                
+                postdata["data"] = txtfield.value;
+                postdata["shopid"] = <c:out value="${shop.id}" />;
+                postdata["${_csrf.parameterName}"] = "${_csrf.token}";
+                
+                $.post(posturl, postdata, function(data){
+                    $("#addCommentDialogText").html(data.result);
+                    $("#addCommentDialog").dialog("open");
+                });
             });
             
             

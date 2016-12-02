@@ -252,3 +252,8 @@ body {
     border: none !important;
     font: normal 13px / 18px Arial, 'Helvetica Neue', Helvetica, sans-serif !important;
 }
+
+.textAreaFullWidth {
+    width: 100%;
+    height: 200px;
+}

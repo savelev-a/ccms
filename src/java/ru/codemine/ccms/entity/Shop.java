@@ -133,6 +133,9 @@ public class Shop implements Serializable, Hyperlinkable
     @Column(name = "dominoName", length = 128, nullable = false)
     private String dominoName;
     
+    @Column(name = "exp_comment", nullable = false, columnDefinition = "TEXT")
+    private String expencesComment;
+    
     public Integer getId()
     {
         return id;
@@ -332,6 +335,16 @@ public class Shop implements Serializable, Hyperlinkable
     public void setDominoName(String dominoName)
     {
         this.dominoName = dominoName;
+    }
+
+    public String getExpencesComment()
+    {
+        return expencesComment;
+    }
+
+    public void setExpencesComment(String expencesComment)
+    {
+        this.expencesComment = expencesComment;
     }
 
     

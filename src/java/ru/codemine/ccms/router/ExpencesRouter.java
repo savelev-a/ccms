@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import org.apache.log4j.Logger;
 import org.joda.time.LocalDate;
@@ -193,6 +194,31 @@ public class ExpencesRouter
         
         
         return "{\"result\": \"success\"}";
+    }
+    
+    @Secured("ROLE_OFFICE")
+    @RequestMapping(value = "/expences/addcomment", method = RequestMethod.POST)
+    public @ResponseBody Map<String, Object> expencesSaveComment(HttpServletRequest request, HttpServletResponse response)
+    {
+        Map<String, Object> responceBody = new HashMap<>();
+        
+        try
+        {
+            Integer shopid = Integer.valueOf(request.getParameter("shopid"));
+            String data = request.getParameter("data");
+            
+            Shop shop = shopService.getById(shopid);
+            shop.setExpencesComment(data);
+            shopService.update(shop);
+            
+            responceBody.put("result", "Сохранение успешно");
+        } 
+        catch (Exception e)
+        {
+            responceBody.put("result", "Ошибка: " + e.getLocalizedMessage());
+        }
+        
+        return responceBody;
     }
     
     
