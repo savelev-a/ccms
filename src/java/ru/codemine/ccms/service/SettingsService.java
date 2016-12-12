@@ -55,9 +55,6 @@ public class SettingsService
     private static final String CK_COMPANY_NAME = "CK_CompanyName";
     private static final String CK_KONDOR_FTP_LOGIN = "CK_KondorFtpLogin";
     private static final String CK_KONDOR_FTP_PASSWORD = "CK_KondorFtpPassword";
-    private static final String CK_SALES_LOADER_URL = "CK_SalesLoaderUrl";
-    private static final String CK_SALES_LOADER_EMAIL = "CK_SalesLoaderEmail";
-    private static final String CK_SALES_LOADER_EMAIL_PASS = "CK_SalesLoaderEmailPass";
     private static final String CK_ROOT_URL = "CK_RootUrl";
 
     /**
@@ -201,55 +198,6 @@ public class SettingsService
         settingsDAO.update(settings);
     }
     
-    @Transactional
-    public String getSalesLoaderEmail()
-    {
-        Settings settings = settingsDAO.getByKey(CK_SALES_LOADER_EMAIL);
-        String email = (settings == null ? "" : settings.getValue());
-        
-        return email;
-    }
-    
-    @Transactional
-    public void setSalesLoaderEmail(String email)
-    {
-        Settings settings = new Settings(CK_SALES_LOADER_EMAIL, email);
-        settingsDAO.update(settings);
-    }
-    
-    @Transactional
-    public String getSalesLoaderUrl()
-    {
-        Settings settings = settingsDAO.getByKey(CK_SALES_LOADER_URL);
-        String url = (settings == null ? "" : settings.getValue());
-        
-        return url;
-    }
-    
-    @Transactional
-    public void setSalesLoaderUrl(String url)
-    {
-        Settings settings = new Settings(CK_SALES_LOADER_URL, url);
-        settingsDAO.update(settings);
-    }
-    
-    @Transactional
-    public String getSalesLoaderEmailPass()
-    {
-        Settings settings = settingsDAO.getByKey(CK_SALES_LOADER_EMAIL_PASS);
-        String pass = (settings == null ? "" : settings.getValue());
-        
-        return pass;
-    }
-    
-    @Transactional
-    public void setSalesLoaderEmailPass(String pass)
-    {
-        Settings settings = new Settings(CK_SALES_LOADER_EMAIL_PASS, pass);
-        settingsDAO.update(settings);
-    }
-    
-    
     /**
      * Создает форму настроек и загружает ее данными из БД
      * @return
@@ -262,17 +210,11 @@ public class SettingsService
         Settings companyName = settingsDAO.getByKey(CK_COMPANY_NAME);
         Settings kondorFtpLogin = settingsDAO.getByKey(CK_KONDOR_FTP_LOGIN);
         Settings kondorFtpPassword = settingsDAO.getByKey(CK_KONDOR_FTP_PASSWORD);
-        Settings salesLoaderEmail = settingsDAO.getByKey(CK_SALES_LOADER_EMAIL);
-        Settings salesLoaderEmailPass = settingsDAO.getByKey(CK_SALES_LOADER_EMAIL_PASS);
-        Settings salesLoaderUrl = settingsDAO.getByKey(CK_SALES_LOADER_URL);
         Settings rootUrl = settingsDAO.getByKey(CK_ROOT_URL);
         
         settingsForm.setCompanyName(companyName == null ? "" : companyName.getValue());
         settingsForm.setCountersKondorFtpLogin(kondorFtpLogin == null ? "" : kondorFtpLogin.getValue());
         settingsForm.setCountersKondorFtpPassword(kondorFtpPassword == null ? "" : kondorFtpPassword.getValue());
-        settingsForm.setSalesLoaderEmail(salesLoaderEmail == null ? "user@example.com" : salesLoaderEmail.getValue());
-        settingsForm.setSalesLoaderEmailPass(salesLoaderEmailPass == null ? "" : salesLoaderEmailPass.getValue());
-        settingsForm.setSalesLoaderUrl(salesLoaderUrl == null ? "" : salesLoaderUrl.getValue());
         settingsForm.setRootUrl(rootUrl == null ? "" : rootUrl.getValue());
         
         return settingsForm;
@@ -292,18 +234,12 @@ public class SettingsService
                 || form.getCompanyName() == null 
                 || form.getRootUrl() == null
                 || form.getCountersKondorFtpLogin() == null 
-                || form.getCountersKondorFtpPassword() == null
-                || form.getSalesLoaderEmail() == null
-                || form.getSalesLoaderEmailPass() == null
-                || form.getSalesLoaderUrl() == null)
+                || form.getCountersKondorFtpPassword() == null)
             return;
         
         settingsDAO.update(new Settings(CK_COMPANY_NAME, form.getCompanyName()));
         settingsDAO.update(new Settings(CK_KONDOR_FTP_LOGIN, form.getCountersKondorFtpLogin()));
         settingsDAO.update(new Settings(CK_KONDOR_FTP_PASSWORD, form.getCountersKondorFtpPassword()));
-        settingsDAO.update(new Settings(CK_SALES_LOADER_EMAIL, form.getSalesLoaderEmail()));
-        settingsDAO.update(new Settings(CK_SALES_LOADER_EMAIL_PASS, form.getSalesLoaderEmailPass()));
-        settingsDAO.update(new Settings(CK_SALES_LOADER_URL, form.getSalesLoaderUrl()));
         settingsDAO.update(new Settings(CK_ROOT_URL, form.getRootUrl()));
     }
 

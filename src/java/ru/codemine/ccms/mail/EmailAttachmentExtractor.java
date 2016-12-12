@@ -17,11 +17,13 @@
  */
 package ru.codemine.ccms.mail;
 
+import java.io.IOException;
 import java.util.Properties;
 import javax.mail.BodyPart;
 import javax.mail.Flags;
 import javax.mail.Folder;
 import javax.mail.Message;
+import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import javax.mail.Part;
 import javax.mail.Session;
@@ -31,6 +33,7 @@ import javax.mail.internet.MimeUtility;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.codemine.ccms.service.SettingsService;
 
@@ -43,22 +46,38 @@ public class EmailAttachmentExtractor
 {
 
     private static final Logger log = Logger.getLogger("EmailExtractor");
+    
+    @Value("${imap.url}")
+    private String host;
+    
+    @Value("${imap.username}")
+    private String username;
+    
+    @Value("${imap.pass}")
+    private String password;
+    
+    @Value("${imap.port}")
+    private int port;
+    
+    @Value("${imap.ssl}")
+    private boolean ssl;
 
     @Autowired
     SettingsService settingsService;
 
     public void saveAllAttachment()
     {
+        String protocol = ssl ? "imaps" : "imap";
+        
         Properties props = new Properties();
-        props.put("mail.store.protocol", "imaps");
+        props.put("mail.store.protocol", protocol);
 
         try
         {
             Session session = Session.getInstance(props);
             Store store = session.getStore();
-            store.connect(settingsService.getSalesLoaderUrl(),
-                    settingsService.getSalesLoaderEmail(),
-                    settingsService.getSalesLoaderEmailPass());
+            store.connect(host, port, username, password);
+            
             Folder inbox = store.getFolder("INBOX");
             inbox.open(Folder.READ_WRITE);
 
@@ -81,7 +100,7 @@ public class EmailAttachmentExtractor
                     }
                 }
             }
-        } catch (Exception e)
+        } catch (IOException | MessagingException e)
         {
             log.error("Невозможно сохранить вложения, возникла ошибка: " + e.getMessage());
         }
