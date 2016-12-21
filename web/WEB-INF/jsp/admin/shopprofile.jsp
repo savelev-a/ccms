@@ -280,6 +280,7 @@
                 </table>
                 <form:hidden path="provider.id" />
                 <form:hidden path="hardware.id" />
+                <form:hidden path="expencesComment" />
                 <input id="save" type="submit" value="Сохранить" class="btn btn-primary">
                 <input id="delete" type="button" name="delete" value="Удалить магазин" class="btn btn-danger">
             </form:form>

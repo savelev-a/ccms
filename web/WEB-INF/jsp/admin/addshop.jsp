@@ -231,6 +231,7 @@
                         </tr>
                     </tbody>
                 </table>
+                <form:hidden path="expencesComment" value="" />
                 <input type="submit" value="Добавить" class="btn btn-primary">
             </form:form>
         </ccms:panel>
