@@ -223,4 +223,22 @@ public class TaskDAOImpl extends GenericDAOImpl<Task, Integer> implements TaskDA
         return query.list();
     }
 
+    @Override
+    public void markAllNotifySent(Employee performer)
+    {
+        Query query = getSession().createQuery("UPDATE Task SET notifySent = true WHERE :performer IN ELEMENTS(performers)");
+        query.setParameter("performer", performer);
+        
+        query.executeUpdate();
+    }
+
+    @Override
+    public List<Task> getByPerformerNotSent(Employee performer)
+    {
+        Query query = getSession().createQuery("FROM Task t WHERE :performer IN ELEMENTS(t.performers) AND t.notifySent = false");
+        query.setParameter("performer", performer);
+        
+        return query.list();
+    }
+
 }

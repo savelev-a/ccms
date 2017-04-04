@@ -31,15 +31,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import ru.codemine.ccms.entity.Employee;
 import ru.codemine.ccms.entity.Sales;
 import ru.codemine.ccms.entity.SalesMeta;
 import ru.codemine.ccms.entity.Shop;
+import ru.codemine.ccms.entity.Task;
 import ru.codemine.ccms.exceptions.InvalidParametersException;
+import ru.codemine.ccms.router.api.form.MynewtasksJson;
 import ru.codemine.ccms.router.api.form.PassabilityJson;
 import ru.codemine.ccms.router.api.form.ShopJson;
 import ru.codemine.ccms.service.CounterService;
+import ru.codemine.ccms.service.EmployeeService;
 import ru.codemine.ccms.service.SalesService;
 import ru.codemine.ccms.service.ShopService;
+import ru.codemine.ccms.service.TaskService;
 
 /**
  *
@@ -52,6 +57,8 @@ public class ApiRouter
     @Autowired private ShopService shopService;
     @Autowired private SalesService salesService;
     @Autowired private CounterService counterService;
+    @Autowired private EmployeeService employeeService;
+    @Autowired private TaskService taskService;
     
     private static final Logger log = Logger.getLogger("API Router");
     
@@ -192,6 +199,28 @@ public class ApiRouter
             log.warn("Ошибка доступа через API (проходимость) - " + e.getLocalizedMessage());
             return new ArrayList<>();
         }
+    }
+    
+    @Secured("ROLE_USER")
+    @RequestMapping(value = "/api/mynewtasks", method = RequestMethod.GET)
+    public @ResponseBody List<MynewtasksJson> getTasksJson(@RequestParam Integer employeeId)
+    {
+        if(employeeId == null) throw new InvalidParametersException();
+        
+        Employee employee = employeeService.getById(employeeId);
+        List<Task> tasks = taskService.getByPerformerNotSent(employee);
+        List<MynewtasksJson> result = new ArrayList<>();
+        
+        if(!tasks.isEmpty()) 
+        {
+            for(Task t : tasks)
+            {
+                result.add(new MynewtasksJson(t));
+            }
+            taskService.markAllNotifySent(employee);
+        }
+        
+        return result;
     }
     
 }

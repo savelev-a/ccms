@@ -53,4 +53,7 @@ public interface TaskDAO extends GenericDAO<Task, Integer>
     public Period getMidTimeByPerformer(Employee performer, LocalDate startDate, LocalDate endDate);
 
     public List<Task> getByPerformerAndCloseTimeInPeriod(Employee performer, LocalDate startDate, LocalDate endDate);
+
+    public void markAllNotifySent(Employee performer);
+    public List<Task> getByPerformerNotSent(Employee performer);
 }

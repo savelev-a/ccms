@@ -358,5 +358,21 @@ public class TaskService
         }
 
     }
+    
+    public void markAsNotifySent(Task task)
+    {
+        task.setNotifySent(true);
+        taskDAO.update(task);
+    }
+    
+    public void markAllNotifySent(Employee employee)
+    {
+        taskDAO.markAllNotifySent(employee);
+    }
+
+    public List<Task> getByPerformerNotSent(Employee employee)
+    {
+        return taskDAO.getByPerformerNotSent(employee);
+    }
 
 }

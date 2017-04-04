@@ -132,6 +132,9 @@ public class Task implements Serializable, Hyperlinkable
             inverseJoinColumns = @JoinColumn(name = "comm_id", referencedColumnName = "id"))
     @OrderBy(value = "id ASC")
     private Set<Comment> comments;
+    
+    @Column(name = "notifySent", nullable = false)
+    private boolean notifySent;
 
         
     public Task()
@@ -145,6 +148,7 @@ public class Task implements Serializable, Hyperlinkable
         this.text = "";
         this.performers = new LinkedHashSet<>();
         this.files = new LinkedHashSet<>();
+        this.notifySent = false;
     }
     
     public Task(Employee creator)
@@ -159,6 +163,7 @@ public class Task implements Serializable, Hyperlinkable
         this.text = "";
         this.performers = new LinkedHashSet<>();
         this.files = new LinkedHashSet<>();
+        this.notifySent = false;
     }
     
     
@@ -286,6 +291,17 @@ public class Task implements Serializable, Hyperlinkable
     {
         this.files = files;
     }
+
+    public boolean isNotifySent()
+    {
+        return notifySent;
+    }
+
+    public void setNotifySent(boolean notifySent)
+    {
+        this.notifySent = notifySent;
+    }
+    
 
     @Override
     public String toString()
